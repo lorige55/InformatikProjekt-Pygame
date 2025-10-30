@@ -1,3 +1,4 @@
 # Informatik Projekt - Gabriel, Philipe, Loris
 ## Credits:
-* Game Assets from [kenney.nl](https://kenney.nl)
+* Pygame Basic Setup from [Pygame Docs](https://www.pygame.org/docs/)
+* Game Tiles and Fonts from [kenney.nl](https://kenney.nl)
