@@ -4,9 +4,11 @@ import pygame as pg
 
 pg.init()
 pg.font.init()
-screen: pg.Surface = pg.display.set_mode((1280, 720))
-WIDTH: int = 16
-HEIGHT: int = 9
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
+screen: pg.Surface = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+TILED_WIDTH: int = 16
+TILED_HEIGHT: int = 9
 clock: pg.time.Clock = pg.time.Clock()
 running: bool = True
 title_font: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Blocks.ttf", 36)
@@ -24,8 +26,14 @@ grass_tile_og = pg.image.load(
     "./assets/tiles/towerDefense_tile231.png"
 ).convert()  # load the image
 grass_tile = pg.transform.scale(
-    grass_tile_og, (1280 / WIDTH, 720 / HEIGHT)
+    grass_tile_og, (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT)
 )  # scale the image
+
+# swedish flag
+swedish_flag_og = pg.image.load("./assets/custom/Swedish Flag.png").convert()
+swedish_flag = pg.transform.scale(swedish_flag_og, (50, 31))  # scale the image
+swedish_flag_rect = swedish_flag.get_rect()
+swedish_flag_rect.bottomright = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
 while running:
     for event in pg.event.get():
@@ -37,9 +45,15 @@ while running:
 
     # start screen if:
     if Game.state == "start":
-        for i in range(WIDTH):
-            for j in range(HEIGHT):
-                screen.blit(grass_tile, (i * (1280 / WIDTH), j * (720 / HEIGHT)))
+        for i in range(TILED_WIDTH):
+            for j in range(TILED_HEIGHT):
+                screen.blit(
+                    grass_tile,
+                    (
+                        i * (SCREEN_WIDTH / TILED_WIDTH),
+                        j * (SCREEN_HEIGHT / TILED_HEIGHT),
+                    ),
+                )
         # title:
         welcome_title = title_font.render(
             "Welcome to Tower Defense!", True, (187, 127, 68)
@@ -55,6 +69,9 @@ while running:
     elif Game.state == "game":
         # TODO for Gabriel: Render Map
         print("This works.")
+
+    # display swedish flag
+    screen.blit(swedish_flag, swedish_flag_rect)
 
     pg.display.flip()
 
