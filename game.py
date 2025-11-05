@@ -4,8 +4,8 @@ import pygame as pg
 
 pg.init()
 pg.font.init()
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
+SCREEN_WIDTH: int = 1280
+SCREEN_HEIGHT: int = 720
 screen: pg.Surface = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 TILED_WIDTH: int = 16
 TILED_HEIGHT: int = 9
