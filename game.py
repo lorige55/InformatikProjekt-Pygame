@@ -4,11 +4,12 @@ import pygame as pg
 
 pg.init()
 pg.font.init()
-SCREEN_WIDTH: int = 1280
-SCREEN_HEIGHT: int = 720
-screen: pg.Surface = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 TILED_WIDTH: int = 16
 TILED_HEIGHT: int = 9
+TILE_SIZE: int = 80
+SCREEN_WIDTH: int = TILED_WIDTH * TILE_SIZE
+SCREEN_HEIGHT: int = TILED_HEIGHT * TILE_SIZE
+screen: pg.Surface = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock: pg.time.Clock = pg.time.Clock()
 running: bool = True
 title_font: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Blocks.ttf", 36)
