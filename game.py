@@ -21,13 +21,78 @@ class Game:
     state: str = "start"
 
 
-# background
+# load and scale tiles
 grass_tile_og = pg.image.load(
     "./assets/tiles/towerDefense_tile231.png"
 ).convert()  # load the image
 grass_tile = pg.transform.scale(
     grass_tile_og, (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT)
 )  # scale the image
+
+grass_road_tile_og = pg.image.load(
+    "./assets/tiles/towerDefense_tile001.png"
+)  # road tile with grass on bottom side
+grass_road_tile = pg.transform.scale(
+    grass_road_tile_og, (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT)
+)
+
+grass_road_tile_turning_upleft_og = pg.image.load(  # tile going turning left going up
+    "./assets/tiles/towerDefense_tile004.png"
+)
+grass_road_tile_turning_upleft = pg.transform.scale(
+    grass_road_tile_turning_upleft_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+grass_road_tile_turning_upright_og = pg.image.load(  # tile going turning right going up
+    "./assets/tiles/towerDefense_tile003.png"
+)
+grass_road_tile_turning_upright = pg.transform.scale(
+    grass_road_tile_turning_upright_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+grass_road_tile_turning_downleft_og = pg.image.load(
+    "./assets/tiles/towerDefense_tile027.png"
+)  # road tile turning left going down
+grass_road_tile_turning_downleft = pg.transform.scale(
+    grass_road_tile_turning_downleft_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+grass_road_tile_turning_downright_og = pg.image.load(
+    "./assets/tiles/towerDefense_tile026.png"
+)  # road tile turning right going down
+grass_road_tile_turning_downright = pg.transform.scale(
+    grass_road_tile_turning_downright_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+
+grass_road_tile_down_left_og = pg.image.load(
+    "./assets/tiles/towerDefense_tile025.png"
+)  # road tile with grass on left side
+grass_road_tile_down_left = pg.transform.scale(
+    grass_road_tile_down_left_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+grass_road_tile_down_right_og = pg.image.load(
+    "./assets/tiles/towerDefense_tile023.png"
+)  # road tile with grass on right side
+grass_road_tile_down_right = pg.transform.scale(
+    grass_road_tile_down_right_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+grass_road_tile_bigturn_downleft_og = pg.image.load(
+    "./assets/tiles/towerDefense_tile048.png"
+)  # road tile with big bombaclat turn
+grass_road_tile_bigturn_downleft = pg.transform.scale(
+    grass_road_tile_bigturn_downleft_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+grass_road_tile_reverse_og = pg.image.load(
+    "./assets/tiles/towerDefense_tile047.png"
+)  # road tile with grass on top side
+grass_road_tile_reverse = pg.transform.scale(
+    grass_road_tile_reverse_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
 
 # swedish flag
 swedish_flag_og = pg.image.load("./assets/custom/Swedish Flag.png").convert()
@@ -67,8 +132,78 @@ while running:
         welcome_subtitle_rect = welcome_subtitle.get_rect(center=(640, 380))
         screen.blit(welcome_subtitle, welcome_subtitle_rect)
     elif Game.state == "game":
-        # TODO for Gabriel: Render Map
-        print("This works.")
+        grass_road_tile_positions = [
+            [4, 2],
+            [3, 2],
+        ]  # for all tiles that have a grass road where the grass part is on the bottom side
+        for i in grass_road_tile_positions:
+            screen.blit(
+                grass_road_tile,
+                (
+                    i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                    i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                ),
+            )
+        grass_road_tile_down_left_positions = [
+            [4, 0],
+            [9, 0],
+        ]  # for all tiles that have a grass road where the grass part is on the left side
+        for i in grass_road_tile_down_left_positions:
+            screen.blit(
+                grass_road_tile_down_left,
+                (
+                    i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                    i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                ),
+            )
+        grass_road_tile_down_right_positions = [
+            [5, 0],
+            [5, 1],
+        ]  # for all tiles that have a grass road where the grass part is on the right side
+        for i in grass_road_tile_down_right_positions:
+            screen.blit(
+                grass_road_tile_down_right,
+                (
+                    i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                    i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                ),
+            )
+        grass_road_tile_bigturn_downleft_positions = [
+            [4, 1],
+            [8, 1],
+        ]  # for all tiles that have a big bombaclat turn
+        for i in grass_road_tile_bigturn_downleft_positions:
+            screen.blit(
+                grass_road_tile_bigturn_downleft,
+                (
+                    i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                    i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                ),
+            )
+        grass_road_tile_turning_downleft_positions = [
+            [5, 2],
+            [8, 2],
+        ]  # for all tiles that have a big bombaclat turn
+        for i in grass_road_tile_turning_downleft_positions:
+            screen.blit(
+                grass_road_tile_turning_downleft,
+                (
+                    i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                    i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                ),
+            )
+        grass_road_tile_reverse_positions = [
+            [3, 1],
+            [8, 3],
+        ]  # for all tiles that have grass on top
+        for i in grass_road_tile_reverse_positions:
+            screen.blit(
+                grass_road_tile_reverse,
+                (
+                    i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                    i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                ),
+            )
 
     # display swedish flag
     screen.blit(swedish_flag, swedish_flag_rect)
