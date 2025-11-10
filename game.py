@@ -16,12 +16,6 @@ title_font: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Blocks.ttf", 36)
 subtitle_font: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Future.ttf", 18)
 
 
-class Game:
-    """Stores Variables needed to control the game."""
-
-    state: str = "start"
-
-
 # load and scale tiles
 grass_tile_og = pg.image.load(
     "./assets/tiles/towerDefense_tile231.png"
@@ -101,16 +95,14 @@ swedish_flag = pg.transform.scale(swedish_flag_og, (50, 31))  # scale the image
 swedish_flag_rect = swedish_flag.get_rect()
 swedish_flag_rect.bottomright = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
-while running:
-    for event in pg.event.get():
-        if event.type == pg.constants.QUIT:
-            running = False
-        if event.type == pg.KEYDOWN:
-            if event.key == pg.K_SPACE and Game.state == "start":
-                Game.state = "game"
 
-    # start screen if:
-    if Game.state == "start":
+class Game:
+    """Stores Variables and methods needed to control the game."""
+
+    state: str = "start"
+
+    def reset(self):
+        print("Reset function triggered.")
         for i in range(TILED_WIDTH):
             for j in range(TILED_HEIGHT):
                 screen.blit(
@@ -120,6 +112,21 @@ while running:
                         j * (SCREEN_HEIGHT / TILED_HEIGHT),
                     ),
                 )
+
+
+Game().reset()
+
+while running:
+    for event in pg.event.get():
+        if event.type == pg.constants.QUIT:
+            running = False
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_SPACE and Game.state == "start":
+                Game.state = "game"
+                Game().reset()
+
+    # start screen if:
+    if Game.state == "start":
         # title:
         welcome_title = title_font.render(
             "Welcome to Tower Defense!", True, (187, 127, 68)
