@@ -16,7 +16,7 @@ title_font: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Blocks.ttf", 36)
 subtitle_font: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Future.ttf", 18)
 
 
-# load and scale tiles
+# load and scale grass (road) tiles
 grass_tile_og = pg.image.load(
     "./assets/tiles/towerDefense_tile231.png"
 ).convert()  # load the image
@@ -59,7 +59,6 @@ grass_road_tile_turning_downright = pg.transform.scale(
     grass_road_tile_turning_downright_og,
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
 )
-
 grass_road_tile_down_left_og = pg.image.load(
     "./assets/tiles/towerDefense_tile025.png"
 )  # road tile with grass on left side
@@ -101,8 +100,10 @@ class Game:
 
     state: str = "start"
 
+    player_hp = 1000
+
     def reset(self):
-        print("Reset function triggered.")
+        # reset background
         for i in range(TILED_WIDTH):
             for j in range(TILED_HEIGHT):
                 screen.blit(
@@ -112,6 +113,9 @@ class Game:
                         j * (SCREEN_HEIGHT / TILED_HEIGHT),
                     ),
                 )
+
+        # reset game variables
+        self.player_hp = 1000
 
 
 Game().reset()
@@ -272,6 +276,11 @@ while running:
                     i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
                 ),
             )
+
+        # display HP Text
+        hp_text = title_font.render(f"{Game.player_hp} HP", True, (255, 255, 255))
+        hp_text_rect = hp_text.get_rect(topright=(SCREEN_WIDTH - 10, 10))
+        screen.blit(hp_text, hp_text_rect)
 
     # display swedish flag
     screen.blit(swedish_flag, swedish_flag_rect)
