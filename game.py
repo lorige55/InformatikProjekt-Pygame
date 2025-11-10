@@ -143,6 +143,19 @@ while running:
         grass_road_tile_positions = [
             [4, 2],
             [3, 2],
+            [2, 7],
+            [3, 7],
+            [4, 7],
+            [5, 7],
+            [6, 7],
+            [7, 7],
+            [8, 7],
+            [9, 7],
+            [10, 7],
+            [12, 5],
+            [13, 5],
+            [14, 5],
+            [15, 5],
         ]  # for all tiles that have a grass road where the grass part is on the bottom side
         for i in grass_road_tile_positions:
             screen.blit(
@@ -154,7 +167,12 @@ while running:
             )
         grass_road_tile_down_left_positions = [
             [4, 0],
-            [9, 0],
+            [1, 2],
+            [1, 3],
+            [1, 4],
+            [1, 5],
+            [1, 6],
+            [10, 5],
         ]  # for all tiles that have a grass road where the grass part is on the left side
         for i in grass_road_tile_down_left_positions:
             screen.blit(
@@ -167,6 +185,10 @@ while running:
         grass_road_tile_down_right_positions = [
             [5, 0],
             [5, 1],
+            [2, 3],
+            [2, 4],
+            [2, 5],
+            [11, 6],
         ]  # for all tiles that have a grass road where the grass part is on the right side
         for i in grass_road_tile_down_right_positions:
             screen.blit(
@@ -177,12 +199,15 @@ while running:
                 ),
             )
         grass_road_tile_bigturn_downleft_positions = [
-            [4, 1],
-            [8, 1],
+            [4, 1, 0],
+            [2, 2, 180],
+            [2, 6, 270],
+            [10, 6, 0],
+            [11, 5, 180],
         ]  # for all tiles that have a big bombaclat turn
         for i in grass_road_tile_bigturn_downleft_positions:
             screen.blit(
-                grass_road_tile_bigturn_downleft,
+                pg.transform.rotate(grass_road_tile_bigturn_downleft, i[2]),
                 (
                     i[0] * (SCREEN_WIDTH / TILED_WIDTH),
                     i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
@@ -190,8 +215,8 @@ while running:
             )
         grass_road_tile_turning_downleft_positions = [
             [5, 2],
-            [8, 2],
-        ]  # for all tiles that have a big bombaclat turn
+            [11, 7],
+        ]  # for all tiles that turn left downwards
         for i in grass_road_tile_turning_downleft_positions:
             screen.blit(
                 grass_road_tile_turning_downleft,
@@ -202,11 +227,46 @@ while running:
             )
         grass_road_tile_reverse_positions = [
             [3, 1],
-            [8, 3],
+            [2, 1],
+            [3, 6],
+            [4, 6],
+            [5, 6],
+            [6, 6],
+            [7, 6],
+            [8, 6],
+            [9, 6],
+            [11, 4],
+            [12, 4],
+            [13, 4],
+            [14, 4],
+            [15, 4],
         ]  # for all tiles that have grass on top
         for i in grass_road_tile_reverse_positions:
             screen.blit(
                 grass_road_tile_reverse,
+                (
+                    i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                    i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                ),
+            )
+        grass_road_tile_turning_upright_positions = [
+            [1, 1],
+            [10, 4],
+        ]  # for all tiles that turn to the right going upwards
+        for i in grass_road_tile_turning_upright_positions:
+            screen.blit(
+                grass_road_tile_turning_upright,
+                (
+                    i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                    i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                ),
+            )
+        grass_road_tile_turning_downright_positions = [
+            [1, 7],
+        ]  # for all tiles that turn to the right going upwards
+        for i in grass_road_tile_turning_downright_positions:
+            screen.blit(
+                grass_road_tile_turning_downright,
                 (
                     i[0] * (SCREEN_WIDTH / TILED_WIDTH),
                     i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
