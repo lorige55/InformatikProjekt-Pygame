@@ -87,6 +87,34 @@ grass_road_tile_reverse = pg.transform.scale(
     grass_road_tile_reverse_og,
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
 )
+grass_tile_blank_tower_og = pg.image.load(
+    "./assets/tiles/towerDefense_tile042.png"
+)  # grass tile with possible/ blank tower
+grass_tile_blank_tower = pg.transform.scale(
+    grass_tile_blank_tower_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+grass_tile_mechanic_tower_og = pg.image.load(
+    "./assets/tiles/towerDefense_tile043.png"
+)  # grass tile with mechanic tower
+grass_tile_mechanic_tower = pg.transform.scale(
+    grass_tile_mechanic_tower_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+grass_tile_cross_tower_og = pg.image.load(
+    "./assets/tiles/towerDefense_tile044.png"
+)  # grass tile with cross tower
+grass_tile_cross_tower = pg.transform.scale(
+    grass_tile_cross_tower_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+grass_tile_circle_tower_og = pg.image.load(
+    "./assets/tiles/towerDefense_tile045.png"
+)  # grass tile with possible/ blank tower
+grass_tile_circle_tower = pg.transform.scale(
+    grass_tile_circle_tower_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
 
 # swedish flag
 swedish_flag_og = pg.image.load("./assets/custom/Swedish Flag.png").convert()
