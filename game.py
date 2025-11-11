@@ -110,7 +110,7 @@ grass_tile_cross_tower = pg.transform.scale(
 )
 grass_tile_circle_tower_og = pg.image.load(
     "./assets/tiles/towerDefense_tile045.png"
-)  # grass tile with possible/ blank tower
+)  # grass tile with circle tower
 grass_tile_circle_tower = pg.transform.scale(
     grass_tile_circle_tower_og,
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
@@ -295,10 +295,43 @@ while running:
             )
         grass_road_tile_turning_downright_positions = [
             [1, 7],
-        ]  # for all tiles that turn to the right going upwards
+        ]  # for all tiles that turn to the right going down
         for i in grass_road_tile_turning_downright_positions:
             screen.blit(
                 grass_road_tile_turning_downright,
+                (
+                    i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                    i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                ),
+            )
+        grass_tile_mechanic_tower_positions = [
+            [3, 0],
+        ]  # for all grass tiles with mechanic symbol
+        for i in grass_tile_mechanic_tower_positions:
+            screen.blit(
+                grass_tile_mechanic_tower,
+                (
+                    i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                    i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                ),
+            )
+        grass_tile_circle_tower_positions = [
+            [6, 0],
+        ]  # for all grass tiles with circle symbol
+        for i in grass_tile_circle_tower_positions:
+            screen.blit(
+                grass_tile_circle_tower,
+                (
+                    i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                    i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                ),
+            )
+        grass_tile_cross_tower_positions = [
+            [7, 0],
+        ]  # for all grass tiles with mechanic symbol
+        for i in grass_tile_cross_tower_positions:
+            screen.blit(
+                grass_tile_cross_tower,
                 (
                     i[0] * (SCREEN_WIDTH / TILED_WIDTH),
                     i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
