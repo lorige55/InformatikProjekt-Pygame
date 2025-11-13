@@ -136,6 +136,34 @@ mountain_on_corner = pg.transform.scale(
     mountain_on_corner_og,
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
 )
+stone_tower_blank_og = pg.image.load(
+    "./assets/tiles/towerDefense_tile088.png"
+)  # stone tower blank
+stone_tower_blank = pg.transform.scale(
+    stone_tower_blank_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+stone_tower_mechanic_og = pg.image.load(
+    "./assets/tiles/towerDefense_tile089.png"
+)  # stone tower mechanic
+stone_tower_mechanic = pg.transform.scale(
+    stone_tower_mechanic_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+stone_tower_cross_og = pg.image.load(
+    "./assets/tiles/towerDefense_tile090.png"
+)  # stone tower cross
+stone_tower_cross = pg.transform.scale(
+    stone_tower_cross_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+stone_tower_circle_og = pg.image.load(
+    "./assets/tiles/towerDefense_tile091.png"
+)  # stone tower circle
+stone_tower_circle = pg.transform.scale(
+    stone_tower_circle_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
 
 # swedish flag
 swedish_flag_og = pg.image.load("./assets/custom/Swedish Flag.png").convert()
@@ -386,6 +414,50 @@ while running:
         for i in mountain_on_corner_positions:
             screen.blit(
                 pg.transform.rotate(mountain_on_corner, i[2]),
+                (
+                    i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                    i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                ),
+            )
+        stone_tower_blank_positions = [
+            [15, 7],
+        ]  # for all stone with blank symbol
+        for i in stone_tower_blank_positions:
+            screen.blit(
+                stone_tower_blank,
+                (
+                    i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                    i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                ),
+            )
+        stone_tower_mechanic_positions = [
+            [14, 6],
+        ]  # for all stone with mechanic symbol
+        for i in stone_tower_mechanic_positions:
+            screen.blit(
+                stone_tower_mechanic,
+                (
+                    i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                    i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                ),
+            )
+        stone_tower_cross_positions = [
+            [14, 7],
+        ]  # for all stone with cross symbol
+        for i in stone_tower_cross_positions:
+            screen.blit(
+                stone_tower_cross,
+                (
+                    i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                    i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                ),
+            )
+        stone_tower_circle_positions = [
+            [13, 7],
+        ]  # for all stone with circle symbol
+        for i in stone_tower_circle_positions:
+            screen.blit(
+                stone_tower_circle,
                 (
                     i[0] * (SCREEN_WIDTH / TILED_WIDTH),
                     i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
