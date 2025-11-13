@@ -178,13 +178,6 @@ stone_tower_circle = pg.transform.scale(
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
 )
 
-mountain_on_bottom_og = pg.image.load(
-    "./assets/photoshopped/mountain_on_bottom.png"
-)  # grass tile with mountain on bottom
-mountain_on_bottom = pg.transform.scale(
-    mountain_on_bottom_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
 
 # swedish flag
 swedish_flag_og = pg.image.load("./assets/custom/Swedish Flag.png").convert()
@@ -417,8 +410,8 @@ class Game:
                         ),
                     )
                 mountain_on_corner_positions = [
-                    [12, 6, 0],
-                ]  # for all tiles that mountain on corner
+                    [12, 3, 180],
+                ]  # for all tiles that mountain on bottom and side
                 for i in mountain_on_corner_positions:
                     screen.blit(
                         pg.transform.rotate(mountain_on_corner, i[2]),
