@@ -204,7 +204,6 @@ class Game:
     entities: list["LorisEntity"] = []
 
     def __init__(self) -> None:
-        self.reset()
         running: bool = True
 
         self.entities.append(LorisEntity())
@@ -216,7 +215,7 @@ class Game:
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_SPACE and self.state == "start":
                         self.state = "game"
-                        self.reset()
+                        self.reset(1)
 
             # start screen if:
             if self.state == "start":
@@ -233,6 +232,9 @@ class Game:
                 welcome_subtitle_rect = welcome_subtitle.get_rect(center=(640, 380))
                 screen.blit(welcome_subtitle, welcome_subtitle_rect)
             elif self.state == "game":
+                # rerender background
+                self.reset(2)
+
                 grass_road_tile_positions = [
                     [4, 2],
                     [3, 2],
@@ -432,13 +434,6 @@ class Game:
                         ),
                     )
 
-                # display HP Text
-                hp_text = title_font.render(
-                    f"{self.player_hp} HP", True, (255, 255, 255)
-                )
-                hp_text_rect = hp_text.get_rect(topright=(SCREEN_WIDTH - 10, 10))
-                screen.blit(hp_text, hp_text_rect)
-
                 # entities
                 for entity in self.entities:
                     screen.blit(entity.entity, entity.rect)
@@ -484,6 +479,13 @@ class Game:
                         self.player_hp -= entity.entity_hp
                         self.entities.append(LorisEntity())
 
+                    # display HP Text
+                    hp_text = title_font.render(
+                        f"{self.player_hp} HP", True, (255, 255, 255)
+                    )
+                    hp_text_rect = hp_text.get_rect(topright=(SCREEN_WIDTH - 10, 10))
+                    screen.blit(hp_text, hp_text_rect)
+
             # display swedish flag
             screen.blit(swedish_flag, swedish_flag_rect)
 
@@ -493,8 +495,12 @@ class Game:
 
         pg.quit()
 
-    def reset(self):
-        """Method to reset background and game variables"""
+    def reset(self, option: int):
+        """
+        Method to reset background and game variables
+        Option 1 resets everything (background and variables)
+        Option 2 only resets background
+        """
         # reset background
         for i in range(TILED_WIDTH):
             for j in range(TILED_HEIGHT):
@@ -506,8 +512,9 @@ class Game:
                     ),
                 )
 
-        # reset game variables
-        self.player_hp = 1000
+        if option == 1:
+            # reset game variables
+            self.player_hp = 1000
 
 
 class LorisEntity:
