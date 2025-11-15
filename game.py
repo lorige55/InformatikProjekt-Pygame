@@ -9,6 +9,7 @@ TILED_HEIGHT: int = 9
 TILE_SIZE: int = 80
 SCREEN_WIDTH: int = TILED_WIDTH * TILE_SIZE
 SCREEN_HEIGHT: int = TILED_HEIGHT * TILE_SIZE
+VELOCITY: int = 2
 screen: pg.Surface = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock: pg.time.Clock = pg.time.Clock()
 title_font: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Blocks.ttf", 36)
@@ -149,6 +150,7 @@ mountain_on_corner = pg.transform.scale(
     mountain_on_corner_og,
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
 )
+
 stone_tower_blank_og = pg.image.load(
     "./assets/tiles/towerDefense_tile088.png"
 )  # stone tower blank
@@ -156,6 +158,7 @@ stone_tower_blank = pg.transform.scale(
     stone_tower_blank_og,
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
 )
+
 stone_tower_mechanic_og = pg.image.load(
     "./assets/tiles/towerDefense_tile089.png"
 )  # stone tower mechanic
@@ -163,6 +166,7 @@ stone_tower_mechanic = pg.transform.scale(
     stone_tower_mechanic_og,
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
 )
+
 stone_tower_cross_og = pg.image.load(
     "./assets/tiles/towerDefense_tile090.png"
 )  # stone tower cross
@@ -170,6 +174,7 @@ stone_tower_cross = pg.transform.scale(
     stone_tower_cross_og,
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
 )
+
 stone_tower_circle_og = pg.image.load(
     "./assets/tiles/towerDefense_tile091.png"
 )  # stone tower circle
@@ -187,17 +192,23 @@ swedish_flag_rect.bottomright = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
 # load entities
 loris_entity_og = pg.image.load("./assets/custom/loris_entity.png").convert_alpha()
-loris_entity = pg.transform.scale(loris_entity_og, (TILE_SIZE, TILE_SIZE))
-loris_entity_rect = loris_entity.get_rect()
-loris_entity_rect.move(15, 5)
 
 
 class Game:
     """Stores Variables and methods needed to control the game."""
 
+    state: str = "start"
+
+    player_hp: float = 1000
+
+    entities: list["LorisEntity"] = []
+
     def __init__(self) -> None:
         self.reset()
         running: bool = True
+
+        self.entities.append(LorisEntity(SCREEN_WIDTH, round(4.5 * TILE_SIZE), 90))
+
         while running:
             for event in pg.event.get():
                 if event.type == pg.constants.QUIT:
@@ -429,7 +440,45 @@ class Game:
                 screen.blit(hp_text, hp_text_rect)
 
                 # entities
-                screen.blit(loris_entity, loris_entity_rect)
+                for entity in self.entities:
+                    screen.blit(entity.entity, entity.rect)
+
+                for entity in self.entities:
+                    if (
+                        entity.rect.x > TILE_SIZE * 10.5
+                        and entity.rect.y == TILE_SIZE * 4.5
+                    ):
+                        entity.rect.x -= VELOCITY
+                    elif (
+                        entity.rect.y < TILE_SIZE * 6.5
+                        and entity.rect.x == TILE_SIZE * 10.5
+                    ):
+                        entity.rect.y += VELOCITY
+                    elif (
+                        entity.rect.x > TILE_SIZE * 1.5
+                        and entity.rect.y == TILE_SIZE * 6.5
+                    ):
+                        entity.rect.x -= VELOCITY
+                    elif (
+                        entity.rect.y > TILE_SIZE * 1.5
+                        and entity.rect.x == TILE_SIZE * 1.5
+                    ):
+                        entity.rect.y -= VELOCITY
+                    elif (
+                        entity.rect.x < TILE_SIZE * 4.5
+                        and entity.rect.y == TILE_SIZE * 1.5
+                    ):
+                        entity.rect.x += VELOCITY
+                    elif (
+                        entity.rect.y > -TILE_SIZE and entity.rect.x == TILE_SIZE * 4.5
+                    ):
+                        entity.rect.y -= VELOCITY
+                    else:
+                        self.entities.remove(entity)
+                        self.player_hp -= entity.entity_hp
+                        self.entities.append(
+                            LorisEntity(SCREEN_WIDTH, round(4.5 * TILE_SIZE), 90)
+                        )
 
             # display swedish flag
             screen.blit(swedish_flag, swedish_flag_rect)
@@ -440,11 +489,8 @@ class Game:
 
         pg.quit()
 
-    state: str = "start"
-
-    player_hp = 1000
-
     def reset(self):
+        """Method to reset background and game variables"""
         # reset background
         for i in range(TILED_WIDTH):
             for j in range(TILED_HEIGHT):
@@ -458,6 +504,20 @@ class Game:
 
         # reset game variables
         self.player_hp = 1000
+
+
+class LorisEntity:
+    """Creates loris entity and stores its variables."""
+
+    def __init__(self, x: int, y: int, a: int):
+        self.entity = pg.transform.rotate(
+            pg.transform.scale(loris_entity_og, (TILE_SIZE, TILE_SIZE)), a
+        )
+        self.rect = self.entity.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    entity_hp = 100
 
 
 game = Game()
