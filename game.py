@@ -207,7 +207,7 @@ class Game:
         self.reset()
         running: bool = True
 
-        self.entities.append(LorisEntity(SCREEN_WIDTH, round(4.5 * TILE_SIZE), 90))
+        self.entities.append(LorisEntity())
 
         while running:
             for event in pg.event.get():
@@ -449,36 +449,40 @@ class Game:
                         and entity.rect.y == TILE_SIZE * 4.5
                     ):
                         entity.rect.x -= VELOCITY
+                        entity.rotate(90)
                     elif (
                         entity.rect.y < TILE_SIZE * 6.5
                         and entity.rect.x == TILE_SIZE * 10.5
                     ):
                         entity.rect.y += VELOCITY
+                        entity.rotate(180)
                     elif (
                         entity.rect.x > TILE_SIZE * 1.5
                         and entity.rect.y == TILE_SIZE * 6.5
                     ):
                         entity.rect.x -= VELOCITY
+                        entity.rotate(90)
                     elif (
                         entity.rect.y > TILE_SIZE * 1.5
                         and entity.rect.x == TILE_SIZE * 1.5
                     ):
                         entity.rect.y -= VELOCITY
+                        entity.rotate(0)
                     elif (
                         entity.rect.x < TILE_SIZE * 4.5
                         and entity.rect.y == TILE_SIZE * 1.5
                     ):
                         entity.rect.x += VELOCITY
+                        entity.rotate(-90)
                     elif (
                         entity.rect.y > -TILE_SIZE and entity.rect.x == TILE_SIZE * 4.5
                     ):
                         entity.rect.y -= VELOCITY
+                        entity.rotate(0)
                     else:
                         self.entities.remove(entity)
                         self.player_hp -= entity.entity_hp
-                        self.entities.append(
-                            LorisEntity(SCREEN_WIDTH, round(4.5 * TILE_SIZE), 90)
-                        )
+                        self.entities.append(LorisEntity())
 
             # display swedish flag
             screen.blit(swedish_flag, swedish_flag_rect)
@@ -509,13 +513,18 @@ class Game:
 class LorisEntity:
     """Creates loris entity and stores its variables."""
 
-    def __init__(self, x: int, y: int, a: int):
+    def __init__(self):
         self.entity = pg.transform.rotate(
-            pg.transform.scale(loris_entity_og, (TILE_SIZE, TILE_SIZE)), a
+            pg.transform.scale(loris_entity_og, (TILE_SIZE, TILE_SIZE)), 90
         )
         self.rect = self.entity.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.x = SCREEN_WIDTH
+        self.rect.y = round(4.5 * TILE_SIZE)
+
+    def rotate(self, angle: int):
+        self.entity = pg.transform.rotate(
+            pg.transform.scale(loris_entity_og, (TILE_SIZE, TILE_SIZE)), angle
+        )
 
     entity_hp = 100
 
