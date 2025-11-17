@@ -219,6 +219,7 @@ class Game:
 
             # start screen if:
             if self.state == "start":
+                self.reset(2)
                 # title:
                 welcome_title = title_font.render(
                     "Welcome to Tower Defense!", True, (187, 127, 68)
