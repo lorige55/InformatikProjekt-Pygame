@@ -192,6 +192,13 @@ swedish_flag_rect.bottomright = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
 # load entities
 loris_entity_og = pg.image.load("./assets/custom/loris_entity.png").convert_alpha()
+gabriel_entity_og = pg.image.load("./assets/custom/gabriel_entity.png").convert_alpha()
+gabriel_entity2_og = pg.image.load(
+    "./assets/custom/gabriel_entity2.png"
+).convert_alpha()
+phillippe_entity_og = pg.image.load(
+    "./assets/custom/phillippe_entity.png"
+).convert_alpha()
 
 
 class Game:
