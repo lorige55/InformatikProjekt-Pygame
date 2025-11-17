@@ -201,12 +201,12 @@ class Game:
 
     player_hp: float = 1000
 
-    entities: list["LorisEntity"] = []
+    entities: list["Entity"] = []
 
     def __init__(self) -> None:
         running: bool = True
 
-        self.entities.append(LorisEntity())
+        self.entities.append(Entity(loris_entity_og))
 
         while running:
             for event in pg.event.get():
@@ -478,7 +478,7 @@ class Game:
                     else:
                         self.entities.remove(entity)
                         self.player_hp -= entity.entity_hp
-                        self.entities.append(LorisEntity())
+                        self.entities.append(Entity(loris_entity_og))
 
                     # display HP Text
                     hp_text = title_font.render(
@@ -518,20 +518,24 @@ class Game:
             self.player_hp = 1000
 
 
-class LorisEntity:
+class Entity:
     """Creates loris entity and stores its variables."""
 
-    def __init__(self):
+    og_image: pg.Surface
+
+    def __init__(self, image: pg.Surface):
+        self.og_image = image
         self.entity = pg.transform.rotate(
-            pg.transform.scale(loris_entity_og, (TILE_SIZE, TILE_SIZE)), 90
+            pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE)), 90
         )
         self.rect = self.entity.get_rect()
         self.rect.x = SCREEN_WIDTH
         self.rect.y = round(4.5 * TILE_SIZE)
 
     def rotate(self, angle: int):
+        """Rotates the Entity according to angle parameter"""
         self.entity = pg.transform.rotate(
-            pg.transform.scale(loris_entity_og, (TILE_SIZE, TILE_SIZE)), angle
+            pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE)), angle
         )
 
     entity_hp = 100
