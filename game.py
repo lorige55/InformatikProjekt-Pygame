@@ -427,7 +427,7 @@ class Game:
                         ),
                     )
                 mountain_on_bottom_and_side_positions = [
-                    [12, 7, 180],
+                    [12, 7, 0],
                 ]  # for all tiles that mountain on bottom and side
                 for i in mountain_on_bottom_and_side_positions:
                     screen.blit(
@@ -438,7 +438,7 @@ class Game:
                         ),
                     )
                 mountain_on_corner_positions = [
-                    [12, 3, 180],
+                    [12, 3, 0],
                 ]  # for all tiles that mountain on bottom and side
                 for i in mountain_on_corner_positions:
                     screen.blit(
