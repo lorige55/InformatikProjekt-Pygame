@@ -200,6 +200,13 @@ phillippe_entity_og = pg.image.load(
     "./assets/custom/phillippe_entity.png"
 ).convert_alpha()
 
+# load weapons
+soldier1_og = pg.image.load("./assets/tiles/towerDefense_tile245.png").convert_alpha()
+soldier2_og = pg.image.load("./assets/tiles/towerDefense_tile246.png").convert_alpha()
+missile_launcher_og = pg.image.load(
+    "./assets/tiles/towerDefense_tile204.png"
+).convert_alpha()
+
 
 class Game:
     """Stores Variables and methods needed to control the game."""
