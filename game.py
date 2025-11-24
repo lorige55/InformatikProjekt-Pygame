@@ -182,6 +182,27 @@ stone_tower_circle = pg.transform.scale(
     stone_tower_circle_og,
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
 )
+mountain_on_bottom_and_side_22_og = pg.image.load(
+    "./assets/photoshopped/mountain_on_bottom_and_side_22.png"
+)  # grass tile with mountain on bottom and side
+mountain_on_bottom_and_side_22 = pg.transform.scale(
+    mountain_on_bottom_and_side_22_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+mountain_on_bottom_and_side_3_og = pg.image.load(
+    "./assets/photoshopped/mountain_on_bottom_and_side_3.png"
+)  # grass tile with mountain on bottom and side
+mountain_on_bottom_and_side_3 = pg.transform.scale(
+    mountain_on_bottom_and_side_3_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+mountain_on_side_22_og = pg.image.load(
+    "./assets/photoshopped/mountain_on_side_21.png"
+)  # grass tile with mountain on side
+mountain_on_side_22 = pg.transform.scale(
+    mountain_on_side_22_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
 
 
 # swedish flag
@@ -443,6 +464,39 @@ class Game:
                 for i in mountain_on_corner_positions:
                     screen.blit(
                         pg.transform.rotate(mountain_on_corner, i[2]),
+                        (
+                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                        ),
+                    )
+                mountain_on_bottom_and_side_22_positions = [
+                    [14, 6, 0],
+                ]  # for all tiles that mountain on bottom and side
+                for i in mountain_on_bottom_and_side_22_positions:
+                    screen.blit(
+                        pg.transform.rotate(mountain_on_bottom_and_side_22, i[2]),
+                        (
+                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                        ),
+                    )
+                mountain_on_bottom_and_side_3_positions = [
+                    [14, 2, 0],
+                ]  # for all tiles that mountain on bottom and side
+                for i in mountain_on_bottom_and_side_3_positions:
+                    screen.blit(
+                        pg.transform.rotate(mountain_on_bottom_and_side_3, i[2]),
+                        (
+                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                        ),
+                    )
+                mountain_on_side_22_positions = [
+                    [14, 1, 0],
+                ]  # for all tiles that mountain on side
+                for i in mountain_on_side_22_positions:
+                    screen.blit(
+                        pg.transform.rotate(mountain_on_side_22, i[2]),
                         (
                             i[0] * (SCREEN_WIDTH / TILED_WIDTH),
                             i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
