@@ -4,6 +4,7 @@ import pygame as pg
 
 pg.init()
 pg.font.init()
+pg.mixer.init()
 TILED_WIDTH: int = 16
 TILED_HEIGHT: int = 9
 TILE_SIZE: int = 80
@@ -243,6 +244,12 @@ class Game:
 
         self.entities.append(Entity(loris_entity_og))
 
+        pg.mixer.music.load("intro.mp3")
+        pg.mixer.music.play(loops=0)
+        pg.mixer.music.stop()
+        pg.mixer.music.load("afterintro.mp3")
+        pg.mixer.music.play(loops=-1)
+
         while running:
             for event in pg.event.get():
                 if event.type == pg.constants.QUIT:
@@ -267,6 +274,7 @@ class Game:
                 )
                 welcome_subtitle_rect = welcome_subtitle.get_rect(center=(640, 380))
                 screen.blit(welcome_subtitle, welcome_subtitle_rect)
+
             elif self.state == "game":
                 # rerender background
                 self.reset(2)
