@@ -204,6 +204,17 @@ mountain_on_side_22 = pg.transform.scale(
     mountain_on_side_22_og,
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
 )
+mountain_road_bottom_og = pg.image.load("./assets/tiles/towerDefense_tile011.png")
+mountain_road_bottom = pg.transform.scale(
+    mountain_road_bottom_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+
+mountain_og = pg.image.load("./assets/tiles/towerDefense_tile034.png")
+mountain = pg.transform.scale(
+    mountain_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
 
 
 # swedish flag
@@ -223,11 +234,26 @@ phillippe_entity_og = pg.image.load(
 ).convert_alpha()
 
 # load weapons
-soldier1_og = pg.image.load("./assets/tiles/towerDefense_tile245.png").convert_alpha()
-soldier2_og = pg.image.load("./assets/tiles/towerDefense_tile246.png").convert_alpha()
-missile_launcher_og = pg.image.load(
-    "./assets/tiles/towerDefense_tile204.png"
-).convert_alpha()
+soldier1_og = pg.image.load("./assets/tiles/towerDefense_tile245.png")
+soldier1 = pg.transform.scale(
+    soldier1_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+soldier2_og = pg.image.load("./assets/tiles/towerDefense_tile246.png")
+soldier2 = pg.transform.scale(
+    soldier2_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+missile_launcher_og = pg.image.load("./assets/tiles/towerDefense_tile204.png")
+missile_launcher = pg.transform.scale(
+    missile_launcher_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+turret_og = pg.image.load("./assets/tiles/towerDefense_tile250.png")
+turret = pg.transform.scale(
+    turret_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
 
 
 class Game:
@@ -457,7 +483,9 @@ class Game:
                     )
                 mountain_on_bottom_and_side_positions = [
                     [12, 7, 0],
-                ]  # for all tiles that mountain on bottom and side
+                    [5, 8, 270],
+                    [10, 8, 0],
+                ]
                 for i in mountain_on_bottom_and_side_positions:
                     screen.blit(
                         pg.transform.rotate(mountain_on_bottom_and_side, i[2]),
@@ -562,6 +590,44 @@ class Game:
                     )
                     hp_text_rect = hp_text.get_rect(topright=(SCREEN_WIDTH - 10, 10))
                     screen.blit(hp_text, hp_text_rect)
+
+                # weapons bar
+                mountain_road_bottom_positions = [
+                    [5, 7],
+                    [6, 7],
+                    [7, 7],
+                    [8, 7],
+                    [9, 7],
+                    [10, 7],
+                ]
+                for i in mountain_road_bottom_positions:
+                    screen.blit(
+                        mountain_road_bottom,
+                        (
+                            i[0] * TILE_SIZE,
+                            i[1] * TILE_SIZE,
+                        ),
+                    )
+
+                mountain_positions = [
+                    [6, 8],
+                    [6, 8],
+                    [7, 8],
+                    [8, 8],
+                    [9, 8],
+                ]
+                for i in mountain_positions:
+                    screen.blit(
+                        mountain,
+                        (
+                            i[0] * TILE_SIZE,
+                            i[1] * TILE_SIZE,
+                        ),
+                    )
+                screen.blit(soldier1, (6 * TILE_SIZE, 8 * TILE_SIZE))
+                screen.blit(soldier2, (7 * TILE_SIZE, 8 * TILE_SIZE))
+                screen.blit(missile_launcher, (8 * TILE_SIZE, 8 * TILE_SIZE))
+                screen.blit(turret, (9 * TILE_SIZE, 8 * TILE_SIZE))
 
             # display swedish flag
             screen.blit(swedish_flag, swedish_flag_rect)
