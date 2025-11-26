@@ -539,6 +539,44 @@ class Game:
                         ),
                     )
 
+                # weapons bar
+                mountain_road_bottom_positions = [
+                    [5, 7],
+                    [6, 7],
+                    [7, 7],
+                    [8, 7],
+                    [9, 7],
+                    [10, 7],
+                ]
+                for i in mountain_road_bottom_positions:
+                    screen.blit(
+                        mountain_road_bottom,
+                        (
+                            i[0] * TILE_SIZE,
+                            i[1] * TILE_SIZE,
+                        ),
+                    )
+
+                mountain_positions = [
+                    [6, 8],
+                    [6, 8],
+                    [7, 8],
+                    [8, 8],
+                    [9, 8],
+                ]
+                for i in mountain_positions:
+                    screen.blit(
+                        mountain,
+                        (
+                            i[0] * TILE_SIZE,
+                            i[1] * TILE_SIZE,
+                        ),
+                    )
+                screen.blit(soldier1, (6 * TILE_SIZE, 8 * TILE_SIZE))
+                screen.blit(soldier2, (7 * TILE_SIZE, 8 * TILE_SIZE))
+                screen.blit(missile_launcher, (8 * TILE_SIZE, 8 * TILE_SIZE))
+                screen.blit(turret, (9 * TILE_SIZE, 8 * TILE_SIZE))
+
                 # entities
                 for entity in self.entities:
                     screen.blit(entity.entity, entity.rect)
@@ -590,44 +628,6 @@ class Game:
                     )
                     hp_text_rect = hp_text.get_rect(topright=(SCREEN_WIDTH - 10, 10))
                     screen.blit(hp_text, hp_text_rect)
-
-                # weapons bar
-                mountain_road_bottom_positions = [
-                    [5, 7],
-                    [6, 7],
-                    [7, 7],
-                    [8, 7],
-                    [9, 7],
-                    [10, 7],
-                ]
-                for i in mountain_road_bottom_positions:
-                    screen.blit(
-                        mountain_road_bottom,
-                        (
-                            i[0] * TILE_SIZE,
-                            i[1] * TILE_SIZE,
-                        ),
-                    )
-
-                mountain_positions = [
-                    [6, 8],
-                    [6, 8],
-                    [7, 8],
-                    [8, 8],
-                    [9, 8],
-                ]
-                for i in mountain_positions:
-                    screen.blit(
-                        mountain,
-                        (
-                            i[0] * TILE_SIZE,
-                            i[1] * TILE_SIZE,
-                        ),
-                    )
-                screen.blit(soldier1, (6 * TILE_SIZE, 8 * TILE_SIZE))
-                screen.blit(soldier2, (7 * TILE_SIZE, 8 * TILE_SIZE))
-                screen.blit(missile_launcher, (8 * TILE_SIZE, 8 * TILE_SIZE))
-                screen.blit(turret, (9 * TILE_SIZE, 8 * TILE_SIZE))
 
             # display swedish flag
             screen.blit(swedish_flag, swedish_flag_rect)
