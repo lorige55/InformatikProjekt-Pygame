@@ -1,5 +1,6 @@
 """The main file of our game"""
 
+from __future__ import annotations
 import pygame as pg
 
 pg.init()
@@ -263,7 +264,7 @@ class Game:
 
     player_hp: float = 1000
 
-    entities: list["Entity"] = []
+    entities: list[Entity] = []
 
     def __init__(self) -> None:
         running: bool = True
@@ -661,7 +662,7 @@ class Game:
 
 
 class Entity:
-    """Creates loris entity and stores its variables."""
+    """Creates entity and stores its variables."""
 
     og_image: pg.Surface
 
