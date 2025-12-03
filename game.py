@@ -273,9 +273,7 @@ class Game:
 
         pg.mixer.music.load("intro.mp3")
         pg.mixer.music.play(loops=0)
-        pg.mixer.music.stop()
-        pg.mixer.music.load("afterintro.mp3")
-        pg.mixer.music.play(loops=-1)
+        pg.mixer.music.queue("afterintro.mp3")
 
         while running:
             for event in pg.event.get():
@@ -285,6 +283,9 @@ class Game:
                     if event.key == pg.K_SPACE and self.state == "start":
                         self.state = "game"
                         self.reset(1)
+                        pg.mixer.music.stop()
+                        pg.mixer.music.load("game_music.mp3")
+                        pg.mixer.music.play(loops=-1)
 
             # start screen if:
             if self.state == "start":
