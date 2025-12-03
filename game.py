@@ -271,9 +271,9 @@ class Game:
 
         self.entities.append(Entity(loris_entity_og))
 
-        pg.mixer.music.load("intro.mp3")
+        pg.mixer.music.load("./assets/sound/intro.mp3")
         pg.mixer.music.play(loops=0)
-        pg.mixer.music.queue("afterintro.mp3")
+        pg.mixer.music.queue("./assets/sound/afterintro.mp3")
 
         while running:
             for event in pg.event.get():
@@ -284,7 +284,7 @@ class Game:
                         self.state = "game"
                         self.reset(1)
                         pg.mixer.music.stop()
-                        pg.mixer.music.load("game_music.mp3")
+                        pg.mixer.music.load("./assets/sound/coconut_mall.mp3")
                         pg.mixer.music.play(loops=-1)
 
             # start screen if:
