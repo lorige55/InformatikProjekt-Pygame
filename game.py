@@ -11,7 +11,7 @@ TILED_HEIGHT: int = 9
 TILE_SIZE: int = 80
 SCREEN_WIDTH: int = TILED_WIDTH * TILE_SIZE
 SCREEN_HEIGHT: int = TILED_HEIGHT * TILE_SIZE
-VELOCITY: int = 2
+VELOCITY: int = 20
 SCREEN: pg.Surface = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock: pg.time.Clock = pg.time.Clock()
 title_font: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Blocks.ttf", 36)
@@ -153,6 +153,14 @@ class Game:
                 SCREEN.blit(welcome_subtitle, welcome_subtitle_rect)
 
             elif self.state == "game":
+                # Check hp
+                if self.player_hp <= 0:
+                    self.state = "game_over"
+                    # play sound
+                    pg.mixer.music.stop()
+                    pg.mixer.music.load("./assets/sound/mimimi.mp3")
+                    pg.mixer.music.play()
+
                 # rerender background
                 self.reset(2)
 
@@ -414,6 +422,8 @@ class Game:
                     )
                     hp_text_rect = hp_text.get_rect(topright=(SCREEN_WIDTH - 10, 10))
                     SCREEN.blit(hp_text, hp_text_rect)
+            elif self.state == "game_over":
+                pass
 
             # display swedish flag
             SCREEN.blit(swedish_flag, swedish_flag_rect)
