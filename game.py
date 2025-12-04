@@ -12,210 +12,59 @@ TILE_SIZE: int = 80
 SCREEN_WIDTH: int = TILED_WIDTH * TILE_SIZE
 SCREEN_HEIGHT: int = TILED_HEIGHT * TILE_SIZE
 VELOCITY: int = 2
-screen: pg.Surface = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+SCREEN: pg.Surface = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock: pg.time.Clock = pg.time.Clock()
 title_font: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Blocks.ttf", 36)
 subtitle_font: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Future.ttf", 18)
 
+TILES: dict = {
+    "grass": {
+        "path": "./assets/tiles/towerDefense_tile231.png",
+    },
+    "grass_road_up": {
+        "path": "./assets/tiles/towerDefense_tile047.png",
+    },
+    "grass_road_down": {"path": "./assets/tiles/towerDefense_tile001.png"},
+    "grass_road_left": {"path": "./assets/tiles/towerDefense_tile025.png"},
+    "grass_road_right": {"path": "./assets/tiles/towerDefense_tile023.png"},
+    "grass_road_turning_upleft": {"path": "./assets/tiles/towerDefense_tile004.png"},
+    "grass_road_turning_upright": {"path": "./assets/tiles/towerDefense_tile003.png"},
+    "grass_road_turning_downleft": {"path": "./assets/tiles/towerDefense_tile027.png"},
+    "grass_road_turning_downright": {"path": "./assets/tiles/towerDefense_tile026.png"},
+    "grass_road_bigturning_downleft": {
+        "path": "./assets/tiles/towerDefense_tile048.png"
+    },
+    "grass_freePositon": {"path": "./assets/tiles/towerDefense_tile042.png"},
+    "grass_mechanic": {"path": "./assets/tiles/towerDefense_tile043.png"},
+    "grass_cross": {"path": "./assets/tiles/towerDefense_tile044.png"},
+    "grass_circle": {"path": "./assets/tiles/towerDefense_tile045.png"},
+    "mountain": {"path": "./assets/tiles/towerDefense_tile034.png"},
+    "mountain_bottom": {"path": "./assets/photoshopped/mountain_bottom.png"},
+    "mountain_corner_upleft": {
+        "path": "./assets/photoshopped/mountain_corner_upleft.png"
+    },
+    "mountain_corner_downleft": {
+        "path": "./assets/photoshopped/mountain_corner_downleft.png"
+    },
+    "mountain_corner_downright": {
+        "path": "./assets/photoshopped/mountain_corner_downright.png"
+    },
+    "mountain_bigturning_downright": {
+        "path": "./assets/photoshopped/mountain_bigturning_downright.png"
+    },
+    "mountain_freePosition": {"path": "./assets/tiles/towerDefense_tile088.png"},
+    "mountain_mechanic": {"path": "./assets/tiles/towerDefense_tile089.png"},
+    "mountain_cross": {"path": "./assets/tiles/towerDefense_tile090.png"},
+    "mountain_circle": {"path": "./assets/tiles/towerDefense_tile091.png"},
+    "mountain_road_down": {"path": "./assets/tiles/towerDefense_tile011.png"},
+}
 
-# load and scale grass (road) tiles
-grass_tile_og = pg.image.load(
-    "./assets/tiles/towerDefense_tile231.png"
-).convert()  # load the image
-grass_tile = pg.transform.scale(
-    grass_tile_og, (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT)
-)  # scale the image
-
-grass_road_tile_og = pg.image.load(
-    "./assets/tiles/towerDefense_tile001.png"
-)  # road tile with grass on bottom side
-grass_road_tile = pg.transform.scale(
-    grass_road_tile_og, (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT)
-)
-
-grass_road_tile_turning_upleft_og = pg.image.load(  # tile going turning left going up
-    "./assets/tiles/towerDefense_tile004.png"
-)
-grass_road_tile_turning_upleft = pg.transform.scale(
-    grass_road_tile_turning_upleft_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-
-grass_road_tile_turning_upright_og = pg.image.load(  # tile going turning right going up
-    "./assets/tiles/towerDefense_tile003.png"
-)
-grass_road_tile_turning_upright = pg.transform.scale(
-    grass_road_tile_turning_upright_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-
-grass_road_tile_turning_downleft_og = pg.image.load(
-    "./assets/tiles/towerDefense_tile027.png"
-)  # road tile turning left going down
-grass_road_tile_turning_downleft = pg.transform.scale(
-    grass_road_tile_turning_downleft_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-
-grass_road_tile_turning_downright_og = pg.image.load(
-    "./assets/tiles/towerDefense_tile026.png"
-)  # road tile turning right going down
-grass_road_tile_turning_downright = pg.transform.scale(
-    grass_road_tile_turning_downright_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-
-grass_road_tile_down_left_og = pg.image.load(
-    "./assets/tiles/towerDefense_tile025.png"
-)  # road tile with grass on left side
-grass_road_tile_down_left = pg.transform.scale(
-    grass_road_tile_down_left_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-
-grass_road_tile_down_right_og = pg.image.load(
-    "./assets/tiles/towerDefense_tile023.png"
-)  # road tile with grass on right side
-grass_road_tile_down_right = pg.transform.scale(
-    grass_road_tile_down_right_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-
-grass_road_tile_bigturn_downleft_og = pg.image.load(
-    "./assets/tiles/towerDefense_tile048.png"
-)  # road tile with big bombaclat turn
-grass_road_tile_bigturn_downleft = pg.transform.scale(
-    grass_road_tile_bigturn_downleft_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-
-grass_road_tile_reverse_og = pg.image.load(
-    "./assets/tiles/towerDefense_tile047.png"
-)  # road tile with grass on top side
-grass_road_tile_reverse = pg.transform.scale(
-    grass_road_tile_reverse_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-
-grass_tile_blank_tower_og = pg.image.load(
-    "./assets/tiles/towerDefense_tile042.png"
-)  # grass tile with possible/ blank tower
-grass_tile_blank_tower = pg.transform.scale(
-    grass_tile_blank_tower_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-
-grass_tile_mechanic_tower_og = pg.image.load(
-    "./assets/tiles/towerDefense_tile043.png"
-)  # grass tile with mechanic tower
-grass_tile_mechanic_tower = pg.transform.scale(
-    grass_tile_mechanic_tower_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-
-grass_tile_cross_tower_og = pg.image.load(
-    "./assets/tiles/towerDefense_tile044.png"
-)  # grass tile with cross tower
-grass_tile_cross_tower = pg.transform.scale(
-    grass_tile_cross_tower_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-
-grass_tile_circle_tower_og = pg.image.load(
-    "./assets/tiles/towerDefense_tile045.png"
-)  # grass tile with circle tower
-grass_tile_circle_tower = pg.transform.scale(
-    grass_tile_circle_tower_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-
-mountain_on_bottom_og = pg.image.load(
-    "./assets/photoshopped/mountain_on_bottom.png"
-)  # grass tile with mountain on bottom
-mountain_on_bottom = pg.transform.scale(
-    mountain_on_bottom_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-
-mountain_on_bottom_and_side_og = pg.image.load(
-    "./assets/photoshopped/mountain_on_bottom_and_side.png"
-)  # grass tile with mountain on bottom and side
-mountain_on_bottom_and_side = pg.transform.scale(
-    mountain_on_bottom_and_side_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-
-mountain_on_corner_og = pg.image.load(
-    "./assets/photoshopped/mountain_on_corner.png"
-)  # grass tile with mountain on corner
-mountain_on_corner = pg.transform.scale(
-    mountain_on_corner_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-
-stone_tower_blank_og = pg.image.load(
-    "./assets/tiles/towerDefense_tile088.png"
-)  # stone tower blank
-stone_tower_blank = pg.transform.scale(
-    stone_tower_blank_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-
-stone_tower_mechanic_og = pg.image.load(
-    "./assets/tiles/towerDefense_tile089.png"
-)  # stone tower mechanic
-stone_tower_mechanic = pg.transform.scale(
-    stone_tower_mechanic_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-
-stone_tower_cross_og = pg.image.load(
-    "./assets/tiles/towerDefense_tile090.png"
-)  # stone tower cross
-stone_tower_cross = pg.transform.scale(
-    stone_tower_cross_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-
-stone_tower_circle_og = pg.image.load(
-    "./assets/tiles/towerDefense_tile091.png"
-)  # stone tower circle
-stone_tower_circle = pg.transform.scale(
-    stone_tower_circle_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-mountain_on_bottom_and_side_22_og = pg.image.load(
-    "./assets/photoshopped/mountain_on_bottom_and_side_22.png"
-)  # grass tile with mountain on bottom and side
-mountain_on_bottom_and_side_22 = pg.transform.scale(
-    mountain_on_bottom_and_side_22_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-mountain_on_bottom_and_side_3_og = pg.image.load(
-    "./assets/photoshopped/mountain_on_bottom_and_side_3.png"
-)  # grass tile with mountain on bottom and side
-mountain_on_bottom_and_side_3 = pg.transform.scale(
-    mountain_on_bottom_and_side_3_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-mountain_on_side_22_og = pg.image.load(
-    "./assets/photoshopped/mountain_on_side_21.png"
-)  # grass tile with mountain on side
-mountain_on_side_22 = pg.transform.scale(
-    mountain_on_side_22_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-mountain_road_bottom_og = pg.image.load("./assets/tiles/towerDefense_tile011.png")
-mountain_road_bottom = pg.transform.scale(
-    mountain_road_bottom_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-
-mountain_og = pg.image.load("./assets/tiles/towerDefense_tile034.png")
-mountain = pg.transform.scale(
-    mountain_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
+for key in TILES:
+    tile_og = pg.image.load(TILES[key]["path"])
+    TILES[key]["object"] = pg.transform.scale(
+        tile_og,
+        (SCREEN_WIDTH // TILED_WIDTH, SCREEN_HEIGHT // TILED_HEIGHT),
+    )
 
 
 # swedish flag
@@ -287,7 +136,7 @@ class Game:
                         pg.mixer.music.load("./assets/sound/coconut_mall.mp3")
                         pg.mixer.music.play(loops=-1)
 
-            # start screen if:
+            # start SCREEN if:
             if self.state == "start":
                 self.reset(2)
                 # title:
@@ -295,293 +144,228 @@ class Game:
                     "Welcome to Tower Defense!", True, (187, 127, 68)
                 )
                 welcome_title_rect = welcome_title.get_rect(center=(640, 340))
-                screen.blit(welcome_title, welcome_title_rect)
+                SCREEN.blit(welcome_title, welcome_title_rect)
                 # subtitle:
                 welcome_subtitle = subtitle_font.render(
                     "Press Space to start Game.", True, (187, 127, 68)
                 )
                 welcome_subtitle_rect = welcome_subtitle.get_rect(center=(640, 380))
-                screen.blit(welcome_subtitle, welcome_subtitle_rect)
+                SCREEN.blit(welcome_subtitle, welcome_subtitle_rect)
 
             elif self.state == "game":
                 # rerender background
                 self.reset(2)
 
-                grass_road_tile_positions = [
-                    [4, 2],
-                    [3, 2],
-                    [2, 7],
-                    [3, 7],
-                    [4, 7],
-                    [5, 7],
-                    [6, 7],
-                    [7, 7],
-                    [8, 7],
-                    [9, 7],
-                    [10, 7],
-                    [12, 5],
-                    [13, 5],
-                    [14, 5],
-                    [15, 5],
-                ]  # for all tiles that have a grass road where the grass part is on the bottom side
-                for i in grass_road_tile_positions:
-                    screen.blit(
-                        grass_road_tile,
-                        (
-                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
-                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
-                        ),
-                    )
-                grass_road_tile_down_left_positions = [
-                    [4, 0],
-                    [1, 2],
-                    [1, 3],
-                    [1, 4],
-                    [1, 5],
-                    [1, 6],
-                    [10, 5],
-                ]  # for all tiles that have a grass road where the grass part is on the left side
-                for i in grass_road_tile_down_left_positions:
-                    screen.blit(
-                        grass_road_tile_down_left,
-                        (
-                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
-                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
-                        ),
-                    )
-                grass_road_tile_down_right_positions = [
-                    [5, 0],
-                    [5, 1],
-                    [2, 3],
-                    [2, 4],
-                    [2, 5],
-                    [11, 6],
-                ]  # for all tiles that have a grass road where the grass part is on the right side
-                for i in grass_road_tile_down_right_positions:
-                    screen.blit(
-                        grass_road_tile_down_right,
-                        (
-                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
-                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
-                        ),
-                    )
-                grass_road_tile_bigturn_downleft_positions = [
-                    [4, 1, 0],
-                    [2, 2, 180],
-                    [2, 6, 270],
-                    [10, 6, 0],
-                    [11, 5, 180],
-                ]  # for all tiles that have a big bombaclat turn
-                for i in grass_road_tile_bigturn_downleft_positions:
-                    screen.blit(
-                        pg.transform.rotate(grass_road_tile_bigturn_downleft, i[2]),
-                        (
-                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
-                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
-                        ),
-                    )
-                grass_road_tile_turning_downleft_positions = [
-                    [5, 2],
-                    [11, 7],
-                ]  # for all tiles that turn left downwards
-                for i in grass_road_tile_turning_downleft_positions:
-                    screen.blit(
-                        grass_road_tile_turning_downleft,
-                        (
-                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
-                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
-                        ),
-                    )
-                grass_road_tile_reverse_positions = [
-                    [3, 1],
-                    [2, 1],
-                    [3, 6],
-                    [4, 6],
-                    [5, 6],
-                    [6, 6],
-                    [7, 6],
-                    [8, 6],
-                    [9, 6],
-                    [11, 4],
-                    [12, 4],
-                    [13, 4],
-                    [14, 4],
-                    [15, 4],
-                ]  # for all tiles that have grass on top
-                for i in grass_road_tile_reverse_positions:
-                    screen.blit(
-                        grass_road_tile_reverse,
-                        (
-                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
-                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
-                        ),
-                    )
-                grass_road_tile_turning_upright_positions = [
-                    [1, 1],
-                    [10, 4],
-                ]  # for all tiles that turn to the right going upwards
-                for i in grass_road_tile_turning_upright_positions:
-                    screen.blit(
-                        grass_road_tile_turning_upright,
-                        (
-                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
-                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
-                        ),
-                    )
-                grass_road_tile_turning_downright_positions = [
-                    [1, 7],
-                ]  # for all tiles that turn to the right going down
-                for i in grass_road_tile_turning_downright_positions:
-                    screen.blit(
-                        grass_road_tile_turning_downright,
-                        (
-                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
-                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
-                        ),
-                    )
-                grass_tile_mechanic_tower_positions = [
-                    [3, 0],
-                ]  # for all grass tiles with mechanic symbol
-                for i in grass_tile_mechanic_tower_positions:
-                    screen.blit(
-                        grass_tile_mechanic_tower,
-                        (
-                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
-                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
-                        ),
-                    )
-                grass_tile_circle_tower_positions = [
-                    [6, 0],
-                ]  # for all grass tiles with circle symbol
-                for i in grass_tile_circle_tower_positions:
-                    screen.blit(
-                        grass_tile_circle_tower,
-                        (
-                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
-                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
-                        ),
-                    )
-                grass_tile_cross_tower_positions = [
-                    [7, 0],
-                ]  # for all grass tiles with mechanic symbol
-                for i in grass_tile_cross_tower_positions:
-                    screen.blit(
-                        grass_tile_cross_tower,
-                        (
-                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
-                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
-                        ),
-                    )
-                mountain_on_bottom_positions = [
-                    [13, 6, 0],
-                ]  # for all tiles that mountain on bottom
-                for i in mountain_on_bottom_positions:
-                    screen.blit(
-                        pg.transform.rotate(mountain_on_bottom, i[2]),
-                        (
-                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
-                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
-                        ),
-                    )
-                mountain_on_bottom_and_side_positions = [
-                    [12, 7, 0],
-                    [5, 8, 270],
-                    [10, 8, 0],
-                ]
-                for i in mountain_on_bottom_and_side_positions:
-                    screen.blit(
-                        pg.transform.rotate(mountain_on_bottom_and_side, i[2]),
-                        (
-                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
-                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
-                        ),
-                    )
-                mountain_on_corner_positions = [
-                    [12, 3, 0],
-                ]  # for all tiles that mountain on bottom and side
-                for i in mountain_on_corner_positions:
-                    screen.blit(
-                        pg.transform.rotate(mountain_on_corner, i[2]),
-                        (
-                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
-                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
-                        ),
-                    )
-                mountain_on_bottom_and_side_22_positions = [
-                    [14, 6, 0],
-                ]  # for all tiles that mountain on bottom and side
-                for i in mountain_on_bottom_and_side_22_positions:
-                    screen.blit(
-                        pg.transform.rotate(mountain_on_bottom_and_side_22, i[2]),
-                        (
-                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
-                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
-                        ),
-                    )
-                mountain_on_bottom_and_side_3_positions = [
-                    [14, 2, 0],
-                ]  # for all tiles that mountain on bottom and side
-                for i in mountain_on_bottom_and_side_3_positions:
-                    screen.blit(
-                        pg.transform.rotate(mountain_on_bottom_and_side_3, i[2]),
-                        (
-                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
-                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
-                        ),
-                    )
-                mountain_on_side_22_positions = [
-                    [14, 1, 0],
-                ]  # for all tiles that mountain on side
-                for i in mountain_on_side_22_positions:
-                    screen.blit(
-                        pg.transform.rotate(mountain_on_side_22, i[2]),
-                        (
-                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
-                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
-                        ),
-                    )
+                # Render grass_road_up tiles
+                self.renderTiles(
+                    "grass_road_up",
+                    [
+                        [3, 1],
+                        [2, 1],
+                        [3, 6],
+                        [4, 6],
+                        [5, 6],
+                        [6, 6],
+                        [7, 6],
+                        [8, 6],
+                        [9, 6],
+                        [11, 4],
+                        [12, 4],
+                        [13, 4],
+                        [14, 4],
+                        [15, 4],
+                    ],
+                )
+
+                # Render grass_road_down tiles
+                self.renderTiles(
+                    "grass_road_down",
+                    [
+                        [4, 2],
+                        [3, 2],
+                        [2, 7],
+                        [3, 7],
+                        [4, 7],
+                        [5, 7],
+                        [6, 7],
+                        [7, 7],
+                        [8, 7],
+                        [9, 7],
+                        [10, 7],
+                        [12, 5],
+                        [13, 5],
+                        [14, 5],
+                        [15, 5],
+                    ],
+                )
+
+                # Render grass_road_left tiles
+                self.renderTiles(
+                    "grass_road_left",
+                    [
+                        [1, 2],
+                        [1, 3],
+                        [1, 4],
+                        [1, 5],
+                        [1, 6],
+                        [4, 0],
+                        [10, 5],
+                    ],
+                )
+
+                # Render grass_road_right tiles
+                self.renderTiles(
+                    "grass_road_right",
+                    [
+                        [5, 0],
+                        [5, 1],
+                        [2, 3],
+                        [2, 4],
+                        [2, 5],
+                        [11, 6],
+                    ],
+                )
+
+                # Render grass_road_turning_upleft tiles
+
+                # Render grass_road_turning_upright tiles
+                self.renderTiles(
+                    "grass_road_turning_upright",
+                    [
+                        [1, 1],
+                        [10, 4],
+                    ],
+                )
+
+                # Render grass_road_turning_downleft tiles
+                self.renderTiles(
+                    "grass_road_turning_downleft",
+                    [[5, 2], [11, 7]],
+                )
+
+                # Render grass_road_turning_downright tiles
+                self.renderTiles("grass_road_turning_downright", [[1, 7]])
+
+                # Render grass_road_bigturning_downleft tiles
+                self.renderTiles(
+                    "grass_road_bigturning_downleft",
+                    [
+                        [4, 1, 0],
+                        [2, 2, 180],
+                        [2, 6, 270],
+                        [10, 6, 0],
+                        [11, 5, 180],
+                    ],
+                )
+
+                # Render grass_freePosition tiles
+
+                # Render grass_mechanic tiles
+                self.renderTiles(
+                    "grass_mechanic",
+                    [
+                        [3, 0],
+                    ],
+                )
+
+                # Render grass_cross tiles
+                self.renderTiles(
+                    "grass_cross",
+                    [
+                        [7, 0],
+                    ],
+                )
+
+                # Render grass_circle tiles
+                self.renderTiles(
+                    "grass_circle",
+                    [
+                        [6, 0],
+                    ],
+                )
+
+                # Render mountain tiles
+                self.renderTiles(
+                    "mountain",
+                    [
+                        [6, 8],
+                        [6, 8],
+                        [7, 8],
+                        [8, 8],
+                        [9, 8],
+                    ],
+                )
+
+                # Render mountain_bottom tiles
+                self.renderTiles(
+                    "mountain_bottom",
+                    [
+                        [13, 6, 0],
+                    ],
+                )
+
+                # Render mountain_corner_upleft tiles
+                self.renderTiles(
+                    "mountain_corner_upleft",
+                    [
+                        [12, 7, 0],
+                        [5, 8, 270],
+                        [10, 8, 0],
+                    ],
+                )
+
+                # Render mountain_corner_downleft tiles
+
+                # Render mountain_corner_downright tiles
+                self.renderTiles(
+                    "mountain_corner_downright",
+                    [
+                        [12, 3, 0],
+                        [14, 1, 0],
+                        [14, 6, 0],
+                    ],
+                )
+
+                # Render mountain_bigturning_downright
+                self.renderTiles(
+                    "mountain_bigturning_downright",
+                    [
+                        [14, 2, 0],
+                    ],
+                )
+
+                # Render mountain_freePosition tiles
+
+                # Render mountain_mechanic tiles
+
+                # Render mountain_cross tiles
+
+                # Render mountain_circle tiles
+
+                # Render mountain_road_down tiles
+                self.renderTiles(
+                    "mountain_road_down",
+                    [
+                        [5, 7],
+                        [6, 7],
+                        [7, 7],
+                        [8, 7],
+                        [9, 7],
+                        [10, 7],
+                    ],
+                )
+
+                # OLD:
 
                 # weapons bar
-                mountain_road_bottom_positions = [
-                    [5, 7],
-                    [6, 7],
-                    [7, 7],
-                    [8, 7],
-                    [9, 7],
-                    [10, 7],
-                ]
-                for i in mountain_road_bottom_positions:
-                    screen.blit(
-                        mountain_road_bottom,
-                        (
-                            i[0] * TILE_SIZE,
-                            i[1] * TILE_SIZE,
-                        ),
-                    )
-
-                mountain_positions = [
-                    [6, 8],
-                    [6, 8],
-                    [7, 8],
-                    [8, 8],
-                    [9, 8],
-                ]
-                for i in mountain_positions:
-                    screen.blit(
-                        mountain,
-                        (
-                            i[0] * TILE_SIZE,
-                            i[1] * TILE_SIZE,
-                        ),
-                    )
-                screen.blit(soldier1, (6 * TILE_SIZE, 8 * TILE_SIZE))
-                screen.blit(soldier2, (7 * TILE_SIZE, 8 * TILE_SIZE))
-                screen.blit(missile_launcher, (8 * TILE_SIZE, 8 * TILE_SIZE))
-                screen.blit(turret, (9 * TILE_SIZE, 8 * TILE_SIZE))
+                SCREEN.blit(soldier1, (6 * TILE_SIZE, 8 * TILE_SIZE))
+                SCREEN.blit(soldier2, (7 * TILE_SIZE, 8 * TILE_SIZE))
+                SCREEN.blit(missile_launcher, (8 * TILE_SIZE, 8 * TILE_SIZE))
+                SCREEN.blit(turret, (9 * TILE_SIZE, 8 * TILE_SIZE))
 
                 # entities
                 for entity in self.entities:
-                    screen.blit(entity.entity, entity.rect)
+                    SCREEN.blit(entity.entity, entity.rect)
 
                 for entity in self.entities:
                     if (
@@ -629,10 +413,10 @@ class Game:
                         f"{self.player_hp} HP", True, (255, 255, 255)
                     )
                     hp_text_rect = hp_text.get_rect(topright=(SCREEN_WIDTH - 10, 10))
-                    screen.blit(hp_text, hp_text_rect)
+                    SCREEN.blit(hp_text, hp_text_rect)
 
             # display swedish flag
-            screen.blit(swedish_flag, swedish_flag_rect)
+            SCREEN.blit(swedish_flag, swedish_flag_rect)
 
             pg.display.flip()
 
@@ -649,8 +433,8 @@ class Game:
         # reset background
         for i in range(TILED_WIDTH):
             for j in range(TILED_HEIGHT):
-                screen.blit(
-                    grass_tile,
+                SCREEN.blit(
+                    TILES["grass"]["object"],
                     (
                         i * (SCREEN_WIDTH / TILED_WIDTH),
                         j * (SCREEN_HEIGHT / TILED_HEIGHT),
@@ -660,6 +444,33 @@ class Game:
         if option == 1:
             # reset game variables
             self.player_hp = 1000
+
+    def renderTiles(self, tile: str, positions: list):
+        """
+        Renders Tiles
+
+        Args:
+            tile (str): Key of Tile accoring to TILES constant
+            positions (list): X and Y corrdinates of tiles (and angle a)
+        """
+
+        for i in positions:
+            try:
+                SCREEN.blit(
+                    pg.transform.rotate(TILES[tile]["object"], i[2]),
+                    (
+                        i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                        i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                    ),
+                )
+            except IndexError:
+                SCREEN.blit(
+                    TILES[tile]["object"],
+                    (
+                        i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                        i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                    ),
+                )
 
 
 class Entity:
