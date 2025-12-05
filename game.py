@@ -57,6 +57,10 @@ TILES: dict = {
     "mountain_cross": {"path": "./assets/tiles/towerDefense_tile090.png"},
     "mountain_circle": {"path": "./assets/tiles/towerDefense_tile091.png"},
     "mountain_road_down": {"path": "./assets/tiles/towerDefense_tile011.png"},
+    "soldier1": {"path": "./assets/tiles/towerDefense_tile245.png"},
+    "soldier2": {"path": "./assets/tiles/towerDefense_tile246.png"},
+    "missile_launcher": {"path": "./assets/tiles/towerDefense_tile204.png"},
+    "turret": {"path": "./assets/tiles/towerDefense_tile250.png"},
 }
 
 for key in TILES:
@@ -89,21 +93,30 @@ soldier1 = pg.transform.scale(
     soldier1_og,
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
 )
+soldier1_rect = soldier1.get_rect(topleft=(6 * TILE_SIZE, 8 * TILE_SIZE))
+
 soldier2_og = pg.image.load("./assets/tiles/towerDefense_tile246.png")
 soldier2 = pg.transform.scale(
     soldier2_og,
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
 )
+soldier2_rect = soldier2.get_rect(topleft=(7 * TILE_SIZE, 8 * TILE_SIZE))
+
 missile_launcher_og = pg.image.load("./assets/tiles/towerDefense_tile204.png")
 missile_launcher = pg.transform.scale(
     missile_launcher_og,
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
 )
+missile_launcher_rect = missile_launcher.get_rect(
+    topleft=(8 * TILE_SIZE, 8 * TILE_SIZE)
+)
+
 turret_og = pg.image.load("./assets/tiles/towerDefense_tile250.png")
 turret = pg.transform.scale(
     turret_og,
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
 )
+turret_rect = turret.get_rect(topleft=(9 * TILE_SIZE, 8 * TILE_SIZE))
 
 
 class Game:
@@ -114,6 +127,8 @@ class Game:
     player_hp: float = 1000
 
     entities: list[Entity] = []
+
+    active_weapon_placing: list = [False, ""]
 
     def __init__(self) -> None:
         running: bool = True
@@ -128,13 +143,22 @@ class Game:
             for event in pg.event.get():
                 if event.type == pg.constants.QUIT:
                     running = False
-                if event.type == pg.KEYDOWN:
-                    if event.key == pg.K_SPACE and self.state == "start":
+                elif event.type == pg.constants.KEYDOWN:
+                    if event.key == pg.constants.K_SPACE and self.state == "start":
                         self.state = "game"
                         self.reset(1)
                         pg.mixer.music.stop()
                         pg.mixer.music.load("./assets/sound/coconut_mall.mp3")
                         pg.mixer.music.play(loops=-1)
+                elif event.type == pg.constants.MOUSEBUTTONDOWN:
+                    if soldier1_rect.collidepoint(event.pos):
+                        self.active_weapon_placing = [True, "soldier1"]
+                    elif soldier2_rect.collidepoint(event.pos):
+                        self.active_weapon_placing = [True, "soldier2"]
+                    elif missile_launcher_rect.collidepoint(event.pos):
+                        self.active_weapon_placing = [True, "missile_launcher"]
+                    elif turret_rect.collidepoint(event.pos):
+                        self.active_weapon_placing = [True, "turret"]
 
             # start SCREEN if:
             if self.state == "start":
@@ -165,7 +189,7 @@ class Game:
                 self.reset(2)
 
                 # Render grass_road_up tiles
-                self.renderTiles(
+                self.render_tiles(
                     "grass_road_up",
                     [
                         [3, 1],
@@ -186,7 +210,7 @@ class Game:
                 )
 
                 # Render grass_road_down tiles
-                self.renderTiles(
+                self.render_tiles(
                     "grass_road_down",
                     [
                         [4, 2],
@@ -208,7 +232,7 @@ class Game:
                 )
 
                 # Render grass_road_left tiles
-                self.renderTiles(
+                self.render_tiles(
                     "grass_road_left",
                     [
                         [1, 2],
@@ -222,7 +246,7 @@ class Game:
                 )
 
                 # Render grass_road_right tiles
-                self.renderTiles(
+                self.render_tiles(
                     "grass_road_right",
                     [
                         [5, 0],
@@ -237,7 +261,7 @@ class Game:
                 # Render grass_road_turning_upleft tiles
 
                 # Render grass_road_turning_upright tiles
-                self.renderTiles(
+                self.render_tiles(
                     "grass_road_turning_upright",
                     [
                         [1, 1],
@@ -246,16 +270,16 @@ class Game:
                 )
 
                 # Render grass_road_turning_downleft tiles
-                self.renderTiles(
+                self.render_tiles(
                     "grass_road_turning_downleft",
                     [[5, 2], [11, 7]],
                 )
 
                 # Render grass_road_turning_downright tiles
-                self.renderTiles("grass_road_turning_downright", [[1, 7]])
+                self.render_tiles("grass_road_turning_downright", [[1, 7]])
 
                 # Render grass_road_bigturning_downleft tiles
-                self.renderTiles(
+                self.render_tiles(
                     "grass_road_bigturning_downleft",
                     [
                         [4, 1, 0],
@@ -269,7 +293,7 @@ class Game:
                 # Render grass_freePosition tiles
 
                 # Render grass_mechanic tiles
-                self.renderTiles(
+                self.render_tiles(
                     "grass_mechanic",
                     [
                         [3, 0],
@@ -277,7 +301,7 @@ class Game:
                 )
 
                 # Render grass_cross tiles
-                self.renderTiles(
+                self.render_tiles(
                     "grass_cross",
                     [
                         [7, 0],
@@ -285,7 +309,7 @@ class Game:
                 )
 
                 # Render grass_circle tiles
-                self.renderTiles(
+                self.render_tiles(
                     "grass_circle",
                     [
                         [6, 0],
@@ -293,7 +317,7 @@ class Game:
                 )
 
                 # Render mountain tiles
-                self.renderTiles(
+                self.render_tiles(
                     "mountain",
                     [
                         [6, 8],
@@ -305,7 +329,7 @@ class Game:
                 )
 
                 # Render mountain_bottom tiles
-                self.renderTiles(
+                self.render_tiles(
                     "mountain_bottom",
                     [
                         [13, 6, 0],
@@ -313,7 +337,7 @@ class Game:
                 )
 
                 # Render mountain_corner_upleft tiles
-                self.renderTiles(
+                self.render_tiles(
                     "mountain_corner_upleft",
                     [
                         [12, 7, 0],
@@ -325,7 +349,7 @@ class Game:
                 # Render mountain_corner_downleft tiles
 
                 # Render mountain_corner_downright tiles
-                self.renderTiles(
+                self.render_tiles(
                     "mountain_corner_downright",
                     [
                         [12, 3, 0],
@@ -335,7 +359,7 @@ class Game:
                 )
 
                 # Render mountain_bigturning_downright
-                self.renderTiles(
+                self.render_tiles(
                     "mountain_bigturning_downright",
                     [
                         [14, 2, 0],
@@ -351,7 +375,7 @@ class Game:
                 # Render mountain_circle tiles
 
                 # Render mountain_road_down tiles
-                self.renderTiles(
+                self.render_tiles(
                     "mountain_road_down",
                     [
                         [5, 7],
@@ -363,13 +387,11 @@ class Game:
                     ],
                 )
 
-                # OLD:
-
                 # weapons bar
-                SCREEN.blit(soldier1, (6 * TILE_SIZE, 8 * TILE_SIZE))
-                SCREEN.blit(soldier2, (7 * TILE_SIZE, 8 * TILE_SIZE))
-                SCREEN.blit(missile_launcher, (8 * TILE_SIZE, 8 * TILE_SIZE))
-                SCREEN.blit(turret, (9 * TILE_SIZE, 8 * TILE_SIZE))
+                SCREEN.blit(soldier1, soldier1_rect)
+                SCREEN.blit(soldier2, soldier2_rect)
+                SCREEN.blit(missile_launcher, missile_launcher_rect)
+                SCREEN.blit(turret, turret_rect)
 
                 # entities
                 for entity in self.entities:
@@ -416,12 +438,29 @@ class Game:
                         self.player_hp -= entity.entity_hp
                         self.entities.append(Entity(loris_entity_og))
 
+                    # Active Weapon Placement
+                    if self.active_weapon_placing[0] == True:
+                        x, y = pg.mouse.get_pos()
+                        tile_x: int
+                        tile_y: int
+                        for i in range(0, (TILED_WIDTH + 1)):
+                            if i * TILE_SIZE < x:
+                                tile_x = i
+                        for i in range(0, (TILED_HEIGHT + 1)):
+                            if i * TILE_SIZE < y:
+                                tile_y = i
+                        self.render_tiles("grass_circle", [[tile_x, tile_y]])
+                        self.render_tiles(
+                            self.active_weapon_placing[1], [[tile_x, tile_y]]
+                        )
+
                     # display HP Text
                     hp_text = title_font.render(
                         f"{self.player_hp} HP", True, (255, 255, 255)
                     )
                     hp_text_rect = hp_text.get_rect(topright=(SCREEN_WIDTH - 10, 10))
                     SCREEN.blit(hp_text, hp_text_rect)
+
             elif self.state == "game_over":
                 pass
 
@@ -455,7 +494,7 @@ class Game:
             # reset game variables
             self.player_hp = 1000
 
-    def renderTiles(self, tile: str, positions: list):
+    def render_tiles(self, tile: str, positions: list):
         """
         Renders Tiles
 
