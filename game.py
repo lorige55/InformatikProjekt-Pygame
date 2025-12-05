@@ -475,8 +475,9 @@ class Game:
     def reset(self, option: int):
         """
         Method to reset background and game variables
-        Option 1 resets everything (background and variables)
-        Option 2 only resets background
+
+        Args:
+            option (int): Option 1 resets background and variables, while option 2 only resets background.
         """
         # reset background
         for i in range(TILED_WIDTH):
@@ -495,7 +496,7 @@ class Game:
 
     def render_tiles(self, tile: str, positions: list):
         """
-        Renders Tiles
+        Rotates Tile if needed and puts it onto screen.
 
         Args:
             tile (str): Key of Tile accoring to TILES constant
