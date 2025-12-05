@@ -126,14 +126,14 @@ class Game:
 
     player_hp: float = 1000
 
-    entities: list[Entity] = []
-
     active_weapon_placing: list = [False, ""]
+
+    entities = pg.sprite.Group()
 
     def __init__(self) -> None:
         running: bool = True
 
-        self.entities.append(Entity(loris_entity_og))
+        self.entities.add(Entity(loris_entity_og))
 
         pg.mixer.music.load("./assets/sound/intro.mp3")
         pg.mixer.music.play(loops=0)
@@ -394,8 +394,7 @@ class Game:
                 SCREEN.blit(turret, turret_rect)
 
                 # entities
-                for entity in self.entities:
-                    SCREEN.blit(entity.entity, entity.rect)
+                self.entities.draw(SCREEN)
 
                 for entity in self.entities:
                     if (
@@ -436,7 +435,7 @@ class Game:
                     else:
                         self.entities.remove(entity)
                         self.player_hp -= entity.entity_hp
-                        self.entities.append(Entity(loris_entity_og))
+                        self.entities.add(Entity(loris_entity_og))
 
                     # Active Weapon Placement
                     if self.active_weapon_placing[0] == True:
@@ -522,23 +521,24 @@ class Game:
                 )
 
 
-class Entity:
+class Entity(pg.sprite.Sprite):
     """Creates entity and stores its variables."""
 
     og_image: pg.Surface
 
     def __init__(self, image: pg.Surface):
+        super().__init__()
         self.og_image = image
-        self.entity = pg.transform.rotate(
+        self.image = pg.transform.rotate(
             pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE)), 90
         )
-        self.rect = self.entity.get_rect()
+        self.rect = self.image.get_rect()
         self.rect.x = SCREEN_WIDTH
         self.rect.y = round(4.5 * TILE_SIZE)
 
     def rotate(self, angle: int):
         """Rotates the Entity according to angle parameter"""
-        self.entity = pg.transform.rotate(
+        self.image = pg.transform.rotate(
             pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE)), angle
         )
 
