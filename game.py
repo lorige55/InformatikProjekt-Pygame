@@ -14,8 +14,8 @@ SCREEN_HEIGHT: int = TILED_HEIGHT * TILE_SIZE
 VELOCITY: int = 2
 SCREEN: pg.Surface = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock: pg.time.Clock = pg.time.Clock()
-title_font: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Blocks.ttf", 36)
-subtitle_font: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Future.ttf", 18)
+TITLE_FONT: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Blocks.ttf", 36)
+SUBTITLE_FONT: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Future.ttf", 18)
 
 TILES: dict = {
     "grass": {
@@ -63,9 +63,9 @@ TILES: dict = {
     "turret": {"path": "./assets/tiles/towerDefense_tile250.png"},
 }
 
-for key in TILES:
-    tile_og = pg.image.load(TILES[key]["path"])
-    TILES[key]["object"] = pg.transform.scale(
+for key, value in TILES.items():
+    tile_og = pg.image.load(value["path"])
+    value["object"] = pg.transform.scale(
         tile_og,
         (SCREEN_WIDTH // TILED_WIDTH, SCREEN_HEIGHT // TILED_HEIGHT),
     )
@@ -164,13 +164,13 @@ class Game:
             if self.state == "start":
                 self.reset(2)
                 # title:
-                welcome_title = title_font.render(
+                welcome_title = TITLE_FONT.render(
                     "Welcome to Tower Defense!", True, (187, 127, 68)
                 )
                 welcome_title_rect = welcome_title.get_rect(center=(640, 340))
                 SCREEN.blit(welcome_title, welcome_title_rect)
                 # subtitle:
-                welcome_subtitle = subtitle_font.render(
+                welcome_subtitle = SUBTITLE_FONT.render(
                     "Press Space to start Game.", True, (187, 127, 68)
                 )
                 welcome_subtitle_rect = welcome_subtitle.get_rect(center=(640, 380))
@@ -438,7 +438,7 @@ class Game:
                         self.entities.add(Entity(loris_entity_og))
 
                     # Active Weapon Placement
-                    if self.active_weapon_placing[0] == True:
+                    if self.active_weapon_placing[0] is True:
                         x, y = pg.mouse.get_pos()
                         tile_x: int
                         tile_y: int
@@ -454,7 +454,7 @@ class Game:
                         )
 
                     # display HP Text
-                    hp_text = title_font.render(
+                    hp_text = TITLE_FONT.render(
                         f"{self.player_hp} HP", True, (255, 255, 255)
                     )
                     hp_text_rect = hp_text.get_rect(topright=(SCREEN_WIDTH - 10, 10))
