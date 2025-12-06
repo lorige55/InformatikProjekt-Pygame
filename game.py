@@ -405,6 +405,8 @@ class Game:
                 SCREEN.blit(turret, turret_rect)
 
                 # entities
+                self.entities.update(self.entities)
+                self.weapons.update(self.entities)
                 self.entities.draw(SCREEN)
                 self.weapons.draw(SCREEN)
 
@@ -449,22 +451,22 @@ class Game:
                         self.player_hp -= entity.entity_hp
                         self.entities.add(Entity(loris_entity_og))
 
-                    # Active Weapon Placement
-                    if self.active_weapon_placing[0] is True:
-                        x, y = pg.mouse.get_pos()
-                        tile_x, tile_y = convert_coordinates([x, y])
-                        if [tile_x, tile_y] not in self.placement_free_zone:
-                            self.render_tiles("grass_circle", [[tile_x, tile_y]])
-                            self.render_tiles(
-                                self.active_weapon_placing[1], [[tile_x, tile_y]]
-                            )
+                # Active Weapon Placement
+                if self.active_weapon_placing[0] is True:
+                    x, y = pg.mouse.get_pos()
+                    tile_x, tile_y = convert_coordinates([x, y])
+                    if [tile_x, tile_y] not in self.placement_free_zone:
+                        self.render_tiles("grass_circle", [[tile_x, tile_y]])
+                        self.render_tiles(
+                            self.active_weapon_placing[1], [[tile_x, tile_y]]
+                        )
 
-                    # display HP Text
-                    hp_text = TITLE_FONT.render(
-                        f"{self.player_hp} HP", True, (255, 255, 255)
-                    )
-                    hp_text_rect = hp_text.get_rect(topright=(SCREEN_WIDTH - 10, 10))
-                    SCREEN.blit(hp_text, hp_text_rect)
+                # display HP Text
+                hp_text = TITLE_FONT.render(
+                    f"{self.player_hp} HP", True, (255, 255, 255)
+                )
+                hp_text_rect = hp_text.get_rect(topright=(SCREEN_WIDTH - 10, 10))
+                SCREEN.blit(hp_text, hp_text_rect)
 
             elif self.state == "game_over":
                 pass
@@ -543,6 +545,8 @@ class Entity(pg.sprite.Sprite):
 
     og_image: pg.Surface
 
+    entity_hp: int = 100
+
     def __init__(self, image: pg.Surface):
         super().__init__()
         self.og_image = image
@@ -559,7 +563,10 @@ class Entity(pg.sprite.Sprite):
             pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE)), angle
         )
 
-    entity_hp = 100
+    def update(self, entities: pg.sprite.Group):
+        """Removes itself, when hp is smaller than or equal to zero."""
+        if self.entity_hp <= 0:
+            entities.remove(self)
 
 
 class Weapon(pg.sprite.Sprite):
@@ -567,13 +574,25 @@ class Weapon(pg.sprite.Sprite):
 
     og_image: pg.Surface
 
-    def __init__(self, image: pg.Surface, position: list):
+    damage: int = 50
 
+    last_shot_time: int = 0
+
+    fire_rate: int = 5000
+
+    def __init__(self, image: pg.Surface, position: list):
         super().__init__()
         self.og_image = image
         self.image = pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = convert_coordinates(position)
+
+    def update(self, entities):
+        now = pg.time.get_ticks()
+        if now - self.last_shot_time >= self.fire_rate:
+            for entity in entities:
+                entity.entity_hp -= self.damage
+                self.last_shot_time = now
 
 
 def convert_coordinates(coordinates: list):
