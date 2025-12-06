@@ -129,6 +129,8 @@ class Game:
 
     entities: pg.sprite.Group = pg.sprite.Group()
 
+    weapons: pg.sprite.Group = pg.sprite.Group()
+
     placement_free_zone: list = []
 
     def __init__(self) -> None:
@@ -160,6 +162,14 @@ class Game:
                         self.active_weapon_placing = [True, "missile_launcher"]
                     elif turret_rect.collidepoint(event.pos):
                         self.active_weapon_placing = [True, "turret"]
+                    elif self.active_weapon_placing[0] is True:
+                        self.weapons.add(
+                            Weapon(
+                                TILES[self.active_weapon_placing[1]]["object"],
+                                convert_coordinates(event.pos),
+                            )
+                        )
+                        self.active_weapon_placing = [False, ""]
 
             # start SCREEN if:
             if self.state == "start":
@@ -396,6 +406,7 @@ class Game:
 
                 # entities
                 self.entities.draw(SCREEN)
+                self.weapons.draw(SCREEN)
 
                 for entity in self.entities:
                     if (
@@ -441,14 +452,7 @@ class Game:
                     # Active Weapon Placement
                     if self.active_weapon_placing[0] is True:
                         x, y = pg.mouse.get_pos()
-                        tile_x: int
-                        tile_y: int
-                        for i in range(0, (TILED_WIDTH + 1)):
-                            if i * TILE_SIZE < x:
-                                tile_x = i
-                        for i in range(0, (TILED_HEIGHT + 1)):
-                            if i * TILE_SIZE < y:
-                                tile_y = i
+                        tile_x, tile_y = convert_coordinates([x, y])
                         if [tile_x, tile_y] not in self.placement_free_zone:
                             self.render_tiles("grass_circle", [[tile_x, tile_y]])
                             self.render_tiles(
@@ -556,6 +560,45 @@ class Entity(pg.sprite.Sprite):
         )
 
     entity_hp = 100
+
+
+class Weapon(pg.sprite.Sprite):
+    """Creates weapon and stores its variables."""
+
+    og_image: pg.Surface
+
+    def __init__(self, image: pg.Surface, position: list):
+
+        super().__init__()
+        self.og_image = image
+        self.image = pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE))
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = convert_coordinates(position)
+
+
+def convert_coordinates(coordinates: list):
+    """
+    Converts coordinates between screen-pixels and tiled system.
+    Returns converted x and y value.
+
+    Args:
+        coordinates (list): X, Y position in screen pixels or tiled position (function automatically recognizes)
+    """
+    x, y = coordinates
+    if x > TILED_WIDTH and y > TILED_WIDTH:
+        tile_x: int
+        tile_y: int
+        for i in range(0, (TILED_WIDTH + 1)):
+            if i * TILE_SIZE < x:
+                tile_x = i
+        for i in range(0, (TILED_HEIGHT + 1)):
+            if i * TILE_SIZE < y:
+                tile_y = i
+        return (tile_x, tile_y)
+    else:
+        screen_x: int = x * (SCREEN_WIDTH / TILED_WIDTH)
+        screen_y: int = y * (SCREEN_HEIGHT / TILED_HEIGHT)
+        return (screen_x, screen_y)
 
 
 game = Game()
