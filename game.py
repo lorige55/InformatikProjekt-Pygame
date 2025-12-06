@@ -70,7 +70,6 @@ for key, value in TILES.items():
         (SCREEN_WIDTH // TILED_WIDTH, SCREEN_HEIGHT // TILED_HEIGHT),
     )
 
-
 # swedish flag
 swedish_flag_og = pg.image.load("./assets/custom/Swedish Flag.png").convert()
 swedish_flag = pg.transform.scale(swedish_flag_og, (50, 31))  # scale the image
@@ -128,7 +127,9 @@ class Game:
 
     active_weapon_placing: list = [False, ""]
 
-    entities = pg.sprite.Group()
+    entities: pg.sprite.Group = pg.sprite.Group()
+
+    placement_free_zone: list = []
 
     def __init__(self) -> None:
         running: bool = True
@@ -448,10 +449,11 @@ class Game:
                         for i in range(0, (TILED_HEIGHT + 1)):
                             if i * TILE_SIZE < y:
                                 tile_y = i
-                        self.render_tiles("grass_circle", [[tile_x, tile_y]])
-                        self.render_tiles(
-                            self.active_weapon_placing[1], [[tile_x, tile_y]]
-                        )
+                        if [tile_x, tile_y] not in self.placement_free_zone:
+                            self.render_tiles("grass_circle", [[tile_x, tile_y]])
+                            self.render_tiles(
+                                self.active_weapon_placing[1], [[tile_x, tile_y]]
+                            )
 
                     # display HP Text
                     hp_text = TITLE_FONT.render(
@@ -520,6 +522,16 @@ class Game:
                         i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
                     ),
                 )
+            if (
+                tile is not "grass"
+                and tile is not "grass_circle"
+                and tile is not "soldier1"
+                and tile is not "soldier2"
+                and tile is not "missile_launcher"
+                and tile is not "turret"
+                and [i[0], i[1]] not in self.placement_free_zone
+            ):
+                self.placement_free_zone.append([i[0], i[1]])
 
 
 class Entity(pg.sprite.Sprite):
