@@ -676,18 +676,32 @@ class Weapon(pg.sprite.Sprite):
 
     fire_rate: int = 5000
 
+    weapon_pos: pg.Vector2
+
+    range: int = 3 * TILE_SIZE
+
     def __init__(self, image: pg.Surface, position: list):
         super().__init__()
         self.og_image = image
         self.image = pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = convert_coordinates(position)
+        self.weapon_pos = pg.Vector2(self.rect.center)
 
     def update(self, entities):
         now = pg.time.get_ticks()
         if now - self.last_shot_time >= self.fire_rate:
-            entities.sprites()[0].entity_hp -= self.damage
-            self.last_shot_time = now
+            target = 0
+            while self.last_shot_time != now:
+                target_pos = pg.Vector2(entities.sprites()[target].rect.center)
+                distance = self.weapon_pos.distance_to(target_pos)
+                if distance <= self.range:
+                    entities.sprites()[target].entity_hp -= self.damage
+                    self.last_shot_time = now
+                elif len(entities.sprites()) > target + 1:
+                    target += 1
+                else:
+                    break
 
 
 def convert_coordinates(coordinates: list):
