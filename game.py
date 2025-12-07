@@ -65,6 +65,13 @@ TILES: dict = {
     "mountain_left": {"path": "./assets/photoshopped/Mountain_on_left.png"},
     "mountain_right": {"path": "./assets/photoshopped/Mountain_on_right.png"},
     "mountain_top": {"path": "./assets/photoshopped/Mountain_on_top.png"},
+    "mountain_tlc": {"path": "./assets/photoshopped/Mountain_on_top_left_corner.png"},
+    "mountain_tns2": {
+        "path": "./assets/photoshopped/Mountain_on_top_and_side_done1.png"
+    },
+    "mountain_tns1": {
+        "path": "./assets/photoshopped/Mountain_on_top_and_side_done.png"
+    },
 }
 
 for key, value in TILES.items():
@@ -414,6 +421,24 @@ class Game:
                     "mountain_top",
                     [
                         [13, 0],
+                    ],
+                )
+                self.render_tiles(
+                    "mountain_tns1",
+                    [
+                        [13, 1],
+                    ],
+                )
+                self.render_tiles(
+                    "mountain_tns2",
+                    [
+                        [13, 2],
+                    ],
+                )
+                self.render_tiles(
+                    "mountain_tlc",
+                    [
+                        [13, 3],
                     ],
                 )
 
