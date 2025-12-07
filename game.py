@@ -89,6 +89,7 @@ gabriel_entity2_og = pg.image.load(
 phillippe_entity_og = pg.image.load(
     "./assets/custom/phillippe_entity.png"
 ).convert_alpha()
+vielgut_entity_og = pg.image.load("./assets/custom/vielgut_entity.png").convert_alpha()
 
 # load weapons
 soldier1_og = pg.image.load("./assets/tiles/towerDefense_tile245.png")
@@ -137,10 +138,30 @@ class Game:
 
     placement_free_zone: list = []
 
+    current_wave: int = 1
+
+    waves: dict = {
+        1: {loris_entity_og: 5},
+        2: {loris_entity_og: 5, gabriel_entity_og: 5, phillippe_entity_og: 5},
+        3: {
+            loris_entity_og: 10,
+            gabriel_entity_og: 10,
+            phillippe_entity_og: 10,
+        },
+        4: {
+            loris_entity_og: 20,
+            gabriel_entity_og: 20,
+            phillippe_entity_og: 20,
+            vielgut_entity_og: 1,
+        },
+    }
+
+    last_entity_spawn_time: int = 0
+
+    next_wave_time: int = 0
+
     def __init__(self) -> None:
         running: bool = True
-
-        self.entities.add(Entity(loris_entity_og))
 
         pg.mixer.music.load("./assets/sound/intro.mp3")
         pg.mixer.music.play(loops=0)
@@ -423,6 +444,29 @@ class Game:
                 SCREEN.blit(missile_launcher, missile_launcher_rect)
                 SCREEN.blit(turret, turret_rect)
 
+                # wave management / entity spawning
+                now = pg.time.get_ticks()
+                if self.next_wave_time <= now and self.next_wave_time != 0:
+                    self.current_wave += 1
+                    self.next_wave_time = 0
+
+                for number, objects in self.waves.items():
+                    total = 0
+                    for _, amount in objects.items():
+                        total += amount
+                    if (
+                        total == 0
+                        and self.current_wave == number
+                        and self.next_wave_time == 0
+                    ):
+                        self.next_wave_time = now + 50000
+
+                for entity_og_image, amount in self.waves[self.current_wave].items():
+                    if amount > 0 and now - self.last_entity_spawn_time >= 3000:
+                        self.entities.add(Entity(entity_og_image))
+                        self.last_entity_spawn_time = now
+                        self.waves[self.current_wave][entity_og_image] -= 1
+
                 # entities
                 self.entities.update(self.entities)
                 self.weapons.update(self.entities)
@@ -468,7 +512,6 @@ class Game:
                     else:
                         self.entities.remove(entity)
                         self.player_hp -= entity.entity_hp
-                        self.entities.add(Entity(loris_entity_og))
 
                 # Active Weapon Placement
                 if self.active_weapon_placing[0] is True:
@@ -480,11 +523,18 @@ class Game:
                             self.active_weapon_placing[1], [[tile_x, tile_y]]
                         )
 
+                # display wave
+                current_wave_text = TITLE_FONT.render(
+                    f"Wave {self.current_wave}", True, (255, 255, 255)
+                )
+                current_wave_text_rect = current_wave_text.get_rect(topleft=(10, 0))
+                SCREEN.blit(current_wave_text, current_wave_text_rect)
+
                 # display HP Text
                 hp_text = TITLE_FONT.render(
                     f"{self.player_hp} HP", True, (255, 255, 255)
                 )
-                hp_text_rect = hp_text.get_rect(topright=(SCREEN_WIDTH - 10, 10))
+                hp_text_rect = hp_text.get_rect(topright=(SCREEN_WIDTH - 10, 0))
                 SCREEN.blit(hp_text, hp_text_rect)
 
             elif self.state == "game_over":
