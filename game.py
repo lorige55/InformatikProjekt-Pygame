@@ -48,6 +48,23 @@ TILES: dict = {
     "soldier2": {"path": "./assets/tiles/towerDefense_tile246.png"},
     "missile_launcher": {"path": "./assets/tiles/towerDefense_tile204.png"},
     "turret": {"path": "./assets/tiles/towerDefense_tile250.png"},
+    "mountain_done": {"path": "./assets/photoshopped/Mountain_on_bottom_done.png"},
+    "mountain_bns1": {
+        "path": "./assets/photoshopped/Mountain_on_bottom_and_side_done.png"
+    },
+    "mountain_bns2": {
+        "path": "./assets/photoshopped/Mountain_on_bottom_and_side_done_1.png"
+    },
+    "mountain_blc": {
+        "path": "./assets/photoshopped/Mountain_on_bottom_left_corner.png"
+    },
+    "mountain_brc": {
+        "path": "./assets/photoshopped/Mountain_on_bottom_right_corner_1.png"
+    },
+    "mountain_trc": {"path": "./assets/photoshopped/Mountain_on_top_right_corner.png"},
+    "mountain_left": {"path": "./assets/photoshopped/Mountain_on_left.png"},
+    "mountain_right": {"path": "./assets/photoshopped/Mountain_on_right.png"},
+    "mountain_top": {"path": "./assets/photoshopped/Mountain_on_top.png"},
 }
 
 for key, value in TILES.items():
@@ -343,6 +360,60 @@ class Game:
                         [8, 7],
                         [9, 7],
                         [10, 7],
+                    ],
+                )
+                self.render_tiles(
+                    "mountain_done",
+                    [
+                        [10, 1],
+                    ],
+                )
+                self.render_tiles(
+                    "mountain_bns1",
+                    [
+                        [10, 2],
+                    ],
+                )
+                self.render_tiles(
+                    "mountain_bns2",
+                    [
+                        [10, 3],
+                    ],
+                )
+                self.render_tiles(
+                    "mountain_trc",
+                    [
+                        [11, 1],
+                    ],
+                )
+                self.render_tiles(
+                    "mountain_brc",
+                    [
+                        [11, 0],
+                    ],
+                )
+                self.render_tiles(
+                    "mountain_blc",
+                    [
+                        [11, 2],
+                    ],
+                )
+                self.render_tiles(
+                    "mountain_left",
+                    [
+                        [12, 0],
+                    ],
+                )
+                self.render_tiles(
+                    "mountain_right",
+                    [
+                        [12, 1],
+                    ],
+                )
+                self.render_tiles(
+                    "mountain_top",
+                    [
+                        [13, 0],
                     ],
                 )
 
