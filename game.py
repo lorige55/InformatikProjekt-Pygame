@@ -468,8 +468,10 @@ class Game:
                         self.waves[self.current_wave][entity_og_image] -= 1
 
                 # entities
-                self.entities.update(self.entities)
-                self.weapons.update(self.entities)
+                if self.entities:
+                    self.entities.update(self.entities)
+                    self.weapons.update(self.entities)
+
                 self.entities.draw(SCREEN)
                 self.weapons.draw(SCREEN)
 
@@ -659,9 +661,8 @@ class Weapon(pg.sprite.Sprite):
     def update(self, entities):
         now = pg.time.get_ticks()
         if now - self.last_shot_time >= self.fire_rate:
-            for entity in entities:
-                entity.entity_hp -= self.damage
-                self.last_shot_time = now
+            entities.sprites()[0].entity_hp -= self.damage
+            self.last_shot_time = now
 
 
 def convert_coordinates(coordinates: list):
