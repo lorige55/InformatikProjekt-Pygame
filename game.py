@@ -39,19 +39,6 @@ TILES: dict = {
     "grass_cross": {"path": "./assets/tiles/towerDefense_tile044.png"},
     "grass_circle": {"path": "./assets/tiles/towerDefense_tile045.png"},
     "mountain": {"path": "./assets/tiles/towerDefense_tile034.png"},
-    "mountain_bottom": {"path": "./assets/photoshopped/mountain_bottom.png"},
-    "mountain_corner_upleft": {
-        "path": "./assets/photoshopped/mountain_corner_upleft.png"
-    },
-    "mountain_corner_downleft": {
-        "path": "./assets/photoshopped/mountain_corner_downleft.png"
-    },
-    "mountain_corner_downright": {
-        "path": "./assets/photoshopped/mountain_corner_downright.png"
-    },
-    "mountain_bigturning_downright": {
-        "path": "./assets/photoshopped/mountain_bigturning_downright.png"
-    },
     "mountain_freePosition": {"path": "./assets/tiles/towerDefense_tile088.png"},
     "mountain_mechanic": {"path": "./assets/tiles/towerDefense_tile089.png"},
     "mountain_cross": {"path": "./assets/tiles/towerDefense_tile090.png"},
@@ -338,45 +325,6 @@ class Game:
                         [9, 8],
                     ],
                 )
-
-                # Render mountain_bottom tiles
-                self.render_tiles(
-                    "mountain_bottom",
-                    [
-                        [13, 6, 0],
-                    ],
-                )
-
-                # Render mountain_corner_upleft tiles
-                self.render_tiles(
-                    "mountain_corner_upleft",
-                    [
-                        [12, 7, 0],
-                        [5, 8, 270],
-                        [10, 8, 0],
-                    ],
-                )
-
-                # Render mountain_corner_downleft tiles
-
-                # Render mountain_corner_downright tiles
-                self.render_tiles(
-                    "mountain_corner_downright",
-                    [
-                        [12, 3, 0],
-                        [14, 1, 0],
-                        [14, 6, 0],
-                    ],
-                )
-
-                # Render mountain_bigturning_downright
-                self.render_tiles(
-                    "mountain_bigturning_downright",
-                    [
-                        [14, 2, 0],
-                    ],
-                )
-
                 # Render mountain_freePosition tiles
 
                 # Render mountain_mechanic tiles
