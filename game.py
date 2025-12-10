@@ -219,6 +219,7 @@ class Game:
                                 Weapon(
                                     TILES[self.active_weapon_placing[1]]["object"],
                                     convert_coordinates(event.pos),
+                                    self,
                                 )
                             )
                             self.active_weapon_placing = [False, ""]
