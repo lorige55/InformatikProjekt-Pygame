@@ -565,7 +565,17 @@ class Game:
                 SCREEN.blit(hp_text, hp_text_rect)
 
             elif self.state == "game_over":
-                pass
+                self.reset(2)
+                # title:
+                gameover_title = TITLE_FONT.render("Game Over!", True, (187, 127, 68))
+                gameover_title_rect = gameover_title.get_rect(center=(640, 340))
+                SCREEN.blit(gameover_title, gameover_title_rect)
+                # subtitle:
+                gameover_subtitle = SUBTITLE_FONT.render(
+                    "You Lost", True, (187, 127, 68)
+                )
+                gameover_subtitle_rect = gameover_subtitle.get_rect(center=(640, 380))
+                SCREEN.blit(gameover_subtitle, gameover_subtitle_rect)
 
             # display swedish flag
             SCREEN.blit(swedish_flag, swedish_flag_rect)
