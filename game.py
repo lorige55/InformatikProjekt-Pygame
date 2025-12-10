@@ -217,7 +217,7 @@ class Game:
                         ):
                             self.weapons.add(
                                 Weapon(
-                                    TILES[self.active_weapon_placing[1]]["object"],
+                                    self.active_weapon_placing[1],
                                     convert_coordinates(event.pos),
                                     self,
                                 )
@@ -720,6 +720,8 @@ class Weapon(pg.sprite.Sprite):
 
     og_image: pg.Surface
 
+    type: str
+
     damage: int = 50
 
     last_shot_time: int = 0
@@ -730,22 +732,28 @@ class Weapon(pg.sprite.Sprite):
 
     range: int = 3 * TILE_SIZE
 
-    def __init__(self, image: pg.Surface, position: list, game: Game):
+    cost: int
+
+    def __init__(self, type: str, position: list, game: Game):
         super().__init__()
-        self.og_image = image
+        self.type = type
+        if type == "soldier1":
+            self.og_image = soldier1_og
+            self.cost = 50
+        elif type == "soldier2":
+            self.og_image = soldier2_og
+            self.cost = 100
+        elif type == "missile_launcher":
+            self.og_image = missile_launcher_og
+            self.cost = 250
+        elif type == "turret":
+            self.og_image = turret_og
+            self.cost = 500
         self.image = pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = convert_coordinates(position)
         self.weapon_pos = pg.Vector2(self.rect.center)
-        if image == soldier1_og:
-            cost = 50
-        elif image == soldier2_og:
-            cost = 100
-        elif image == missile_launcher_og:
-            cost = 250
-        elif image == turret_og:
-            cost = 500
-        game.player_coins -= cost
+        game.player_coins -= self.cost
 
     def update(self, entities):
         now = pg.time.get_ticks()
