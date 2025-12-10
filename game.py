@@ -137,6 +137,8 @@ class Game:
 
     player_hp: float = 1000
 
+    player_coins: int = 100
+
     active_weapon_placing: list = [False, ""]
 
     entities: pg.sprite.Group = pg.sprite.Group()
@@ -567,6 +569,13 @@ class Game:
                 hp_text_rect = hp_text.get_rect(topright=(SCREEN_WIDTH - 10, 0))
                 SCREEN.blit(hp_text, hp_text_rect)
 
+                # display Coins Text
+                coins_text = TITLE_FONT.render(
+                    f"{self.player_coins} Coins", True, (255, 255, 255)
+                )
+                coins_text_rect = coins_text.get_rect(topright=(SCREEN_WIDTH - 10, 50))
+                SCREEN.blit(coins_text, coins_text_rect)
+
             elif self.state == "game_over":
                 self.reset(2)
                 # title:
@@ -610,6 +619,7 @@ class Game:
         if option == 1:
             # reset game variables
             self.player_hp = 1000
+            self.player_coins = 100
 
     def render_tiles(self, tile: str, positions: list):
         """
