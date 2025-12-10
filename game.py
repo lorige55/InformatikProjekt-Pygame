@@ -568,13 +568,13 @@ class Game:
                 self.reset(2)
                 # title:
                 gameover_title = TITLE_FONT.render("Game Over!", True, (187, 127, 68))
-                gameover_title_rect = gameover_title.get_rect(center=(640, 340))
+                gameover_title_rect = gameover_title.get_rect(center=(640, 140))
                 SCREEN.blit(gameover_title, gameover_title_rect)
                 # subtitle:
                 gameover_subtitle = SUBTITLE_FONT.render(
                     "You Lost", True, (187, 127, 68)
                 )
-                gameover_subtitle_rect = gameover_subtitle.get_rect(center=(640, 380))
+                gameover_subtitle_rect = gameover_subtitle.get_rect(center=(640, 180))
                 SCREEN.blit(gameover_subtitle, gameover_subtitle_rect)
 
             # display swedish flag
