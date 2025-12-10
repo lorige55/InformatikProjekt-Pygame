@@ -491,6 +491,9 @@ class Game:
                         self.entities.add(Entity(entity_og_image))
                         self.last_entity_spawn_time = now
                         self.waves[self.current_wave][entity_og_image] -= 1
+                        if entity_og_image == vielgut_entity_og:
+                            pg.mixer.music.load("./assets/sound/ima_boss.mp3")
+                            pg.mixer.music.play(loops=0)
 
                 # entities
                 if self.entities:
