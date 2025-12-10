@@ -499,7 +499,7 @@ class Game:
 
                 # entities
                 if self.entities:
-                    self.entities.update(self.entities)
+                    self.entities.update(self.entities, self)
                     self.weapons.update(self.entities)
 
                 self.entities.draw(SCREEN)
@@ -682,10 +682,18 @@ class Entity(pg.sprite.Sprite):
             pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE)), angle
         )
 
-    def update(self, entities: pg.sprite.Group):
+    def update(self, entities: pg.sprite.Group, game: Game):
         """Removes itself, when hp is smaller than or equal to zero."""
         if self.entity_hp <= 0:
             entities.remove(self)
+            if self.og_image == loris_entity_og:
+                game.player_coins += 50
+            if self.og_image == gabriel_entity_og:
+                game.player_coins += 75
+            if self.og_image == gabriel_entity2_og:
+                game.player_coins += 100
+            if self.og_image == phillippe_entity_og:
+                game.player_coins += 150
 
 
 class Weapon(pg.sprite.Sprite):
