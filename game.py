@@ -197,13 +197,31 @@ class Game:
                     elif turret_rect.collidepoint(event.pos):
                         self.active_weapon_placing = [True, "turret"]
                     elif self.active_weapon_placing[0] is True:
-                        self.weapons.add(
-                            Weapon(
-                                TILES[self.active_weapon_placing[1]]["object"],
-                                convert_coordinates(event.pos),
+                        if (
+                            (
+                                self.active_weapon_placing[1] == "soldier1"
+                                and self.player_coins >= 50
                             )
-                        )
-                        self.active_weapon_placing = [False, ""]
+                            or (
+                                self.active_weapon_placing[1] == "soldier2"
+                                and self.player_coins >= 100
+                            )
+                            or (
+                                self.active_weapon_placing[1] == "missile_launcher"
+                                and self.player_coins >= 250
+                            )
+                            or (
+                                self.active_weapon_placing[1] == "turret"
+                                and self.player_coins >= 500
+                            )
+                        ):
+                            self.weapons.add(
+                                Weapon(
+                                    TILES[self.active_weapon_placing[1]]["object"],
+                                    convert_coordinates(event.pos),
+                                )
+                            )
+                            self.active_weapon_placing = [False, ""]
 
             # start SCREEN if:
             if self.state == "start":
@@ -711,13 +729,22 @@ class Weapon(pg.sprite.Sprite):
 
     range: int = 3 * TILE_SIZE
 
-    def __init__(self, image: pg.Surface, position: list):
+    def __init__(self, image: pg.Surface, position: list, game: Game):
         super().__init__()
         self.og_image = image
         self.image = pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = convert_coordinates(position)
         self.weapon_pos = pg.Vector2(self.rect.center)
+        if image == soldier1_og:
+            cost = 50
+        elif image == soldier2_og:
+            cost = 100
+        elif image == missile_launcher_og:
+            cost = 250
+        elif image == turret_og:
+            cost = 500
+        game.player_coins -= cost
 
     def update(self, entities):
         now = pg.time.get_ticks()
