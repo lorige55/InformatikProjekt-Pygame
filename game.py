@@ -73,6 +73,7 @@ TILES: dict = {
     "mountain_tns1": {
         "path": "./assets/photoshopped/Mountain_on_top_and_side_done.png"
     },
+    "mountain_tc": {"path": "./assets/photoshopped/Mountain_on_top_corners.png"},
 }
 
 for key, value in TILES.items():
@@ -480,6 +481,7 @@ class Game:
                     "mountain_blc",
                     [
                         [1, 8],
+                        [0, 7],
                     ],
                 )
                 self.render_tiles(
@@ -532,6 +534,11 @@ class Game:
                         [9, 4],
                         [10, 3],
                         [11, 1],
+                    ],
+                )
+                self.render_tiles(
+                    "mountain_tc",
+                    [
                         [12, 0],
                     ],
                 )
