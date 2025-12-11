@@ -733,13 +733,13 @@ class Entity(pg.sprite.Sprite):
         if self.entity_hp <= 0:
             entities.remove(self)
             if self.og_image == loris_entity_og:
-                game.player_coins += 25
+                game.player_coins += 10
             elif self.og_image == gabriel_entity_og:
-                game.player_coins += 50
+                game.player_coins += 30
             elif self.og_image == gabriel_entity2_og:
                 game.player_coins += 50
             elif self.og_image == phillippe_entity_og:
-                game.player_coins += 75
+                game.player_coins += 80
             elif self.og_image == vielgut_entity_og:
                 game.player_coins += 150
 
