@@ -243,7 +243,7 @@ class Game:
             elif self.state == "game":
                 # Check hp
                 if self.player_hp <= 0:
-                    self.state = "game_over"
+                    self.state = "gameover"
                     # play sound
                     pg.mixer.music.stop()
                     pg.mixer.music.load("./assets/sound/mimimi.mp3")
@@ -622,6 +622,10 @@ class Game:
                 )
                 gameover_subtitle_rect = gameover_subtitle.get_rect(center=(640, 180))
                 SCREEN.blit(gameover_subtitle, gameover_subtitle_rect)
+
+                gameover_screen = pg.image.load("./assets/custom/Game_over.bg.png")
+                gameover_screen_rect = gameover_screen.get_rect(center=(640, 450))
+                SCREEN.blit(gameover_screen, gameover_screen_rect)
 
             # display swedish flag
             SCREEN.blit(swedish_flag, swedish_flag_rect)
