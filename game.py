@@ -360,7 +360,7 @@ class Game:
                 self.render_tiles(
                     "grass_mechanic",
                     [
-                        [3, 0],
+                        [0, 1],
                     ],
                 )
 
@@ -368,7 +368,7 @@ class Game:
                 self.render_tiles(
                     "grass_cross",
                     [
-                        [7, 0],
+                        [0, 3],
                     ],
                 )
 
@@ -376,7 +376,7 @@ class Game:
                 self.render_tiles(
                     "grass_circle",
                     [
-                        [6, 0],
+                        [0, 2],
                     ],
                 )
 
@@ -390,6 +390,30 @@ class Game:
                         [8, 8],
                         [9, 8],
                         [7, 3],
+                        [7, 4],
+                        [6, 4],
+                        [5, 4],
+                        [8, 3],
+                        [7, 2],
+                        [7, 1],
+                        [8, 2],
+                        [8, 1],
+                        [9, 3],
+                        [9, 2],
+                        [9, 1],
+                        [9, 0],
+                        [8, 0],
+                        [10, 0],
+                        [15, 8],
+                        [15, 7],
+                        [14, 8],
+                        [13, 8],
+                        [14, 7],
+                        [15, 0],
+                        [14, 0],
+                        [15, 1],
+                        [15, 2],
+                        [14, 1],
                     ],
                 )
                 # Render mountain_freePosition tiles
@@ -417,37 +441,47 @@ class Game:
                     [
                         [4, 3],
                         [5, 3],
+                        [15, 6],
+                        [14, 6],
                     ],
                 )
                 self.render_tiles(
                     "mountain_bns1",
                     [
-                        [13, 1],
+                        [7, 0],
                         [6, 3],
+                        [12, 8],
+                        [13, 7],
                     ],
                 )
                 self.render_tiles(
                     "mountain_bns2",
                     [
-                        [13, 2],
+                        [0, 8],
                     ],
                 )
                 self.render_tiles(
                     "mountain_trc",
                     [
-                        [3, 5],
+                        [4, 5],
+                        [14, 3],
+                        [13, 2],
                     ],
                 )
                 self.render_tiles(
                     "mountain_brc",
                     [
-                        [3, 3],
+                        [4, 3],
+                        [6, 0],
+                        [12, 7],
+                        [13, 6],
+                        [11, 8],
                     ],
                 )
                 self.render_tiles(
                     "mountain_blc",
                     [
-                        [8, 0],
+                        [1, 8],
                     ],
                 )
                 self.render_tiles(
@@ -460,19 +494,19 @@ class Game:
                 self.render_tiles(
                     "mountain_right",
                     [
-                        [3, 4],
+                        [4, 4],
                         [6, 2],
                         [6, 1],
-                        [6, 0],
+                        [13, 1],
                     ],
                 )
                 self.render_tiles(
                     "mountain_top",
                     [
-                        [4, 5],
                         [5, 5],
                         [6, 5],
                         [7, 5],
+                        [15, 3],
                     ],
                 )
                 self.render_tiles(
@@ -480,13 +514,17 @@ class Game:
                     [
                         [8, 4],
                         [9, 3],
-                        [10, 0],
+                        [10, 1],
+                        [11, 0],
+                        [10, 8],
                     ],
                 )
                 self.render_tiles(
                     "mountain_tns2",
                     [
-                        [8, 0],
+                        [5, 8],
+                        [14, 2],
+                        [13, 0],
                     ],
                 )
                 self.render_tiles(
@@ -495,7 +533,8 @@ class Game:
                         [8, 5],
                         [9, 4],
                         [10, 3],
-                        [11, 0],
+                        [11, 1],
+                        [12, 0],
                     ],
                 )
 
