@@ -687,7 +687,7 @@ class Game:
                 pg.mixer.music.load("./assets/sound/win_music.mp3")
                 pg.mixer.music.play(loops=-1)
                 happy_win = pg.image.load("./assets/custom/happy_win.png")
-                happy_win_rect = happy_win.get_rect(center=(640, 450))
+                happy_win_rect = happy_win.get_rect(center=(640, 540))
                 SCREEN.blit(happy_win, happy_win_rect)
 
             # display swedish flag
