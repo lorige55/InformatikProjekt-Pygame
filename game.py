@@ -2,7 +2,7 @@
 
 # Franco looks like a maulwurf who just went to chong colong
 # Hayk is such a pookie - Gabriel (ily Hayk <3 ) (Philipp doesn't agree)
-# Mark 100.-
+# Mark 99.-
 
 from __future__ import annotations
 import pygame as pg
@@ -690,12 +690,34 @@ class Game:
                 SCREEN.blit(gameover_tipw, gameover_tipw_rect)
             elif self.state == "win":
                 self.reset(2)
+                # add music
                 pg.mixer.music.stop()
                 pg.mixer.music.load("./assets/sound/win_music.mp3")
                 pg.mixer.music.play(loops=-1)
+                # add picture
                 happy_win = pg.image.load("./assets/custom/happy_win.png")
-                happy_win_rect = happy_win.get_rect(center=(640, 540))
+                happy_win_rect = happy_win.get_rect(center=(600, 540))
                 SCREEN.blit(happy_win, happy_win_rect)
+                # add 3 mice on the left
+                mouse1 = pg.image.load("./assets/custom/mouse_right.png")
+                mouse1_rect = mouse1.get_rect(center=(340, 240))
+                SCREEN.blit(mouse1, mouse1_rect)
+                mouse2 = pg.image.load("./assets/custom/mouse_right.png")
+                mouse2_rect = mouse2.get_rect(center=(290, 390))
+                SCREEN.blit(mouse2, mouse2_rect)
+                mouse3 = pg.image.load("./assets/custom/mouse_right.png")
+                mouse3_rect = mouse3.get_rect(center=(240, 540))
+                SCREEN.blit(mouse3, mouse3_rect)
+                # add 3 mice on the right
+                mouse4 = pg.image.load("./assets/custom/mouse_left.png")
+                mouse4_rect = mouse4.get_rect(center=(940, 240))
+                SCREEN.blit(mouse4, mouse4_rect)
+                mouse5 = pg.image.load("./assets/custom/mouse_left.png")
+                mouse5_rect = mouse5.get_rect(center=(990, 390))
+                SCREEN.blit(mouse5, mouse5_rect)
+                mouse6 = pg.image.load("./assets/custom/mouse_left.png")
+                mouse6_rect = mouse6.get_rect(center=(1040, 540))
+                SCREEN.blit(mouse6, mouse6_rect)
 
             # display swedish flag
             SCREEN.blit(swedish_flag, swedish_flag_rect)
