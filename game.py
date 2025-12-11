@@ -682,7 +682,13 @@ class Game:
                 gameover_tipw_rect = gameover_tipw.get_rect(topleft=(90, 320))
                 SCREEN.blit(gameover_tipw, gameover_tipw_rect)
             elif self.state == "win":
-                pass
+                self.reset(2)
+                pg.mixer.music.stop()
+                pg.mixer.music.load("./assets/sound/win_music.mp3")
+                pg.mixer.music.play(loops=-1)
+                happy_win = pg.image.load("./assets/custom/happy_win.png")
+                happy_win_rect = happy_win.get_rect(center=(640, 450))
+                SCREEN.blit(happy_win, happy_win_rect)
 
             # display swedish flag
             SCREEN.blit(swedish_flag, swedish_flag_rect)
