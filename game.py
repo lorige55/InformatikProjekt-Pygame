@@ -150,7 +150,7 @@ class Game:
     current_wave: int = 1
 
     waves: dict = {
-        1: {loris_entity_og: 5},
+        1: {loris_entity_og: 10},
         2: {loris_entity_og: 5, gabriel_entity_og: 5, phillippe_entity_og: 5},
         3: {
             loris_entity_og: 10,
@@ -243,7 +243,7 @@ class Game:
             elif self.state == "game":
                 # Check hp
                 if self.player_hp <= 0:
-                    self.state = "gameover"
+                    self.state = "game_over"
                     # play sound
                     pg.mixer.music.stop()
                     pg.mixer.music.load("./assets/sound/mimimi.mp3")
@@ -622,10 +622,18 @@ class Game:
                 )
                 gameover_subtitle_rect = gameover_subtitle.get_rect(center=(640, 180))
                 SCREEN.blit(gameover_subtitle, gameover_subtitle_rect)
-
+                # picture
                 gameover_screen = pg.image.load("./assets/custom/Game_over.bg.png")
                 gameover_screen_rect = gameover_screen.get_rect(center=(640, 450))
                 SCREEN.blit(gameover_screen, gameover_screen_rect)
+                # tip
+                gameover_tip = SUBTITLE_FONT.render("Tip:", True, (187, 127, 68))
+                gameover_tip_rect = gameover_tip.get_rect(topleft=(90, 300))
+                SCREEN.blit(gameover_tip, gameover_tip_rect)
+
+                gameover_tipw = SUBTITLE_FONT.render("Get better", True, (187, 127, 68))
+                gameover_tipw_rect = gameover_tipw.get_rect(topleft=(90, 320))
+                SCREEN.blit(gameover_tipw, gameover_tipw_rect)
 
             # display swedish flag
             SCREEN.blit(swedish_flag, swedish_flag_rect)
