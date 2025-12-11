@@ -20,7 +20,7 @@ SCREEN: pg.Surface = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock: pg.time.Clock = pg.time.Clock()
 TITLE_FONT: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Blocks.ttf", 36)
 SUBTITLE_FONT: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Future.ttf", 18)
-WEAPONS_RANGE = 3 * TILE_SIZE
+WEAPONS_RANGE = 4 * TILE_SIZE
 
 TILES: dict = {
     "grass": {
@@ -189,6 +189,7 @@ class Game:
                         pg.mixer.music.load("./assets/sound/coconut_mall.mp3")
                         pg.mixer.music.play(loops=-1)
                 elif event.type == pg.constants.MOUSEBUTTONDOWN:
+                    x, y = convert_coordinates(event.pos)
                     if soldier1_rect.collidepoint(event.pos):
                         self.active_weapon_placing = [True, "soldier1"]
                     elif soldier2_rect.collidepoint(event.pos):
@@ -197,7 +198,10 @@ class Game:
                         self.active_weapon_placing = [True, "missile_launcher"]
                     elif turret_rect.collidepoint(event.pos):
                         self.active_weapon_placing = [True, "turret"]
-                    elif self.active_weapon_placing[0] is True:
+                    elif (
+                        self.active_weapon_placing[0] is True
+                        and [x, y] not in self.placement_free_zone
+                    ):
                         if (
                             (
                                 self.active_weapon_placing[1] == "soldier1"
