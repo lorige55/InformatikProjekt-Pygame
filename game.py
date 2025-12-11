@@ -20,6 +20,7 @@ SCREEN: pg.Surface = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock: pg.time.Clock = pg.time.Clock()
 TITLE_FONT: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Blocks.ttf", 36)
 SUBTITLE_FONT: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Future.ttf", 18)
+WEAPONS_RANGE = 3 * TILE_SIZE
 
 TILES: dict = {
     "grass": {
@@ -592,6 +593,16 @@ class Game:
                         self.render_tiles(
                             self.active_weapon_placing[1], [[tile_x, tile_y]]
                         )
+                        circle_x, circle_y = convert_coordinates([tile_x, tile_y])
+                        circle_x += TILE_SIZE / 2
+                        circle_y += TILE_SIZE / 2
+                        pg.draw.circle(
+                            SCREEN,
+                            (255, 255, 255),
+                            (circle_x, circle_y),
+                            WEAPONS_RANGE,
+                            width=1,
+                        )
 
                 # display wave
                 current_wave_text = TITLE_FONT.render(
@@ -773,8 +784,6 @@ class Weapon(pg.sprite.Sprite):
 
     weapon_pos: pg.Vector2
 
-    range: int = 3 * TILE_SIZE
-
     cost: int
 
     def __init__(self, type: str, position: list, game: Game):
@@ -812,7 +821,7 @@ class Weapon(pg.sprite.Sprite):
             for entity in entities.sprites():
                 target_pos = pg.Vector2(entity.rect.center)
                 distance = self.weapon_pos.distance_to(target_pos)
-                if distance <= self.range:
+                if distance <= WEAPONS_RANGE:
                     entity.entity_hp -= self.damage
                     self.last_shot_time = now
                 else:
