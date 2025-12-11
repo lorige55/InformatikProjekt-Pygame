@@ -39,15 +39,11 @@ TILES: dict = {
     "grass_road_bigturning_downleft": {
         "path": "./assets/tiles/towerDefense_tile048.png"
     },
-    "grass_freePositon": {"path": "./assets/tiles/towerDefense_tile042.png"},
-    "grass_mechanic": {"path": "./assets/tiles/towerDefense_tile043.png"},
-    "grass_cross": {"path": "./assets/tiles/towerDefense_tile044.png"},
-    "grass_circle": {"path": "./assets/tiles/towerDefense_tile045.png"},
+    "free_position": {"path": "./assets/tiles/towerDefense_tile015.png"},
+    "mechanic": {"path": "./assets/tiles/towerDefense_tile016.png"},
+    "cross": {"path": "./assets/tiles/towerDefense_tile017.png"},
+    "circle": {"path": "./assets/tiles/towerDefense_tile018.png"},
     "mountain": {"path": "./assets/tiles/towerDefense_tile034.png"},
-    "mountain_freePosition": {"path": "./assets/tiles/towerDefense_tile088.png"},
-    "mountain_mechanic": {"path": "./assets/tiles/towerDefense_tile089.png"},
-    "mountain_cross": {"path": "./assets/tiles/towerDefense_tile090.png"},
-    "mountain_circle": {"path": "./assets/tiles/towerDefense_tile091.png"},
     "mountain_road_down": {"path": "./assets/tiles/towerDefense_tile011.png"},
     "soldier1": {"path": "./assets/tiles/towerDefense_tile245.png"},
     "soldier2": {"path": "./assets/tiles/towerDefense_tile246.png"},
@@ -359,27 +355,27 @@ class Game:
                     ],
                 )
 
-                # Render grass_freePosition tiles
+                # Render free_position tiles
 
-                # Render grass_mechanic tiles
+                # Render mechanic tiles
                 self.render_tiles(
-                    "grass_mechanic",
+                    "mechanic",
                     [
                         [0, 1],
                     ],
                 )
 
-                # Render grass_cross tiles
+                # Render cross tiles
                 self.render_tiles(
-                    "grass_cross",
+                    "cross",
                     [
                         [0, 3],
                     ],
                 )
 
-                # Render grass_circle tiles
+                # Render circle tiles
                 self.render_tiles(
-                    "grass_circle",
+                    "circle",
                     [
                         [0, 2],
                     ],
@@ -421,13 +417,6 @@ class Game:
                         [14, 1],
                     ],
                 )
-                # Render mountain_freePosition tiles
-
-                # Render mountain_mechanic tiles
-
-                # Render mountain_cross tiles
-
-                # Render mountain_circle tiles
 
                 # Render mountain_road_down tiles
                 self.render_tiles(
@@ -628,7 +617,7 @@ class Game:
                     x, y = pg.mouse.get_pos()
                     tile_x, tile_y = convert_coordinates([x, y])
                     if [tile_x, tile_y] not in self.placement_free_zone:
-                        self.render_tiles("grass_circle", [[tile_x, tile_y]])
+                        self.render_tiles("free_position", [[tile_x, tile_y]])
                         self.render_tiles(
                             self.active_weapon_placing[1], [[tile_x, tile_y]]
                         )
@@ -751,7 +740,8 @@ class Game:
                 )
             if (
                 tile is not "grass"
-                and tile is not "grass_circle"
+                and tile is not "mountain"
+                and tile is not "free_position"
                 and tile is not "soldier1"
                 and tile is not "soldier2"
                 and tile is not "missile_launcher"
