@@ -1,5 +1,9 @@
 """The main file of our game"""
 
+# Franco looks like a maulwurf who just went to chong colong
+# Hayk is such a pookie - Gabriel
+# Mark 100.-
+
 from __future__ import annotations
 import pygame as pg
 
@@ -634,6 +638,8 @@ class Game:
                 gameover_tipw = SUBTITLE_FONT.render("Get better", True, (187, 127, 68))
                 gameover_tipw_rect = gameover_tipw.get_rect(topleft=(90, 320))
                 SCREEN.blit(gameover_tipw, gameover_tipw_rect)
+            elif self.state == "win":
+                pass
 
             # display swedish flag
             SCREEN.blit(swedish_flag, swedish_flag_rect)
