@@ -710,7 +710,7 @@ class Entity(pg.sprite.Sprite):
 
     og_image: pg.Surface
 
-    entity_hp: int = 100
+    entity_hp: int
 
     def __init__(self, image: pg.Surface):
         super().__init__()
@@ -721,6 +721,14 @@ class Entity(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = SCREEN_WIDTH
         self.rect.y = round(4.5 * TILE_SIZE)
+        if self.og_image == loris_entity_og:
+            self.entity_hp = 100
+        elif self.og_image == gabriel_entity_og or self.og_image == gabriel_entity2_og:
+            self.entity_hp = 200
+        elif self.og_image == phillippe_entity_og:
+            self.entity_hp = 300
+        elif self.og_image == vielgut_entity_og:
+            self.entity_hp = 600
 
     def rotate(self, angle: int):
         """Rotates the Entity according to angle parameter"""
@@ -734,12 +742,14 @@ class Entity(pg.sprite.Sprite):
             entities.remove(self)
             if self.og_image == loris_entity_og:
                 game.player_coins += 10
-            if self.og_image == gabriel_entity_og:
+            elif self.og_image == gabriel_entity_og:
                 game.player_coins += 30
-            if self.og_image == gabriel_entity2_og:
+            elif self.og_image == gabriel_entity2_og:
                 game.player_coins += 50
-            if self.og_image == phillippe_entity_og:
+            elif self.og_image == phillippe_entity_og:
                 game.player_coins += 80
+            elif self.og_image == vielgut_entity_og:
+                game.player_coins += 150
 
 
 class Weapon(pg.sprite.Sprite):
@@ -749,11 +759,11 @@ class Weapon(pg.sprite.Sprite):
 
     type: str
 
-    damage: int = 50
+    damage: int
 
     last_shot_time: int = 0
 
-    fire_rate: int = 5000
+    fire_rate: int
 
     weapon_pos: pg.Vector2
 
@@ -767,15 +777,23 @@ class Weapon(pg.sprite.Sprite):
         if type == "soldier1":
             self.og_image = soldier1_og
             self.cost = 50
+            self.damage = 50
+            self.fire_rate = 5000
         elif type == "soldier2":
             self.og_image = soldier2_og
             self.cost = 100
+            self.damage = 50
+            self.fire_rate = 2500
         elif type == "missile_launcher":
             self.og_image = missile_launcher_og
             self.cost = 250
+            self.damage = 125
+            self.fire_rate = 2500
         elif type == "turret":
             self.og_image = turret_og
             self.cost = 500
+            self.damage = 150
+            self.fire_rate = 1000
         self.image = pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = convert_coordinates(position)
@@ -784,16 +802,13 @@ class Weapon(pg.sprite.Sprite):
 
     def update(self, entities):
         now = pg.time.get_ticks()
-        if now - self.last_shot_time >= self.fire_rate:
-            target = 0
-            while self.last_shot_time != now:
-                target_pos = pg.Vector2(entities.sprites()[target].rect.center)
+        if now - self.last_shot_time >= self.fire_rate and len(entities.sprites()) > 0:
+            for entity in entities.sprites():
+                target_pos = pg.Vector2(entity.rect.center)
                 distance = self.weapon_pos.distance_to(target_pos)
                 if distance <= self.range:
-                    entities.sprites()[target].entity_hp -= self.damage
+                    entity.entity_hp -= self.damage
                     self.last_shot_time = now
-                elif len(entities.sprites()) > target + 1:
-                    target += 1
                 else:
                     break
 
