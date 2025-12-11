@@ -1,7 +1,7 @@
 """The main file of our game"""
 
 # Franco looks like a maulwurf who just went to chong colong
-# Hayk is such a pookie - Gabriel (ily Hayk <3 )
+# Hayk is such a pookie - Gabriel (ily Hayk <3 ) (Philipp doesn't agree)
 # Mark 100.-
 
 from __future__ import annotations
