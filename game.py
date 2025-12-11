@@ -1,5 +1,9 @@
 """The main file of our game"""
 
+# Franco looks like a maulwurf who just went to chong colong
+# Hayk is such a pookie - Gabriel
+# Mark 100.-
+
 from __future__ import annotations
 import pygame as pg
 
@@ -16,6 +20,7 @@ SCREEN: pg.Surface = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock: pg.time.Clock = pg.time.Clock()
 TITLE_FONT: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Blocks.ttf", 36)
 SUBTITLE_FONT: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Future.ttf", 18)
+WEAPONS_RANGE = 3 * TILE_SIZE
 
 TILES: dict = {
     "grass": {
@@ -150,7 +155,7 @@ class Game:
     current_wave: int = 1
 
     waves: dict = {
-        1: {loris_entity_og: 5},
+        1: {loris_entity_og: 10},
         2: {loris_entity_og: 5, gabriel_entity_og: 5, phillippe_entity_og: 5},
         3: {
             loris_entity_og: 10,
@@ -627,6 +632,16 @@ class Game:
                         self.render_tiles(
                             self.active_weapon_placing[1], [[tile_x, tile_y]]
                         )
+                        circle_x, circle_y = convert_coordinates([tile_x, tile_y])
+                        circle_x += TILE_SIZE / 2
+                        circle_y += TILE_SIZE / 2
+                        pg.draw.circle(
+                            SCREEN,
+                            (255, 255, 255),
+                            (circle_x, circle_y),
+                            WEAPONS_RANGE,
+                            width=1,
+                        )
 
                 # display wave
                 current_wave_text = TITLE_FONT.render(
@@ -661,6 +676,20 @@ class Game:
                 )
                 gameover_subtitle_rect = gameover_subtitle.get_rect(center=(640, 180))
                 SCREEN.blit(gameover_subtitle, gameover_subtitle_rect)
+                # picture
+                gameover_screen = pg.image.load("./assets/custom/Game_over.bg.png")
+                gameover_screen_rect = gameover_screen.get_rect(center=(640, 450))
+                SCREEN.blit(gameover_screen, gameover_screen_rect)
+                # tip
+                gameover_tip = SUBTITLE_FONT.render("Tip:", True, (187, 127, 68))
+                gameover_tip_rect = gameover_tip.get_rect(topleft=(90, 300))
+                SCREEN.blit(gameover_tip, gameover_tip_rect)
+
+                gameover_tipw = SUBTITLE_FONT.render("Get better", True, (187, 127, 68))
+                gameover_tipw_rect = gameover_tipw.get_rect(topleft=(90, 320))
+                SCREEN.blit(gameover_tipw, gameover_tipw_rect)
+            elif self.state == "win":
+                pass
 
             # display swedish flag
             SCREEN.blit(swedish_flag, swedish_flag_rect)
@@ -737,7 +766,7 @@ class Entity(pg.sprite.Sprite):
 
     og_image: pg.Surface
 
-    entity_hp: int = 100
+    entity_hp: int
 
     def __init__(self, image: pg.Surface):
         super().__init__()
@@ -748,6 +777,14 @@ class Entity(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = SCREEN_WIDTH
         self.rect.y = round(4.5 * TILE_SIZE)
+        if self.og_image == loris_entity_og:
+            self.entity_hp = 100
+        elif self.og_image == gabriel_entity_og or self.og_image == gabriel_entity2_og:
+            self.entity_hp = 200
+        elif self.og_image == phillippe_entity_og:
+            self.entity_hp = 300
+        elif self.og_image == vielgut_entity_og:
+            self.entity_hp = 600
 
     def rotate(self, angle: int):
         """Rotates the Entity according to angle parameter"""
@@ -760,12 +797,14 @@ class Entity(pg.sprite.Sprite):
         if self.entity_hp <= 0:
             entities.remove(self)
             if self.og_image == loris_entity_og:
+                game.player_coins += 10
+            elif self.og_image == gabriel_entity_og:
+                game.player_coins += 30
+            elif self.og_image == gabriel_entity2_og:
                 game.player_coins += 50
-            if self.og_image == gabriel_entity_og:
-                game.player_coins += 75
-            if self.og_image == gabriel_entity2_og:
-                game.player_coins += 100
-            if self.og_image == phillippe_entity_og:
+            elif self.og_image == phillippe_entity_og:
+                game.player_coins += 80
+            elif self.og_image == vielgut_entity_og:
                 game.player_coins += 150
 
 
@@ -776,15 +815,13 @@ class Weapon(pg.sprite.Sprite):
 
     type: str
 
-    damage: int = 50
+    damage: int
 
     last_shot_time: int = 0
 
-    fire_rate: int = 5000
+    fire_rate: int
 
     weapon_pos: pg.Vector2
-
-    range: int = 3 * TILE_SIZE
 
     cost: int
 
@@ -794,15 +831,23 @@ class Weapon(pg.sprite.Sprite):
         if type == "soldier1":
             self.og_image = soldier1_og
             self.cost = 50
+            self.damage = 50
+            self.fire_rate = 5000
         elif type == "soldier2":
             self.og_image = soldier2_og
             self.cost = 100
+            self.damage = 50
+            self.fire_rate = 2500
         elif type == "missile_launcher":
             self.og_image = missile_launcher_og
             self.cost = 250
+            self.damage = 125
+            self.fire_rate = 2500
         elif type == "turret":
             self.og_image = turret_og
             self.cost = 500
+            self.damage = 150
+            self.fire_rate = 1000
         self.image = pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = convert_coordinates(position)
@@ -811,16 +856,13 @@ class Weapon(pg.sprite.Sprite):
 
     def update(self, entities):
         now = pg.time.get_ticks()
-        if now - self.last_shot_time >= self.fire_rate:
-            target = 0
-            while self.last_shot_time != now:
-                target_pos = pg.Vector2(entities.sprites()[target].rect.center)
+        if now - self.last_shot_time >= self.fire_rate and len(entities.sprites()) > 0:
+            for entity in entities.sprites():
+                target_pos = pg.Vector2(entity.rect.center)
                 distance = self.weapon_pos.distance_to(target_pos)
-                if distance <= self.range:
-                    entities.sprites()[target].entity_hp -= self.damage
+                if distance <= WEAPONS_RANGE:
+                    entity.entity_hp -= self.damage
                     self.last_shot_time = now
-                elif len(entities.sprites()) > target + 1:
-                    target += 1
                 else:
                     break
 
