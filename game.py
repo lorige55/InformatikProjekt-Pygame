@@ -10,6 +10,8 @@ import pygame as pg
 pg.init()
 pg.font.init()
 pg.mixer.init()
+pg.display.set_caption("Tower Defense - by Gabriel, Fillipe and Loris")
+pg.display.set_icon(pg.image.load("./assets/custom/icon.png"))
 TILED_WIDTH: int = 16
 TILED_HEIGHT: int = 9
 TILE_SIZE: int = 80
@@ -47,7 +49,7 @@ TILES: dict = {
     "mountain_road_down": {"path": "./assets/tiles/towerDefense_tile011.png"},
     "soldier1": {"path": "./assets/tiles/towerDefense_tile245.png"},
     "soldier2": {"path": "./assets/tiles/towerDefense_tile246.png"},
-    "missile_launcher": {"path": "./assets/tiles/towerDefense_tile204.png"},
+    "missile_launcher": {"path": "./assets/tiles/towerDefense_tile205.png"},
     "turret": {"path": "./assets/tiles/towerDefense_tile250.png"},
     "mountain_done": {"path": "./assets/photoshopped/Mountain_on_bottom_done.png"},
     "mountain_bns1": {
@@ -115,7 +117,7 @@ soldier2 = pg.transform.scale(
 )
 soldier2_rect = soldier2.get_rect(topleft=(7 * TILE_SIZE, 8 * TILE_SIZE))
 
-missile_launcher_og = pg.image.load("./assets/tiles/towerDefense_tile204.png")
+missile_launcher_og = pg.image.load("./assets/tiles/towerDefense_tile205.png")
 missile_launcher = pg.transform.scale(
     missile_launcher_og,
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
