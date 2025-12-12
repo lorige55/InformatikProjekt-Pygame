@@ -147,7 +147,7 @@ class Game:
 
     weapons: pg.sprite.Group = pg.sprite.Group()
 
-    placement_free_zone: list = []
+    placement_free_zone: list = [[6, 8], [7, 8], [8, 8], [9, 8]]
 
     current_wave: int = 1
 
@@ -224,11 +224,12 @@ class Game:
                             self.weapons.add(
                                 Weapon(
                                     self.active_weapon_placing[1],
-                                    convert_coordinates(event.pos),
+                                    [x, y],
                                     self,
                                 )
                             )
                             self.active_weapon_placing = [False, ""]
+                            self.placement_free_zone.append([x, y])
 
             # start SCREEN if:
             if self.state == "start":
