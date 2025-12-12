@@ -798,6 +798,12 @@ class Entity(pg.sprite.Sprite):
     entity_hp: int
 
     def __init__(self, image: pg.Surface):
+        """
+        Creates Entity Object and sets its variables.
+
+        Args:
+            image (pg.Surface): og_image of entity
+        """
         super().__init__()
         self.og_image = image
         self.image = pg.transform.rotate(
@@ -816,13 +822,25 @@ class Entity(pg.sprite.Sprite):
             self.entity_hp = 600
 
     def rotate(self, angle: int):
-        """Rotates the Entity according to angle parameter"""
+        """
+        Rotates entity on screen by angle.
+
+        Args:
+            angle (int): angle in degrees (anti-clockwise)
+        """
         self.image = pg.transform.rotate(
             pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE)), angle
         )
 
     def update(self, entities: pg.sprite.Group, game: Game):
-        """Removes itself, when hp is smaller than or equal to zero."""
+        """
+        Checks if entity is dead.
+        If so, it removes itself and gives player coins.
+
+        Args:
+            entities (pg.sprite.Group): entities sprite group
+            game (Game): game object
+        """
         if self.entity_hp <= 0:
             entities.remove(self)
             if self.og_image == loris_entity_og:
@@ -842,7 +860,7 @@ class Weapon(pg.sprite.Sprite):
 
     og_image: pg.Surface
 
-    type: str
+    weapon: str
 
     damage: int
 
@@ -854,25 +872,33 @@ class Weapon(pg.sprite.Sprite):
 
     cost: int
 
-    def __init__(self, type: str, position: list, game: Game):
+    def __init__(self, weapon: str, position: list, game: Game):
+        """
+        Creates Weapon Object and subtracts coins from player.
+
+        Args:
+            weapon (str): Type of Weapon
+            position (list): Postion of Weapon in Screen Pixels
+            game (Game): game Object
+        """
         super().__init__()
-        self.type = type
-        if type == "soldier1":
+        self.weapon = weapon
+        if weapon == "soldier1":
             self.og_image = soldier1_og
             self.cost = 50
             self.damage = 50
             self.fire_rate = 5000
-        elif type == "soldier2":
+        elif weapon == "soldier2":
             self.og_image = soldier2_og
             self.cost = 100
             self.damage = 50
             self.fire_rate = 2500
-        elif type == "missile_launcher":
+        elif weapon == "missile_launcher":
             self.og_image = missile_launcher_og
             self.cost = 250
             self.damage = 125
             self.fire_rate = 2500
-        elif type == "turret":
+        elif weapon == "turret":
             self.og_image = turret_og
             self.cost = 500
             self.damage = 150
@@ -883,7 +909,14 @@ class Weapon(pg.sprite.Sprite):
         self.weapon_pos = pg.Vector2(self.rect.center)
         game.player_coins -= self.cost
 
-    def update(self, entities):
+    def update(self, entities: pg.sprite.Group):
+        """
+        Checks if Weapon is ready to shoot again.
+        Then damages first entity that is within its range.
+
+        Args:
+            entities (pg.spriteGroup): entities Sprite group
+        """
         now = pg.time.get_ticks()
         if now - self.last_shot_time >= self.fire_rate and len(entities.sprites()) > 0:
             for entity in entities.sprites():
@@ -902,7 +935,7 @@ def convert_coordinates(coordinates: list):
     Returns converted x and y value.
 
     Args:
-        coordinates (list): X, Y position in screen pixels or tiled position (function automatically recognizes)
+        coordinates (list): X, Y position (screen pixels or tiled)
     """
     x, y = coordinates
     if x > TILED_WIDTH and y > TILED_WIDTH:
