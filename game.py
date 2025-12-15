@@ -653,6 +653,8 @@ class Game:
                             WEAPONS_RANGE,
                             width=1,
                         )
+                    elif tile_x == 0 and tile_y == 3:
+                        self.active_weapon_placing = [False, ""]
 
                 # display wave
                 current_wave_text = TITLE_FONT.render(
