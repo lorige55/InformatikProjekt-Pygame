@@ -367,28 +367,16 @@ class Game:
                 # Render free_position tiles
 
                 # Render mechanic tiles
-                self.render_tiles(
-                    "mechanic",
-                    [
-                        [0, 1],
-                    ],
-                )
 
                 # Render cross tiles
                 self.render_tiles(
                     "cross",
                     [
-                        [0, 3],
+                        [0, 4],
                     ],
                 )
 
                 # Render circle tiles
-                self.render_tiles(
-                    "circle",
-                    [
-                        [0, 2],
-                    ],
-                )
 
                 # Render mountain tiles
                 self.render_tiles(
@@ -613,7 +601,7 @@ class Game:
                             WEAPONS_RANGE,
                             width=1,
                         )
-                    elif tile_x == 0 and tile_y == 3:
+                    elif tile_x == 0 and tile_y == 4:
                         self.active_weapon_placing = [False, ""]
 
                 # display wave
