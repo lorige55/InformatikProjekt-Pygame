@@ -17,7 +17,6 @@ TILED_HEIGHT: int = 9
 TILE_SIZE: int = 80
 SCREEN_WIDTH: int = TILED_WIDTH * TILE_SIZE
 SCREEN_HEIGHT: int = TILED_HEIGHT * TILE_SIZE
-VELOCITY: int = 2
 SCREEN: pg.Surface = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock: pg.time.Clock = pg.time.Clock()
 TITLE_FONT: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Blocks.ttf", 36)
@@ -138,6 +137,8 @@ class Game:
     """Stores Variables and methods needed to control the game."""
 
     state: str = "start"
+
+    velocity: float = 2
 
     player_hp: float = 1000
 
@@ -557,6 +558,7 @@ class Game:
                 if self.next_wave_time <= now and self.next_wave_time != 0:
                     self.current_wave += 1
                     self.next_wave_time = 0
+                    self.velocity += 1.5
 
                 for number, objects in self.waves.items():
                     total = 0
@@ -570,13 +572,19 @@ class Game:
                         self.next_wave_time = now + 50000
 
                 for entity_og_image, amount in self.waves[self.current_wave].items():
-                    if amount > 0 and now - self.last_entity_spawn_time >= 3000:
+                    if amount > 0 and now - self.last_entity_spawn_time >= (
+                        12000 / (self.velocity * 2)
+                    ):
                         self.entities.add(Entity(entity_og_image))
                         self.last_entity_spawn_time = now
                         self.waves[self.current_wave][entity_og_image] -= 1
                         if entity_og_image == vielgut_entity_og:
                             pg.mixer.music.load("./assets/sound/ima_boss.mp3")
                             pg.mixer.music.play(loops=0)
+                            self.velocity = 2
+
+                if self.current_wave == 4 * len(self.entities.sprites()) == 0:
+                    self.state = "win"
 
                 # entities
                 if self.entities:
@@ -591,36 +599,36 @@ class Game:
                         entity.rect.x > TILE_SIZE * 10.5
                         and entity.rect.y == TILE_SIZE * 4.5
                     ):
-                        entity.rect.x -= VELOCITY
+                        entity.rect.x -= self.velocity
                         entity.rotate(90)
                     elif (
                         entity.rect.y < TILE_SIZE * 6.5
                         and entity.rect.x == TILE_SIZE * 10.5
                     ):
-                        entity.rect.y += VELOCITY
+                        entity.rect.y += self.velocity
                         entity.rotate(180)
                     elif (
                         entity.rect.x > TILE_SIZE * 1.5
                         and entity.rect.y == TILE_SIZE * 6.5
                     ):
-                        entity.rect.x -= VELOCITY
+                        entity.rect.x -= self.velocity
                         entity.rotate(90)
                     elif (
                         entity.rect.y > TILE_SIZE * 1.5
                         and entity.rect.x == TILE_SIZE * 1.5
                     ):
-                        entity.rect.y -= VELOCITY
+                        entity.rect.y -= self.velocity
                         entity.rotate(0)
                     elif (
                         entity.rect.x < TILE_SIZE * 4.5
                         and entity.rect.y == TILE_SIZE * 1.5
                     ):
-                        entity.rect.x += VELOCITY
+                        entity.rect.x += self.velocity
                         entity.rotate(-90)
                     elif (
                         entity.rect.y > -TILE_SIZE and entity.rect.x == TILE_SIZE * 4.5
                     ):
-                        entity.rect.y -= VELOCITY
+                        entity.rect.y -= self.velocity
                         entity.rotate(0)
                     else:
                         self.entities.remove(entity)
@@ -822,7 +830,7 @@ class Entity(pg.sprite.Sprite):
         elif self.og_image == phillippe_entity_og:
             self.entity_hp = 300
         elif self.og_image == vielgut_entity_og:
-            self.entity_hp = 600
+            self.entity_hp = 1500
 
     def rotate(self, angle: int):
         """
@@ -889,7 +897,7 @@ class Weapon(pg.sprite.Sprite):
         if weapon == "soldier1":
             self.og_image = soldier1_og
             self.cost = 50
-            self.damage = 50
+            self.damage = 25
             self.fire_rate = 5000
         elif weapon == "soldier2":
             self.og_image = soldier2_og
