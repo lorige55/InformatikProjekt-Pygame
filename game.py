@@ -138,7 +138,7 @@ class Game:
 
     state: str = "start"
 
-    velocity: float = 2
+    velocity: int = 2
 
     player_hp: float = 1000
 
@@ -558,7 +558,7 @@ class Game:
                 if self.next_wave_time <= now and self.next_wave_time != 0:
                     self.current_wave += 1
                     self.next_wave_time = 0
-                    self.velocity += 1.5
+                    self.velocity += 1
 
                 for number, objects in self.waves.items():
                     total = 0
@@ -593,46 +593,6 @@ class Game:
 
                 self.entities.draw(SCREEN)
                 self.weapons.draw(SCREEN)
-
-                for entity in self.entities:
-                    if (
-                        entity.rect.x > TILE_SIZE * 10.5
-                        and entity.rect.y == TILE_SIZE * 4.5
-                    ):
-                        entity.rect.x -= self.velocity
-                        entity.rotate(90)
-                    elif (
-                        entity.rect.y < TILE_SIZE * 6.5
-                        and entity.rect.x == TILE_SIZE * 10.5
-                    ):
-                        entity.rect.y += self.velocity
-                        entity.rotate(180)
-                    elif (
-                        entity.rect.x > TILE_SIZE * 1.5
-                        and entity.rect.y == TILE_SIZE * 6.5
-                    ):
-                        entity.rect.x -= self.velocity
-                        entity.rotate(90)
-                    elif (
-                        entity.rect.y > TILE_SIZE * 1.5
-                        and entity.rect.x == TILE_SIZE * 1.5
-                    ):
-                        entity.rect.y -= self.velocity
-                        entity.rotate(0)
-                    elif (
-                        entity.rect.x < TILE_SIZE * 4.5
-                        and entity.rect.y == TILE_SIZE * 1.5
-                    ):
-                        entity.rect.x += self.velocity
-                        entity.rotate(-90)
-                    elif (
-                        entity.rect.y > -TILE_SIZE and entity.rect.x == TILE_SIZE * 4.5
-                    ):
-                        entity.rect.y -= self.velocity
-                        entity.rotate(0)
-                    else:
-                        self.entities.remove(entity)
-                        self.player_hp -= entity.entity_hp
 
                 # Active Weapon Placement
                 if self.active_weapon_placing[0] is True:
@@ -834,6 +794,15 @@ class Entity(pg.sprite.Sprite):
         elif self.og_image == vielgut_entity_og:
             self.entity_hp = 1500
 
+        self.path: list[list[float, float]] = [
+            [10.5, 4.5],
+            [10.5, 6.5],
+            [1.5, 6.5],
+            [1.5, 1.5],
+            [4.5, 1.5],
+            [4.5, -1],
+        ]
+
     def rotate(self, angle: int):
         """
         Rotates entity on screen by angle.
@@ -854,18 +823,66 @@ class Entity(pg.sprite.Sprite):
             entities (pg.sprite.Group): entities sprite group
             game (Game): game object
         """
+        if len(self.path) == 0:
+            game.player_hp -= self.entity_hp
+            self.entity_hp = 0
+        else:
+            target_x: int = self.path[0][0] * TILE_SIZE
+            target_y: int = self.path[0][1] * TILE_SIZE
+
+            delta_x: int = target_x - self.rect.x
+            delta_y: int = target_y - self.rect.y
+
+            if delta_x == 0 and delta_y == 0:
+                self.path.pop(0)
+            elif abs(delta_x) <= game.velocity and abs(delta_y) <= game.velocity:
+                self.rect.x = target_x
+                self.rect.y = target_y
+            else:
+                step_x: int = (
+                    game.velocity
+                    if delta_x > 0
+                    else (-game.velocity if delta_x < 0 else 0)
+                )
+                step_y: int = (
+                    game.velocity
+                    if delta_y > 0
+                    else (-game.velocity if delta_y < 0 else 0)
+                )
+
+                if abs(step_x) > abs(delta_x):
+                    step_x = delta_x
+                if abs(step_y) > abs(delta_y):
+                    step_y = delta_y
+
+                if step_x < 0:
+                    angle = 90
+                elif step_x > 0:
+                    angle = -90
+
+                if step_y < 0:
+                    angle = 0
+                elif step_y > 0:
+                    angle = 180
+
+                self.rect.x += step_x
+                self.rect.y += step_y
+
+                self.rotate(angle)
+
         if self.entity_hp <= 0:
             entities.remove(self)
-            if self.og_image == loris_entity_og:
-                game.player_coins += 10
-            elif self.og_image == gabriel_entity_og:
-                game.player_coins += 30
-            elif self.og_image == gabriel_entity2_og:
-                game.player_coins += 50
-            elif self.og_image == phillippe_entity_og:
-                game.player_coins += 80
-            elif self.og_image == vielgut_entity_og:
-                game.player_coins += 150
+            if len(self.path) > 0:
+                if self.og_image == loris_entity_og:
+                    game.player_coins += 10
+                elif self.og_image == gabriel_entity_og:
+                    game.player_coins += 30
+                elif self.og_image == gabriel_entity2_og:
+                    game.player_coins += 50
+                elif self.og_image == phillippe_entity_og:
+                    game.player_coins += 80
+                elif self.og_image == vielgut_entity_og:
+                    game.player_coins += 150
 
 
 class Weapon(pg.sprite.Sprite):
