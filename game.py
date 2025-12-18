@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 import pygame as pg
+import math
 
 pg.init()
 pg.font.init()
@@ -571,8 +572,16 @@ class Game:
                             pg.mixer.music.play(loops=0)
                             self.velocity = 2
 
-                if self.current_wave == 4 * len(self.entities.sprites()) == 0:
+                if (
+                    self.current_wave == 4
+                    and len(self.entities.sprites()) == 0
+                    and self.player_hp >= 0
+                ):
                     self.state = "win"
+                    # add music
+                    pg.mixer.music.stop()
+                    pg.mixer.music.load("./assets/sound/win_music.mp3")
+                    pg.mixer.music.play(loops=-1)
 
                 # entities
                 if self.entities:
@@ -651,10 +660,6 @@ class Game:
                 SCREEN.blit(gameover_tipw, gameover_tipw_rect)
             elif self.state == "win":
                 self.reset(2)
-                # add music
-                pg.mixer.music.stop()
-                pg.mixer.music.load("./assets/sound/win_music.mp3")
-                pg.mixer.music.play(loops=-1)
                 # add picture
                 happy_win = pg.image.load("./assets/custom/happy_win.png")
                 happy_win_rect = happy_win.get_rect(center=(600, 540))
@@ -780,7 +785,7 @@ class Entity(pg.sprite.Sprite):
         elif self.og_image == phillippe_entity_og:
             self.entity_hp = 300
         elif self.og_image == vielgut_entity_og:
-            self.entity_hp = 1500
+            self.entity_hp = 10000
 
         self.path: list[list[float, float]] = [
             [10.5, 4.5],
@@ -791,12 +796,12 @@ class Entity(pg.sprite.Sprite):
             [4.5, -1],
         ]
 
-    def rotate(self, angle: int):
+    def rotate(self, angle: float):
         """
         Rotates entity on screen by angle.
 
         Args:
-            angle (int): angle in degrees (anti-clockwise)
+            angle (float): angle in degrees (anti-clockwise)
         """
         self.image = pg.transform.rotate(
             pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE)), angle
@@ -862,13 +867,13 @@ class Entity(pg.sprite.Sprite):
             entities.remove(self)
             if len(self.path) > 0:
                 if self.og_image == loris_entity_og:
-                    game.player_coins += 10
+                    game.player_coins += 5
                 elif self.og_image == gabriel_entity_og:
-                    game.player_coins += 30
+                    game.player_coins += 10
                 elif self.og_image == gabriel_entity2_og:
-                    game.player_coins += 50
+                    game.player_coins += 20
                 elif self.og_image == phillippe_entity_og:
-                    game.player_coins += 80
+                    game.player_coins += 30
                 elif self.og_image == vielgut_entity_og:
                     game.player_coins += 150
 
@@ -905,17 +910,17 @@ class Weapon(pg.sprite.Sprite):
             self.og_image = soldier1_og
             self.cost = 50
             self.damage = 25
-            self.fire_rate = 5000
+            self.fire_rate = 4000
         elif weapon == "soldier2":
             self.og_image = soldier2_og
             self.cost = 100
             self.damage = 50
-            self.fire_rate = 2500
+            self.fire_rate = 2000
         elif weapon == "missile_launcher":
             self.og_image = missile_launcher_og
             self.cost = 250
             self.damage = 125
-            self.fire_rate = 2500
+            self.fire_rate = 1500
         elif weapon == "turret":
             self.og_image = turret_og
             self.cost = 500
@@ -926,6 +931,19 @@ class Weapon(pg.sprite.Sprite):
         self.rect.x, self.rect.y = convert_coordinates(position)
         self.weapon_pos = pg.Vector2(self.rect.center)
         game.player_coins -= self.cost
+
+    def rotate(self, angle: float):
+        """
+        Rotates entity on screen by angle.
+
+        Args:
+            angle (float): angle in degrees (anti-clockwise)
+        """
+        center = self.rect.center
+        self.image = pg.transform.rotate(
+            pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE)), angle
+        )
+        self.rect = self.image.get_rect(center=center)
 
     def update(self, entities: pg.sprite.Group):
         """
@@ -943,6 +961,9 @@ class Weapon(pg.sprite.Sprite):
                 if distance <= WEAPONS_RANGE:
                     entity.entity_hp -= self.damage
                     self.last_shot_time = now
+                    direction = target_pos - self.weapon_pos
+                    angle_deg = -math.degrees(math.atan2(direction.y, direction.x))
+                    self.rotate(angle_deg)
                 else:
                     break
 
