@@ -910,7 +910,7 @@ class Weapon(pg.sprite.Sprite):
             self.og_image = soldier1_og
             self.cost = 50
             self.damage = 25
-            self.fire_rate = 4000
+            self.fire_rate = 2500
         elif weapon == "soldier2":
             self.og_image = soldier2_og
             self.cost = 100
@@ -944,6 +944,7 @@ class Weapon(pg.sprite.Sprite):
             pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE)), angle
         )
         self.rect = self.image.get_rect(center=center)
+        self.weapon_pos = pg.Vector2(self.rect.center)
 
     def update(self, entities: pg.sprite.Group):
         """
@@ -954,17 +955,17 @@ class Weapon(pg.sprite.Sprite):
             entities (pg.spriteGroup): entities Sprite group
         """
         now = pg.time.get_ticks()
-        if now - self.last_shot_time >= self.fire_rate and len(entities.sprites()) > 0:
+        if len(entities.sprites()) > 0:
             for entity in entities.sprites():
                 target_pos = pg.Vector2(entity.rect.center)
-                distance = self.weapon_pos.distance_to(target_pos)
-                if distance <= WEAPONS_RANGE:
-                    entity.entity_hp -= self.damage
-                    self.last_shot_time = now
+                distance_to_target = self.weapon_pos.distance_to(target_pos)
+                if distance_to_target <= WEAPONS_RANGE:
+                    if now - self.last_shot_time >= self.fire_rate:
+                        entity.entity_hp -= self.damage
+                        self.last_shot_time = now
                     direction = target_pos - self.weapon_pos
                     angle_deg = -math.degrees(math.atan2(direction.y, direction.x))
                     self.rotate(angle_deg)
-                else:
                     break
 
 
