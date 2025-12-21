@@ -779,13 +779,13 @@ class Entity(pg.sprite.Sprite):
         self.rect.x = SCREEN_WIDTH
         self.rect.y = round(4.5 * TILE_SIZE)
         if self.og_image == loris_entity_og:
-            self.entity_hp = 100
+            self.entity_hp = 120
         elif self.og_image == gabriel_entity_og or self.og_image == gabriel_entity2_og:
-            self.entity_hp = 200
+            self.entity_hp = 220
         elif self.og_image == phillippe_entity_og:
-            self.entity_hp = 300
+            self.entity_hp = 380
         elif self.og_image == vielgut_entity_og:
-            self.entity_hp = 10000
+            self.entity_hp = 5500
 
         self.path: list[list[float, float]] = [
             [10.5, 4.5],
@@ -867,15 +867,13 @@ class Entity(pg.sprite.Sprite):
             entities.remove(self)
             if len(self.path) > 0:
                 if self.og_image == loris_entity_og:
-                    game.player_coins += 5
+                    game.player_coins += 6
                 elif self.og_image == gabriel_entity_og:
                     game.player_coins += 10
-                elif self.og_image == gabriel_entity2_og:
-                    game.player_coins += 20
                 elif self.og_image == phillippe_entity_og:
-                    game.player_coins += 30
+                    game.player_coins += 16
                 elif self.og_image == vielgut_entity_og:
-                    game.player_coins += 150
+                    game.player_coins += 120
 
 
 class Weapon(pg.sprite.Sprite):
@@ -909,23 +907,23 @@ class Weapon(pg.sprite.Sprite):
         if weapon == "soldier1":
             self.og_image = soldier1_og
             self.cost = 50
-            self.damage = 25
-            self.fire_rate = 2500
+            self.damage = 18
+            self.fire_rate = 700
         elif weapon == "soldier2":
             self.og_image = soldier2_og
             self.cost = 100
-            self.damage = 50
-            self.fire_rate = 2000
+            self.damage = 32
+            self.fire_rate = 650
         elif weapon == "missile_launcher":
             self.og_image = missile_launcher_og
             self.cost = 250
-            self.damage = 125
-            self.fire_rate = 1500
+            self.damage = 120
+            self.fire_rate = 1600
         elif weapon == "turret":
             self.og_image = turret_og
             self.cost = 500
-            self.damage = 150
-            self.fire_rate = 1000
+            self.damage = 55
+            self.fire_rate = 350
         self.image = pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = convert_coordinates(position)
