@@ -23,6 +23,10 @@ clock: pg.time.Clock = pg.time.Clock()
 TITLE_FONT: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Blocks.ttf", 36)
 SUBTITLE_FONT: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Future.ttf", 18)
 WEAPONS_RANGE = 4 * TILE_SIZE
+SOLDIER1_COST: int = 50
+SOLDIER2_COST: int = 100
+MISSILE_LAUNCHER_COST: int = 250
+TURRET_COST: int = 500
 
 TILES: dict = {
     "grass": {
@@ -102,21 +106,33 @@ phillippe_entity_og = pg.image.load(
 ).convert_alpha()
 vielgut_entity_og = pg.image.load("./assets/custom/vielgut_entity.png").convert_alpha()
 
-# load weapons
+# soldier1
 soldier1_og = pg.image.load("./assets/tiles/towerDefense_tile245.png")
 soldier1 = pg.transform.scale(
     soldier1_og,
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
 )
 soldier1_rect = soldier1.get_rect(topleft=(6 * TILE_SIZE, 8 * TILE_SIZE))
+# price tag
+soldier1_price_tag = SUBTITLE_FONT.render(f"{SOLDIER1_COST}$", True, (255, 255, 255))
+soldier1_price_tag_rect = soldier1_price_tag.get_rect(
+    center=(6.5 * TILE_SIZE, (SCREEN_HEIGHT - 10))
+)
 
+# soldier 2
 soldier2_og = pg.image.load("./assets/tiles/towerDefense_tile246.png")
 soldier2 = pg.transform.scale(
     soldier2_og,
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
 )
 soldier2_rect = soldier2.get_rect(topleft=(7 * TILE_SIZE, 8 * TILE_SIZE))
+# price tag
+soldier2_price_tag = SUBTITLE_FONT.render(f"{SOLDIER2_COST}$", True, (255, 255, 255))
+soldier2_price_tag_rect = soldier2_price_tag.get_rect(
+    center=(7.5 * TILE_SIZE, (SCREEN_HEIGHT - 10))
+)
 
+# missile launcher
 missile_launcher_og = pg.image.load("./assets/tiles/towerDefense_tile205.png")
 missile_launcher = pg.transform.scale(
     missile_launcher_og,
@@ -125,13 +141,26 @@ missile_launcher = pg.transform.scale(
 missile_launcher_rect = missile_launcher.get_rect(
     topleft=(8 * TILE_SIZE, 8 * TILE_SIZE)
 )
+# price tag
+missile_launcher_price_tag = SUBTITLE_FONT.render(
+    f"{MISSILE_LAUNCHER_COST}$", True, (255, 255, 255)
+)
+missile_launcher_price_tag_rect = missile_launcher_price_tag.get_rect(
+    center=(8.5 * TILE_SIZE, (SCREEN_HEIGHT - 10))
+)
 
+# turret
 turret_og = pg.image.load("./assets/tiles/towerDefense_tile250.png")
 turret = pg.transform.scale(
     turret_og,
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
 )
 turret_rect = turret.get_rect(topleft=(9 * TILE_SIZE, 8 * TILE_SIZE))
+# price tag
+turret_price_tag = SUBTITLE_FONT.render(f"{TURRET_COST}$", True, (255, 255, 255))
+turret_price_tag_rect = turret_price_tag.get_rect(
+    center=(9.5 * TILE_SIZE, (SCREEN_HEIGHT - 10))
+)
 
 
 class Game:
@@ -210,19 +239,19 @@ class Game:
                         if (
                             (
                                 self.active_weapon_placing[1] == "soldier1"
-                                and self.player_coins >= 50
+                                and self.player_coins >= SOLDIER1_COST
                             )
                             or (
                                 self.active_weapon_placing[1] == "soldier2"
-                                and self.player_coins >= 100
+                                and self.player_coins >= SOLDIER2_COST
                             )
                             or (
                                 self.active_weapon_placing[1] == "missile_launcher"
-                                and self.player_coins >= 250
+                                and self.player_coins >= MISSILE_LAUNCHER_COST
                             )
                             or (
                                 self.active_weapon_placing[1] == "turret"
-                                and self.player_coins >= 500
+                                and self.player_coins >= TURRET_COST
                             )
                         ):
                             self.weapons.add(
@@ -538,9 +567,13 @@ class Game:
 
                 # weapons bar
                 SCREEN.blit(soldier1, soldier1_rect)
+                SCREEN.blit(soldier1_price_tag, soldier1_price_tag_rect)
                 SCREEN.blit(soldier2, soldier2_rect)
+                SCREEN.blit(soldier2_price_tag, soldier2_price_tag_rect)
                 SCREEN.blit(missile_launcher, missile_launcher_rect)
+                SCREEN.blit(missile_launcher_price_tag, missile_launcher_price_tag_rect)
                 SCREEN.blit(turret, turret_rect)
+                SCREEN.blit(turret_price_tag, turret_price_tag_rect)
 
                 # wave management / entity spawning
                 now = pg.time.get_ticks()
@@ -906,22 +939,22 @@ class Weapon(pg.sprite.Sprite):
         self.weapon = weapon
         if weapon == "soldier1":
             self.og_image = soldier1_og
-            self.cost = 50
+            self.cost = SOLDIER1_COST
             self.damage = 18
             self.fire_rate = 700
         elif weapon == "soldier2":
             self.og_image = soldier2_og
-            self.cost = 100
+            self.cost = SOLDIER2_COST
             self.damage = 32
             self.fire_rate = 650
         elif weapon == "missile_launcher":
             self.og_image = missile_launcher_og
-            self.cost = 250
+            self.cost = MISSILE_LAUNCHER_COST
             self.damage = 120
             self.fire_rate = 1600
         elif weapon == "turret":
             self.og_image = turret_og
-            self.cost = 500
+            self.cost = TURRET_COST
             self.damage = 55
             self.fire_rate = 350
         self.image = pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE))
@@ -963,6 +996,8 @@ class Weapon(pg.sprite.Sprite):
                         self.last_shot_time = now
                     direction = target_pos - self.weapon_pos
                     angle_deg = -math.degrees(math.atan2(direction.y, direction.x))
+                    if self.weapon == "missile_launcher" or self.weapon == "turret":
+                        angle_deg -= 90
                     self.rotate(angle_deg)
                     break
 
