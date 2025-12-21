@@ -98,9 +98,6 @@ swedish_flag_rect.bottomright = (SCREEN_WIDTH, SCREEN_HEIGHT)
 # load entities
 loris_entity_og = pg.image.load("./assets/custom/loris_entity.png").convert_alpha()
 gabriel_entity_og = pg.image.load("./assets/custom/gabriel_entity.png").convert_alpha()
-gabriel_entity2_og = pg.image.load(
-    "./assets/custom/gabriel_entity2.png"
-).convert_alpha()
 phillippe_entity_og = pg.image.load(
     "./assets/custom/phillippe_entity.png"
 ).convert_alpha()
@@ -671,7 +668,9 @@ class Game:
                 self.reset(2)
                 # title:
                 gameover_title = TITLE_FONT.render("Game Over!", True, (187, 127, 68))
-                gameover_title_rect = gameover_title.get_rect(center=(640, 140))
+                gameover_title_rect = gameover_title.get_rect(
+                    center=(SCREEN_WIDTH / 2, 140)
+                )
                 SCREEN.blit(gameover_title, gameover_title_rect)
                 # subtitle:
                 gameover_subtitle = SUBTITLE_FONT.render(
@@ -693,6 +692,9 @@ class Game:
                 SCREEN.blit(gameover_tipw, gameover_tipw_rect)
             elif self.state == "win":
                 self.reset(2)
+                win_title = TITLE_FONT.render("You won!", True, (187, 127, 68))
+                win_title_rect = gameover_title.get_rect(center=(SCREEN_WIDTH / 2, 140))
+                SCREEN.blit(win_title, win_title_rect)
                 # add picture
                 happy_win = pg.image.load("./assets/custom/happy_win.png")
                 happy_win_rect = happy_win.get_rect(center=(600, 540))
@@ -813,7 +815,7 @@ class Entity(pg.sprite.Sprite):
         self.rect.y = round(4.5 * TILE_SIZE)
         if self.og_image == loris_entity_og:
             self.entity_hp = 120
-        elif self.og_image == gabriel_entity_og or self.og_image == gabriel_entity2_og:
+        elif self.og_image == gabriel_entity_og:
             self.entity_hp = 220
         elif self.og_image == phillippe_entity_og:
             self.entity_hp = 380
