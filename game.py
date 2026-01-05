@@ -138,6 +138,16 @@ missile_launcher = pg.transform.scale(
 missile_launcher_rect = missile_launcher.get_rect(
     topleft=(8 * TILE_SIZE, 8 * TILE_SIZE)
 )
+
+# money Tree
+moneytrees_og = pg.image.load("./assets/photoshopped/MoneyTrees.png")
+moneytrees = pg.transform.scale(
+    moneytrees_og,
+    (0.5 * (SCREEN_WIDTH / TILED_WIDTH), 0.5 * (SCREEN_HEIGHT / TILED_HEIGHT)),
+)
+moneytrees_rect = moneytrees.get_rect(topleft=(5.25 * TILE_SIZE, 8.25 * TILE_SIZE))
+
+
 # price tag
 missile_launcher_price_tag = SUBTITLE_FONT.render(
     f"{MISSILE_LAUNCHER_COST}$", True, (255, 255, 255)
@@ -323,7 +333,6 @@ class Game:
                         [3, 2],
                         [2, 7],
                         [3, 7],
-                        [4, 7],
                         [5, 7],
                         [6, 7],
                         [7, 7],
@@ -444,6 +453,7 @@ class Game:
                         [15, 1],
                         [15, 2],
                         [14, 1],
+                        [5, 8],
                     ],
                 )
 
@@ -451,6 +461,7 @@ class Game:
                 self.render_tiles(
                     "mountain_road_down",
                     [
+                        [4, 7],
                         [5, 7],
                         [6, 7],
                         [7, 7],
@@ -546,7 +557,7 @@ class Game:
                 self.render_tiles(
                     "mountain_tns2",
                     [
-                        [5, 8],
+                        [4, 8],
                         [14, 2],
                         [13, 0],
                     ],
@@ -576,6 +587,7 @@ class Game:
                 SCREEN.blit(missile_launcher_price_tag, missile_launcher_price_tag_rect)
                 SCREEN.blit(turret, turret_rect)
                 SCREEN.blit(turret_price_tag, turret_price_tag_rect)
+                SCREEN.blit(moneytrees, moneytrees_rect)
 
                 # wave management / entity spawning
                 now = pg.time.get_ticks()
