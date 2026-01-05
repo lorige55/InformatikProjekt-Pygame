@@ -193,6 +193,11 @@ class Game:
             loris_entity_og: 20,
             gabriel_entity_og: 20,
             phillippe_entity_og: 20,
+        },
+        5: {
+            loris_entity_og: 25,
+            gabriel_entity_og: 25,
+            phillippe_entity_og: 25,
             vielgut_entity_og: 1,
         },
     }
@@ -603,7 +608,7 @@ class Game:
                             self.velocity = 2
 
                 if (
-                    self.current_wave == 4
+                    self.current_wave == 5
                     and len(self.entities.sprites()) == 0
                     and self.player_hp >= 0
                 ):
@@ -693,7 +698,7 @@ class Game:
             elif self.state == "win":
                 self.reset(2)
                 win_title = TITLE_FONT.render("You won!", True, (187, 127, 68))
-                win_title_rect = gameover_title.get_rect(center=(SCREEN_WIDTH / 2, 140))
+                win_title_rect = win_title.get_rect(center=(SCREEN_WIDTH / 2, 140))
                 SCREEN.blit(win_title, win_title_rect)
                 # add picture
                 happy_win = pg.image.load("./assets/custom/happy_win.png")
