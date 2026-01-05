@@ -697,9 +697,15 @@ class Game:
                 SCREEN.blit(gameover_tipw, gameover_tipw_rect)
             elif self.state == "win":
                 self.reset(2)
+                # add text
                 win_title = TITLE_FONT.render("You won!", True, (187, 127, 68))
-                win_title_rect = win_title.get_rect(center=(SCREEN_WIDTH / 2, 140))
+                win_title_rect = win_title.get_rect(center=(SCREEN_WIDTH / 2, 80))
                 SCREEN.blit(win_title, win_title_rect)
+                # add star
+                star_win = pg.image.load("./assets/custom/star.jpg")
+                star_win = pg.transform.scale(star_win, (300, 200))
+                star_win_rect = star_win.get_rect(center=(640, 250))
+                SCREEN.blit(star_win, star_win_rect)
                 # add picture
                 happy_win = pg.image.load("./assets/custom/happy_win.png")
                 happy_win_rect = happy_win.get_rect(center=(600, 540))
