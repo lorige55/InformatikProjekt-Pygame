@@ -784,13 +784,13 @@ class Game:
                     ),
                 )
             if (
-                tile is not "grass"
-                and tile is not "mountain"
-                and tile is not "free_position"
-                and tile is not "soldier1"
-                and tile is not "soldier2"
-                and tile is not "missile_launcher"
-                and tile is not "turret"
+                tile != "grass"
+                and tile != "mountain"
+                and tile != "free_position"
+                and tile != "soldier1"
+                and tile != "soldier2"
+                and tile != "missile_launcher"
+                and tile != "turret"
                 and [i[0], i[1]] not in self.placement_free_zone
             ):
                 self.placement_free_zone.append([i[0], i[1]])
