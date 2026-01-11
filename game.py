@@ -214,8 +214,6 @@ class Game:
 
     last_entity_spawn_time: int = 0
 
-    next_wave_time: int = 0
-
     def __init__(self) -> None:
         running: bool = True
 
@@ -591,22 +589,6 @@ class Game:
 
                 # wave management / entity spawning
                 now = pg.time.get_ticks()
-                if self.next_wave_time <= now and self.next_wave_time != 0:
-                    self.current_wave += 1
-                    self.next_wave_time = 0
-                    self.velocity += 1
-
-                for number, objects in self.waves.items():
-                    total = 0
-                    for _, amount in objects.items():
-                        total += amount
-                    if (
-                        total == 0
-                        and self.current_wave == number
-                        and self.next_wave_time == 0
-                    ):
-                        self.next_wave_time = now + 50000
-
                 for type, amount in self.waves[self.current_wave].items():
                     if amount > 0 and now - self.last_entity_spawn_time >= (
                         12000 / (self.velocity * 2)
@@ -618,10 +600,10 @@ class Game:
                             pg.mixer.music.load("./assets/sound/ima_boss.mp3")
                             pg.mixer.music.play(loops=0)
                             self.velocity = 2
-
+                
                 if (
                     self.current_wave == 5
-                    and len(self.entities.sprites()) == 0
+                    and len(self.entities) == 0
                     and self.player_hp >= 0
                 ):
                     self.state = "win"
@@ -629,6 +611,18 @@ class Game:
                     pg.mixer.music.stop()
                     pg.mixer.music.load("./assets/sound/win_music.mp3")
                     pg.mixer.music.play(loops=-1)
+                
+                for number, objects in self.waves.items():
+                    total = 0
+                    for _, amount in objects.items():
+                        total += amount
+                    if (
+                        total == 0
+                        and len(self.entities) == 0
+                    ):
+                        self.current_wave += 1
+                        self.velocity += 1
+                        break
 
                 # entities
                 if self.entities:
