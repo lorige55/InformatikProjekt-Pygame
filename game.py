@@ -204,29 +204,27 @@ class Game:
     current_wave: int = 1
 
     waves: dict = {
-        1: {loris_entity_og: 10},
-        2: {loris_entity_og: 5, gabriel_entity_og: 5, phillippe_entity_og: 5},
+        1: {"loris": 10},
+        2: {"loris": 5, "gabriel": 5, "phillip": 5},
         3: {
-            loris_entity_og: 10,
-            gabriel_entity_og: 10,
-            phillippe_entity_og: 10,
+            "loris": 10,
+            "gabriel": 10,
+            "phillip": 10,
         },
         4: {
-            loris_entity_og: 20,
-            gabriel_entity_og: 20,
-            phillippe_entity_og: 20,
+            "loris": 20,
+            "gabriel": 20,
+            "phillip": 20,
         },
         5: {
-            loris_entity_og: 25,
-            gabriel_entity_og: 25,
-            phillippe_entity_og: 25,
-            vielgut_entity_og: 1,
+            "loris": 25,
+            "gabriel": 25,
+            "phillip": 25,
+            "vielgut": 1,
         },
     }
 
     last_entity_spawn_time: int = 0
-
-    next_wave_time: int = 0
 
     def __init__(self) -> None:
         running: bool = True
@@ -609,37 +607,21 @@ class Game:
 
                 # wave management / entity spawning
                 now = pg.time.get_ticks()
-                if self.next_wave_time <= now and self.next_wave_time != 0:
-                    self.current_wave += 1
-                    self.next_wave_time = 0
-                    self.velocity += 1
-
-                for number, objects in self.waves.items():
-                    total = 0
-                    for _, amount in objects.items():
-                        total += amount
-                    if (
-                        total == 0
-                        and self.current_wave == number
-                        and self.next_wave_time == 0
-                    ):
-                        self.next_wave_time = now + 50000
-
-                for entity_og_image, amount in self.waves[self.current_wave].items():
+                for type, amount in self.waves[self.current_wave].items():
                     if amount > 0 and now - self.last_entity_spawn_time >= (
                         12000 / (self.velocity * 2)
                     ):
-                        self.entities.add(Entity(entity_og_image))
+                        self.entities.add(Entity(type))
                         self.last_entity_spawn_time = now
-                        self.waves[self.current_wave][entity_og_image] -= 1
-                        if entity_og_image == vielgut_entity_og:
+                        self.waves[self.current_wave][type] -= 1
+                        if type == "vielgut":
                             pg.mixer.music.load("./assets/sound/ima_boss.mp3")
                             pg.mixer.music.play(loops=0)
                             self.velocity = 2
-
+                
                 if (
                     self.current_wave == 5
-                    and len(self.entities.sprites()) == 0
+                    and len(self.entities) == 0
                     and self.player_hp >= 0
                 ):
                     self.state = "win"
@@ -647,6 +629,18 @@ class Game:
                     pg.mixer.music.stop()
                     pg.mixer.music.load("./assets/sound/win_music.mp3")
                     pg.mixer.music.play(loops=-1)
+                
+                for number, objects in self.waves.items():
+                    total = 0
+                    for _, amount in objects.items():
+                        total += amount
+                    if (
+                        total == 0
+                        and len(self.entities) == 0
+                    ):
+                        self.current_wave += 1
+                        self.velocity += 1
+                        break
 
                 # entities
                 if self.entities:
@@ -836,33 +830,45 @@ class Game:
 class Entity(pg.sprite.Sprite):
     """Creates entity and stores its variables."""
 
+    type: str
+
+    image: pg.Surface
+
     og_image: pg.Surface
 
     entity_hp: int
 
-    def __init__(self, image: pg.Surface):
+    original_hp: int
+
+    def __init__(self, entity: str):
         """
         Creates Entity Object and sets its variables.
 
         Args:
-            image (pg.Surface): og_image of entity
+            entity (str): type of entity
         """
         super().__init__()
-        self.og_image = image
+        self.type = entity
+        if entity == "loris":
+            self.image = loris_entity_og.copy()
+            self.entity_hp = 120
+        elif entity == "gabriel":
+            self.image = gabriel_entity_og.copy()
+            self.entity_hp = 220
+        elif entity == "phillip":
+            self.image = phillippe_entity_og.copy()
+            self.entity_hp = 380
+        elif entity == "vielgut":
+            self.image = vielgut_entity_og.copy()
+            self.entity_hp = 5500
+        self.original_hp = self.entity_hp
+        self.og_image = self.image.copy()
         self.image = pg.transform.rotate(
-            pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE)), 90
+            pg.transform.scale(self.image, (TILE_SIZE, TILE_SIZE)), 90
         )
         self.rect = self.image.get_rect()
         self.rect.x = SCREEN_WIDTH
         self.rect.y = round(4.5 * TILE_SIZE)
-        if self.og_image == loris_entity_og:
-            self.entity_hp = 120
-        elif self.og_image == gabriel_entity_og:
-            self.entity_hp = 220
-        elif self.og_image == phillippe_entity_og:
-            self.entity_hp = 380
-        elif self.og_image == vielgut_entity_og:
-            self.entity_hp = 5500
 
         self.path: list[list[float, float]] = [
             [10.5, 4.5],
@@ -939,22 +945,27 @@ class Entity(pg.sprite.Sprite):
                 self.rect.y += step_y
 
                 self.rotate(angle)
+            
+            if self.entity_hp <= (0.5*self.original_hp):
+                self.image.set_alpha(128)
 
         if self.entity_hp <= 0:
             entities.remove(self)
             if len(self.path) > 0:
-                if self.og_image == loris_entity_og:
+                if self.type == "loris":
                     game.player_coins += 6
-                elif self.og_image == gabriel_entity_og:
+                elif self.type == "gabriel":
                     game.player_coins += 10
-                elif self.og_image == phillippe_entity_og:
+                elif self.type == "phillip":
                     game.player_coins += 16
-                elif self.og_image == vielgut_entity_og:
+                elif self.type == "vielgut":
                     game.player_coins += 120
 
 
 class Weapon(pg.sprite.Sprite):
     """Creates weapon and stores its variables."""
+
+    image: pg.Surface
 
     og_image: pg.Surface
 
@@ -982,26 +993,27 @@ class Weapon(pg.sprite.Sprite):
         super().__init__()
         self.weapon = weapon
         if weapon == "soldier1":
-            self.og_image = soldier1_og
+            self.image = soldier1_og.copy()
             self.cost = SOLDIER1_COST
             self.damage = 18
             self.fire_rate = 700
         elif weapon == "soldier2":
-            self.og_image = soldier2_og
+            self.image = soldier2_og.copy()
             self.cost = SOLDIER2_COST
             self.damage = 32
             self.fire_rate = 650
         elif weapon == "missile_launcher":
-            self.og_image = missile_launcher_og
+            self.image = missile_launcher_og.copy()
             self.cost = MISSILE_LAUNCHER_COST
             self.damage = 120
             self.fire_rate = 1600
         elif weapon == "turret":
-            self.og_image = turret_og
+            self.image = turret_og.copy()
             self.cost = TURRET_COST
             self.damage = 55
             self.fire_rate = 350
-        self.image = pg.transform.scale(self.og_image, (TILE_SIZE, TILE_SIZE))
+        self.image = pg.transform.scale(self.image, (TILE_SIZE, TILE_SIZE))
+        self.og_image = self.image.copy()
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = convert_coordinates(position)
         self.weapon_pos = pg.Vector2(self.rect.center)
