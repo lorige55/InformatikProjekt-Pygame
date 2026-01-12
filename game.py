@@ -27,6 +27,7 @@ SOLDIER1_COST: int = 50
 SOLDIER2_COST: int = 100
 MISSILE_LAUNCHER_COST: int = 250
 TURRET_COST: int = 500
+MONEYTREES_COST: int = 100
 
 TILES: dict = {
     "grass": {
@@ -55,6 +56,7 @@ TILES: dict = {
     "soldier2": {"path": "./assets/tiles/towerDefense_tile246.png"},
     "missile_launcher": {"path": "./assets/tiles/towerDefense_tile205.png"},
     "turret": {"path": "./assets/tiles/towerDefense_tile250.png"},
+    "moneytree": {"path": "./assets/photoshopped/MoneyTrees.png"},
     "mountain_done": {"path": "./assets/photoshopped/Mountain_on_bottom_done.png"},
     "mountain_bns1": {
         "path": "./assets/photoshopped/Mountain_on_bottom_and_side_done.png"
@@ -84,10 +86,16 @@ TILES: dict = {
 
 for key, value in TILES.items():
     tile_og = pg.image.load(value["path"])
-    value["object"] = pg.transform.scale(
-        tile_og,
-        (SCREEN_WIDTH // TILED_WIDTH, SCREEN_HEIGHT // TILED_HEIGHT),
-    )
+    if key != "moneytree":
+        value["object"] = pg.transform.scale(
+            tile_og,
+            (SCREEN_WIDTH // TILED_WIDTH, SCREEN_HEIGHT // TILED_HEIGHT),
+        )
+    else:
+        value["object"] = pg.transform.scale(
+            tile_og,
+            (0.5 * (SCREEN_WIDTH / TILED_WIDTH), 0.5 * (SCREEN_HEIGHT / TILED_HEIGHT)),
+        )
 
 # swedish flag
 swedish_flag_og = pg.image.load("./assets/custom/Swedish Flag.png").convert()
@@ -138,22 +146,24 @@ missile_launcher = pg.transform.scale(
 missile_launcher_rect = missile_launcher.get_rect(
     topleft=(8 * TILE_SIZE, 8 * TILE_SIZE)
 )
-
-# money Tree
-moneytrees_og = pg.image.load("./assets/photoshopped/MoneyTrees.png")
-moneytrees = pg.transform.scale(
-    moneytrees_og,
-    (0.5 * (SCREEN_WIDTH / TILED_WIDTH), 0.5 * (SCREEN_HEIGHT / TILED_HEIGHT)),
-)
-moneytrees_rect = moneytrees.get_rect(topleft=(5.25 * TILE_SIZE, 8.25 * TILE_SIZE))
-
-
 # price tag
 missile_launcher_price_tag = SUBTITLE_FONT.render(
     f"{MISSILE_LAUNCHER_COST}$", True, (255, 255, 255)
 )
 missile_launcher_price_tag_rect = missile_launcher_price_tag.get_rect(
     center=(8.5 * TILE_SIZE, (SCREEN_HEIGHT - 10))
+)
+# money Tree
+moneytree_og = pg.image.load("./assets/photoshopped/MoneyTrees.png")
+moneytree = pg.transform.scale(
+    moneytree_og,
+    (0.5 * (SCREEN_WIDTH / TILED_WIDTH), 0.5 * (SCREEN_HEIGHT / TILED_HEIGHT)),
+)
+moneytree_rect = moneytree.get_rect(topleft=(5.25 * TILE_SIZE, 8.25 * TILE_SIZE))
+# price tag
+moneytree_price_tag = SUBTITLE_FONT.render(f"{MONEYTREES_COST}$", True, (255, 255, 255))
+moneytree_price_tag_rect = moneytree_price_tag.get_rect(
+    center=((5.5 * TILE_SIZE), (SCREEN_HEIGHT - 10))
 )
 
 # turret
@@ -181,11 +191,13 @@ class Game:
 
     player_coins: int = 100
 
-    active_weapon_placing: list = [False, ""]
+    active_placing: list = [False, ""]
 
     entities: pg.sprite.Group = pg.sprite.Group()
 
     weapons: pg.sprite.Group = pg.sprite.Group()
+
+    moneytrees: pg.sprite.Group = pg.sprite.Group()
 
     placement_free_zone: list = [[6, 8], [7, 8], [8, 8], [9, 8]]
 
@@ -237,44 +249,49 @@ class Game:
                 elif event.type == pg.constants.MOUSEBUTTONDOWN:
                     x, y = convert_coordinates(event.pos)
                     if soldier1_rect.collidepoint(event.pos):
-                        self.active_weapon_placing = [True, "soldier1"]
+                        self.active_placing = [True, "soldier1"]
                     elif soldier2_rect.collidepoint(event.pos):
-                        self.active_weapon_placing = [True, "soldier2"]
+                        self.active_placing = [True, "soldier2"]
                     elif missile_launcher_rect.collidepoint(event.pos):
-                        self.active_weapon_placing = [True, "missile_launcher"]
+                        self.active_placing = [True, "missile_launcher"]
                     elif turret_rect.collidepoint(event.pos):
-                        self.active_weapon_placing = [True, "turret"]
+                        self.active_placing = [True, "turret"]
+                    elif moneytree_rect.collidepoint(event.pos):
+                        self.active_placing = [True, "moneytree"]
                     elif (
-                        self.active_weapon_placing[0] is True
+                        self.active_placing[0] is True
                         and [x, y] not in self.placement_free_zone
                     ):
-                        if (
-                            (
-                                self.active_weapon_placing[1] == "soldier1"
-                                and self.player_coins >= SOLDIER1_COST
-                            )
-                            or (
-                                self.active_weapon_placing[1] == "soldier2"
-                                and self.player_coins >= SOLDIER2_COST
-                            )
-                            or (
-                                self.active_weapon_placing[1] == "missile_launcher"
-                                and self.player_coins >= MISSILE_LAUNCHER_COST
-                            )
-                            or (
-                                self.active_weapon_placing[1] == "turret"
-                                and self.player_coins >= TURRET_COST
-                            )
-                        ):
-                            self.weapons.add(
-                                Weapon(
-                                    self.active_weapon_placing[1],
-                                    [x, y],
-                                    self,
+                        if self.active_placing[1] != "moneytree":
+                            if (
+                                (
+                                    self.active_placing[1] == "soldier1"
+                                    and self.player_coins >= SOLDIER1_COST
                                 )
-                            )
-                            self.active_weapon_placing = [False, ""]
-                            self.placement_free_zone.append([x, y])
+                                or (
+                                    self.active_placing[1] == "soldier2"
+                                    and self.player_coins >= SOLDIER2_COST
+                                )
+                                or (
+                                    self.active_placing[1] == "missile_launcher"
+                                    and self.player_coins >= MISSILE_LAUNCHER_COST
+                                )
+                                or (
+                                    self.active_placing[1] == "turret"
+                                    and self.player_coins >= TURRET_COST
+                                )
+                            ):
+                                self.weapons.add(
+                                    Weapon(
+                                        self.active_placing[1],
+                                        [x, y],
+                                        self,
+                                    )
+                                )
+                        else:
+                            self.moneytrees.add(Moneytree([x, y], self))
+                        self.active_placing = [False, ""]
+                        self.placement_free_zone.append([x, y])
 
             # start SCREEN if:
             if self.state == "start":
@@ -587,7 +604,8 @@ class Game:
                 SCREEN.blit(missile_launcher_price_tag, missile_launcher_price_tag_rect)
                 SCREEN.blit(turret, turret_rect)
                 SCREEN.blit(turret_price_tag, turret_price_tag_rect)
-                SCREEN.blit(moneytrees, moneytrees_rect)
+                SCREEN.blit(moneytree, moneytree_rect)
+                SCREEN.blit(moneytree_price_tag, moneytree_price_tag_rect)
 
                 # wave management / entity spawning
                 now = pg.time.get_ticks()
@@ -637,28 +655,28 @@ class Game:
 
                 self.entities.draw(SCREEN)
                 self.weapons.draw(SCREEN)
+                self.moneytrees.draw(SCREEN)
 
                 # Active Weapon Placement
-                if self.active_weapon_placing[0] is True:
+                if self.active_placing[0] is True:
                     x, y = pg.mouse.get_pos()
                     tile_x, tile_y = convert_coordinates([x, y])
                     if [tile_x, tile_y] not in self.placement_free_zone:
                         self.render_tiles("free_position", [[tile_x, tile_y]])
-                        self.render_tiles(
-                            self.active_weapon_placing[1], [[tile_x, tile_y]]
-                        )
-                        circle_x, circle_y = convert_coordinates([tile_x, tile_y])
-                        circle_x += TILE_SIZE / 2
-                        circle_y += TILE_SIZE / 2
-                        pg.draw.circle(
-                            SCREEN,
-                            (255, 255, 255),
-                            (circle_x, circle_y),
-                            WEAPONS_RANGE,
-                            width=1,
-                        )
+                        self.render_tiles(self.active_placing[1], [[tile_x, tile_y]])
+                        if self.active_placing[1] != "moneytree":
+                            circle_x, circle_y = convert_coordinates([tile_x, tile_y])
+                            circle_x += TILE_SIZE / 2
+                            circle_y += TILE_SIZE / 2
+                            pg.draw.circle(
+                                SCREEN,
+                                (255, 255, 255),
+                                (circle_x, circle_y),
+                                WEAPONS_RANGE,
+                                width=1,
+                            )
                     elif tile_x == 0 and tile_y == 4:
-                        self.active_weapon_placing = [False, ""]
+                        self.active_placing = [False, ""]
 
                 # display wave
                 current_wave_text = TITLE_FONT.render(
@@ -809,6 +827,7 @@ class Game:
                 and tile != "soldier2"
                 and tile != "missile_launcher"
                 and tile != "turret"
+                and tile != "moneytree"
                 and [i[0], i[1]] not in self.placement_free_zone
             ):
                 self.placement_free_zone.append([i[0], i[1]])
@@ -1050,6 +1069,27 @@ def convert_coordinates(coordinates: list):
         screen_x: int = x * (SCREEN_WIDTH / TILED_WIDTH)
         screen_y: int = y * (SCREEN_HEIGHT / TILED_HEIGHT)
         return (screen_x, screen_y)
+
+
+class Moneytree(pg.sprite.Sprite):
+
+    og_image: pg.Surface
+
+    image: pg.Surface
+
+    def __init__(self, position: list, game: Game):
+        super().__init__()
+        self.og_image = moneytree_og.copy()
+        self.image = self.og_image.copy()
+        self.image = pg.transform.scale(
+            self.og_image,
+            (0.5 * (SCREEN_WIDTH / TILED_WIDTH), 0.5 * (SCREEN_HEIGHT / TILED_HEIGHT)),
+        )
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = convert_coordinates(
+            [position[0] + 0.25, position[1] + 0.25]
+        )
+        game.player_coins -= MONEYTREES_COST
 
 
 game = Game()
