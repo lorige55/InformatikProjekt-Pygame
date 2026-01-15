@@ -157,9 +157,9 @@ missile_launcher_price_tag_rect = missile_launcher_price_tag.get_rect(
 moneytree_og = pg.image.load("./assets/photoshopped/MoneyTrees.png")
 moneytree = pg.transform.scale(
     moneytree_og,
-    (0.5 * (SCREEN_WIDTH / TILED_WIDTH), 0.5 * (SCREEN_HEIGHT / TILED_HEIGHT)),
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
 )
-moneytree_rect = moneytree.get_rect(topleft=(5.25 * TILE_SIZE, 8.25 * TILE_SIZE))
+moneytree_rect = moneytree.get_rect(topleft=(5 * TILE_SIZE, 8 * TILE_SIZE))
 # price tag
 moneytree_price_tag = SUBTITLE_FONT.render(f"{MONEYTREES_COST}$", True, (255, 255, 255))
 moneytree_price_tag_rect = moneytree_price_tag.get_rect(
@@ -1095,12 +1095,10 @@ class Moneytree(pg.sprite.Sprite):
         self.image = self.og_image.copy()
         self.image = pg.transform.scale(
             self.og_image,
-            (0.5 * (SCREEN_WIDTH / TILED_WIDTH), 0.5 * (SCREEN_HEIGHT / TILED_HEIGHT)),
+            ((SCREEN_WIDTH / TILED_WIDTH), (SCREEN_HEIGHT / TILED_HEIGHT)),
         )
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = convert_coordinates(
-            [position[0] + 0.25, position[1] + 0.25]
-        )
+        self.rect.x, self.rect.y = convert_coordinates(position)
         game.player_coins -= MONEYTREES_COST
 
 
