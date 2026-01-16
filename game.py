@@ -87,16 +87,10 @@ TILES: dict = {
 
 for key, value in TILES.items():
     tile_og = pg.image.load(value["path"])
-    if key != "moneytree":
-        value["object"] = pg.transform.scale(
-            tile_og,
-            (SCREEN_WIDTH // TILED_WIDTH, SCREEN_HEIGHT // TILED_HEIGHT),
-        )
-    else:
-        value["object"] = pg.transform.scale(
-            tile_og,
-            (0.5 * (SCREEN_WIDTH / TILED_WIDTH), 0.5 * (SCREEN_HEIGHT / TILED_HEIGHT)),
-        )
+    value["object"] = pg.transform.scale(
+        tile_og,
+        (SCREEN_WIDTH // TILED_WIDTH, SCREEN_HEIGHT // TILED_HEIGHT),
+    )
 
 # swedish flag
 swedish_flag_og = pg.image.load("./assets/custom/Swedish Flag.png").convert()
