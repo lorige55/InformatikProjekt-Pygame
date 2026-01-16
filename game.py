@@ -199,6 +199,8 @@ class Game:
 
     moneytrees: pg.sprite.Group = pg.sprite.Group()
 
+    last_moneytrees_time: int = 0  # for gabi
+
     placement_free_zone: list = [[6, 8], [7, 8], [8, 8], [9, 8]]
 
     current_wave: int = 1
@@ -618,7 +620,7 @@ class Game:
                             pg.mixer.music.load("./assets/sound/ima_boss.mp3")
                             pg.mixer.music.play(loops=0)
                             self.velocity = 2
-                
+
                 if (
                     self.current_wave == 5
                     and len(self.entities) == 0
@@ -629,15 +631,12 @@ class Game:
                     pg.mixer.music.stop()
                     pg.mixer.music.load("./assets/sound/win_music.mp3")
                     pg.mixer.music.play(loops=-1)
-                
+
                 for number, objects in self.waves.items():
                     total = 0
                     for _, amount in objects.items():
                         total += amount
-                    if (
-                        total == 0
-                        and len(self.entities) == 0
-                    ):
+                    if total == 0 and len(self.entities) == 0:
                         self.current_wave += 1
                         self.velocity += 1
                         break
@@ -646,6 +645,9 @@ class Game:
                 if self.entities:
                     self.entities.update(self.entities, self)
                     self.weapons.update(self.entities)
+
+                if pg.time.get_ticks() - self.last_moneytrees_time >= 5000:
+                    self.moneytrees.update(self)  # for gabi
 
                 self.entities.draw(SCREEN)
                 self.weapons.draw(SCREEN)
@@ -945,8 +947,8 @@ class Entity(pg.sprite.Sprite):
                 self.rect.y += step_y
 
                 self.rotate(angle)
-            
-            if self.entity_hp <= (0.5*self.original_hp):
+
+            if self.entity_hp <= (0.5 * self.original_hp):
                 self.image.set_alpha(128)
 
         if self.entity_hp <= 0:
@@ -1102,6 +1104,10 @@ class Moneytree(pg.sprite.Sprite):
             [position[0] + 0.25, position[1] + 0.25]
         )
         game.player_coins -= MONEYTREES_COST
+
+    def update(self, game: Game):  # for Gabi
+        game.player_coins += 8
+        game.last_moneytrees_time = pg.time.get_ticks()
 
 
 game = Game()
