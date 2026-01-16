@@ -196,7 +196,7 @@ class Game:
 
     last_moneytrees_time: int = 0  # for gabi
 
-    placement_free_zone: list = [[6, 8], [7, 8], [8, 8], [9, 8]]
+    placement_free_zone: list = [[5, 8],[6, 8], [7, 8], [8, 8], [9, 8]]
 
     current_wave: int = 1
 
