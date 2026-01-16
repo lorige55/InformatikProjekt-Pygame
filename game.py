@@ -3,6 +3,7 @@
 # Franco looks like a maulwurf who just went to chong colong
 # Hayk is such a pookie - Gabriel (ily Hayk <3 ) (Philipp doesn't agree)
 # Mark 99.-
+# Lorenzo papierli schwiizer
 
 from __future__ import annotations
 import pygame as pg
