@@ -1122,7 +1122,8 @@ class Weapon(pg.sprite.Sprite):
 
     def __init__(self, weapon: str, position: list, game: Game):
         """
-        Creates Weapon Object and subtracts coins from player.
+        Checks wheather the player has enough coins to buy a weapon.
+        Creates, and sets Weapon Object and subtracts coins from player.
 
         Args:
             weapon (str): Type of Weapon
