@@ -196,10 +196,11 @@ class Game:
 
     last_moneytrees_time: int = 0  # for gabi
 
-    placement_free_zone: list = [[5, 8],[6, 8], [7, 8], [8, 8], [9, 8]]
+    placement_free_zone: list = [[5, 8], [6, 8], [7, 8], [8, 8], [9, 8]]
 
     current_wave: int = 1
 
+    # Waves
     waves: dict = {
         1: {"loris": 10},
         2: {"loris": 5, "gabriel": 5, "phillip": 5},
@@ -214,6 +215,21 @@ class Game:
             "phillip": 20,
         },
         5: {
+            "loris": 20,
+            "gabriel": 20,
+            "phillip": 20,
+        },
+        6: {
+            "loris": 20,
+            "gabriel": 20,
+            "phillip": 20,
+        },
+        7: {
+            "loris": 20,
+            "gabriel": 20,
+            "phillip": 20,
+        },
+        8: {
             "loris": 25,
             "gabriel": 25,
             "phillip": 25,
@@ -617,7 +633,7 @@ class Game:
                             self.velocity = 2
 
                 if (
-                    self.current_wave == 5
+                    self.current_wave == 8
                     and len(self.entities) == 0
                     and self.player_hp >= 0
                 ):
@@ -633,7 +649,7 @@ class Game:
                         total += amount
                     if total == 0 and len(self.entities) == 0:
                         self.current_wave += 1
-                        self.velocity += 1
+                        self.velocity += 1.1
                         break
 
                 # entities
