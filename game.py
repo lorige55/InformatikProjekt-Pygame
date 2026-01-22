@@ -221,18 +221,18 @@ class Game:
         },
         6: {
             "loris": 20,
-            "gabriel": 25,
-            "phillip": 30,
+            "gabriel": 20,
+            "phillip": 20,
         },
         7: {
             "loris": 10,
             "gabriel": 15,
-            "phillip": 35,
+            "phillip": 30,
         },
         8: {
             "loris": 10,
             "gabriel": 25,
-            "phillip": 40,
+            "phillip": 35,
             "vielgut": 1,
         },
     }
@@ -872,12 +872,18 @@ class Entity(pg.sprite.Sprite):
         if entity == "loris":
             self.image = loris_entity_og.copy()
             self.entity_hp = 120
+            if game.current_wave == 6:
+                self.entity_hp = 200
         elif entity == "gabriel":
             self.image = gabriel_entity_og.copy()
             self.entity_hp = 220
+            if game.current_wave == 6:
+                self.entity_hp = 300
         elif entity == "phillip":
             self.image = phillippe_entity_og.copy()
             self.entity_hp = 380
+            if game.current_wave == 6:
+                self.entity_hp = 540
         elif entity == "vielgut":
             self.image = vielgut_entity_og.copy()
             self.entity_hp = 7500
