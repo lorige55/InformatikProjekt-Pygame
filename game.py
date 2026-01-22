@@ -302,7 +302,6 @@ class Game:
                         else:
                             self.moneytrees.add(Moneytree([x, y], self))
                         self.active_placing = [False, ""]
-                        self.placement_free_zone.append([x, y])
 
             # start SCREEN if:
             if self.state == "start":
@@ -1039,6 +1038,7 @@ class Weapon(pg.sprite.Sprite):
         self.rect.x, self.rect.y = convert_coordinates(position)
         self.weapon_pos = pg.Vector2(self.rect.center)
         game.player_coins -= self.cost
+        game.placement_free_zone.append(position)
 
     def rotate(self, angle: float):
         """
