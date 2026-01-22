@@ -28,7 +28,7 @@ SOLDIER1_COST: int = 50
 SOLDIER2_COST: int = 100
 MISSILE_LAUNCHER_COST: int = 250
 TURRET_COST: int = 500
-MONEYTREES_COST: int = 100
+MONEYTREES_COST: int = 50
 
 TILES: dict = {
     "grass": {
@@ -217,22 +217,22 @@ class Game:
         5: {
             "loris": 20,
             "gabriel": 20,
-            "phillip": 20,
+            "phillip": 30,
         },
         6: {
             "loris": 20,
-            "gabriel": 20,
-            "phillip": 20,
+            "gabriel": 25,
+            "phillip": 30,
         },
         7: {
-            "loris": 20,
-            "gabriel": 20,
-            "phillip": 20,
+            "loris": 10,
+            "gabriel": 15,
+            "phillip": 35,
         },
         8: {
-            "loris": 25,
+            "loris": 10,
             "gabriel": 25,
-            "phillip": 25,
+            "phillip": 40,
             "vielgut": 1,
         },
     }
@@ -649,7 +649,7 @@ class Game:
                         total += amount
                     if total == 0 and len(self.entities) == 0:
                         self.current_wave += 1
-                        self.velocity += 1.1
+                        self.velocity += 1.2
                         break
 
                 # entities
@@ -828,7 +828,15 @@ class Game:
                 )
             if (
                 tile != "grass"
-                and tile != "mountain"
+                and tile != "mountain_trc"
+                and tile != "mountain_tlc"
+                and tile != "mountain_blc"
+                and tile != "mountain_brc"
+                and tile != "mountain_up"
+                and tile != "mountain_done"
+                and tile != "mountain_right"
+                and tile != "mountain_left"
+                and tile != "mountain_tc"
                 and tile != "free_position"
                 and tile != "soldier1"
                 and tile != "soldier2"
@@ -873,7 +881,7 @@ class Entity(pg.sprite.Sprite):
             self.entity_hp = 380
         elif entity == "vielgut":
             self.image = vielgut_entity_og.copy()
-            self.entity_hp = 5500
+            self.entity_hp = 7500
         self.original_hp = self.entity_hp
         self.og_image = self.image.copy()
         self.image = pg.transform.rotate(
@@ -1115,7 +1123,7 @@ class Moneytree(pg.sprite.Sprite):
         game.player_coins -= MONEYTREES_COST
 
     def update(self, game: Game):  # for Gabi
-        game.player_coins += 8
+        game.player_coins += 5
         game.last_moneytrees_time = pg.time.get_ticks()
 
 
