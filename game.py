@@ -28,7 +28,6 @@ SOLDIER1_COST: int = 50
 SOLDIER2_COST: int = 100
 MISSILE_LAUNCHER_COST: int = 250
 TURRET_COST: int = 500
-MONEYTREES_COST: int = 50
 
 TILES: dict = {
     "grass": {
@@ -155,11 +154,6 @@ moneytree = pg.transform.scale(
     (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
 )
 moneytree_rect = moneytree.get_rect(topleft=(5 * TILE_SIZE, 8 * TILE_SIZE))
-# price tag
-moneytree_price_tag = SUBTITLE_FONT.render(f"{MONEYTREES_COST}$", True, (255, 255, 255))
-moneytree_price_tag_rect = moneytree_price_tag.get_rect(
-    center=((5.5 * TILE_SIZE), (SCREEN_HEIGHT - 10))
-)
 
 # turret
 turret_og = pg.image.load("./assets/tiles/towerDefense_tile250.png")
@@ -193,6 +187,8 @@ class Game:
     weapons: pg.sprite.Group = pg.sprite.Group()
 
     moneytrees: pg.sprite.Group = pg.sprite.Group()
+
+    moneytrees_cost: int = 50
 
     last_moneytrees_time: int = 0  # for gabi
 
@@ -605,6 +601,14 @@ class Game:
                     ],
                 )
 
+                # price tag
+                moneytree_price_tag = SUBTITLE_FONT.render(
+                    f"{self.moneytrees_cost}$", True, (255, 255, 255)
+                )
+                moneytree_price_tag_rect = moneytree_price_tag.get_rect(
+                    center=((5.5 * TILE_SIZE), (SCREEN_HEIGHT - 10))
+                )
+
                 # weapons bar
                 SCREEN.blit(soldier1, soldier1_rect)
                 SCREEN.blit(soldier1_price_tag, soldier1_price_tag_rect)
@@ -623,7 +627,7 @@ class Game:
                     if amount > 0 and now - self.last_entity_spawn_time >= (
                         12000 / (self.velocity * 2)
                     ):
-                        self.entities.add(Entity(type))
+                        self.entities.add(Entity(type, self))
                         self.last_entity_spawn_time = now
                         self.waves[self.current_wave][type] -= 1
                         if type == "vielgut":
@@ -827,11 +831,12 @@ class Game:
                 )
             if (
                 tile != "grass"
+                and tile != "mountain"
                 and tile != "mountain_trc"
                 and tile != "mountain_tlc"
                 and tile != "mountain_blc"
                 and tile != "mountain_brc"
-                and tile != "mountain_up"
+                and tile != "mountain_top"
                 and tile != "mountain_done"
                 and tile != "mountain_right"
                 and tile != "mountain_left"
@@ -860,7 +865,7 @@ class Entity(pg.sprite.Sprite):
 
     original_hp: int
 
-    def __init__(self, entity: str):
+    def __init__(self, entity: str, game: Game):
         """
         Creates Entity Object and sets its variables.
 
@@ -1126,7 +1131,8 @@ class Moneytree(pg.sprite.Sprite):
         )
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = convert_coordinates(position)
-        game.player_coins -= MONEYTREES_COST
+        game.player_coins -= game.moneytrees_cost
+        game.moneytrees_cost *= 1.5
 
     def update(self, game: Game):  # for Gabi
         game.player_coins += 5
