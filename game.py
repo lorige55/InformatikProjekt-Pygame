@@ -1,5 +1,3 @@
-"""The main file of our game"""
-
 # Franco looks like a maulwurf who just went to chong colong
 # Hayk is such a pookie - Gabriel (ily Hayk <3 ) (Philipp doesn't agree)
 # Mark 99.-
@@ -22,7 +20,7 @@ SCREEN_HEIGHT: int = TILED_HEIGHT * TILE_SIZE
 SCREEN: pg.Surface = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock: pg.time.Clock = pg.time.Clock()
 TITLE_FONT: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Blocks.ttf", 36)
-SUBTITLE_FONT: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Future.ttf", 18)
+SUBTITLE_FONT: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Future.ttf", 16)
 WEAPONS_RANGE = 4 * TILE_SIZE
 SOLDIER1_COST: int = 50
 SOLDIER2_COST: int = 100
@@ -179,7 +177,7 @@ class Game:
 
     state: str = "start"
 
-    velocity: int = 2
+    velocity: float = 2
 
     player_hp: float = 1000
 
@@ -194,6 +192,8 @@ class Game:
     moneytrees: pg.sprite.Group = pg.sprite.Group()
 
     moneytrees_cost: int = 50
+
+    cross_text: str
 
     shots: pg.sprite.Group = pg.sprite.Group()
 
@@ -243,6 +243,9 @@ class Game:
     last_entity_spawn_time: int = 0
 
     def __init__(self) -> None:
+        """
+        Handles Game: Playing music, switching between screens, placing of new weapons, wave management, player hp, etc.
+        """
         running: bool = True
 
         pg.mixer.music.load("./assets/sound/intro.mp3")
@@ -608,12 +611,25 @@ class Game:
                     ],
                 )
 
-                # price tag
+                # money tree price tag
                 moneytree_price_tag = SUBTITLE_FONT.render(
                     f"{self.moneytrees_cost}$", True, (255, 255, 255)
                 )
                 moneytree_price_tag_rect = moneytree_price_tag.get_rect(
                     center=((5.5 * TILE_SIZE), (SCREEN_HEIGHT - 10))
+                )
+
+                if self.active_placing[0] == False:
+                    self.cross_text = "Delete"
+                else:
+                    self.cross_text = "Cancel"
+
+                # cross mode text
+                cross_text = SUBTITLE_FONT.render(
+                    f"{self.cross_text}", True, (255, 255, 255)
+                )
+                cross_text_rect = cross_text.get_rect(
+                    center=((0.5 * TILE_SIZE), (5 * TILE_SIZE))
                 )
 
                 # weapons bar
@@ -627,6 +643,7 @@ class Game:
                 SCREEN.blit(turret_price_tag, turret_price_tag_rect)
                 SCREEN.blit(moneytree, moneytree_rect)
                 SCREEN.blit(moneytree_price_tag, moneytree_price_tag_rect)
+                SCREEN.blit(cross_text, cross_text_rect)
 
                 # wave management / entity spawning
                 now = pg.time.get_ticks()
@@ -810,7 +827,7 @@ class Game:
         if option == 1:
             # reset game variables
             self.player_hp = 1000
-            self.player_coins = 10000
+            self.player_coins = 100
 
     def render_tiles(self, tile: str, positions: list):
         """
@@ -862,7 +879,6 @@ class Game:
 
 
 class Entity(pg.sprite.Sprite):
-    """Creates entity and stores its variables."""
 
     type: str
 
@@ -1003,7 +1019,6 @@ class Entity(pg.sprite.Sprite):
 
 
 class Weapon(pg.sprite.Sprite):
-    """Creates weapon and stores its variables."""
 
     image: pg.Surface
 
@@ -1136,6 +1151,13 @@ class Moneytree(pg.sprite.Sprite):
     image: pg.Surface
 
     def __init__(self, position: list, game: Game):
+        """
+        Creates Moneytree, subtracts coins from player and doubles moneytree cost.
+
+        Args:
+            position (list): Tiled position for moneytree to be placed
+            game (Game): Game object
+        """
         super().__init__()
         self.og_image = moneytree_og.copy()
         self.image = self.og_image.copy()
@@ -1146,9 +1168,15 @@ class Moneytree(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = convert_coordinates(position)
         game.player_coins -= game.moneytrees_cost
-        game.moneytrees_cost *= 1.5
+        game.moneytrees_cost *= 2
 
-    def update(self, game: Game):  # for Gabi
+    def update(self, game: Game):
+        """
+        Gives player Coins
+
+        Args:
+            game (Game): Game object
+        """
         game.player_coins += 5
         game.last_moneytrees_time = pg.time.get_ticks()
 
@@ -1170,6 +1198,16 @@ class Shot(pg.sprite.Sprite):
     size: int
 
     def __init__(self, weapon: str, position: pg.Vector2, target_pos: pg.Vector2, target_obj: Entity, angle: float):
+        """
+        Creates Shot object
+
+        Args:
+            weapon (str): Type of weapon
+            position (pg.Vector2): Position of Weapon that fires the Shot
+            target_pos (pg.Vector2): Position of Target Entity
+            target_obj (Entity): Target Entitiy Object
+            angle (float): Angle to which Weapon is turned at the time of firing
+        """
         super().__init__()
         self.weapon = weapon
         if weapon == "soldier1":
@@ -1184,7 +1222,7 @@ class Shot(pg.sprite.Sprite):
             self.size = 10
         elif weapon == "missile_launcher":
             self.og_image = missile_launcher_shot_og.copy()
-            self.speed = 10
+            self.speed = 15
             self.damage = 120
             self.size = 80
         elif weapon == "turret":
@@ -1211,6 +1249,9 @@ class Shot(pg.sprite.Sprite):
         
 
     def update(self):
+        """
+        Moves Shot toward target
+        """
         self.current_pos += self.velocity
         self.rect.center = self.current_pos
 
@@ -1220,7 +1261,7 @@ class Shot(pg.sprite.Sprite):
 
     def rotate(self, angle: float):
         """
-        Rotates entity on screen by angle.
+        Rotates shot by angle.
 
         Args:
             angle (float): angle in degrees (anti-clockwise)
