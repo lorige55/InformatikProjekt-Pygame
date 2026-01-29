@@ -168,6 +168,11 @@ turret_price_tag_rect = turret_price_tag.get_rect(
     center=(9.5 * TILE_SIZE, (SCREEN_HEIGHT - 10))
 )
 
+#shot ogs
+soldier_shot_og = pg.image.load("./assets/custom/soldier_shot.png").convert()
+missile_launcher_shot_og = pg.image.load("./assets/custom/missile_launcher_shot_left.png").convert()
+turret_shot_og = pg.image.load("./assets/custom/turret_shot.png").convert()
+
 
 class Game:
     """Stores Variables and methods needed to control the game."""
@@ -189,6 +194,8 @@ class Game:
     moneytrees: pg.sprite.Group = pg.sprite.Group()
 
     moneytrees_cost: int = 50
+
+    shots: pg.sprite.Group = pg.sprite.Group()
 
     last_moneytrees_time: int = 0  # for gabi
 
@@ -658,7 +665,8 @@ class Game:
                 # entities
                 if self.entities:
                     self.entities.update(self.entities, self)
-                    self.weapons.update(self.entities)
+                    self.weapons.update(self, self.entities)
+                    self.shots.update()
 
                 if pg.time.get_ticks() - self.last_moneytrees_time >= 5000:
                     self.moneytrees.update(self)  # for gabi
@@ -666,6 +674,7 @@ class Game:
                 self.entities.draw(SCREEN)
                 self.weapons.draw(SCREEN)
                 self.moneytrees.draw(SCREEN)
+                self.shots.draw(SCREEN)
 
                 # Active Weapon Placement
                 if self.active_placing[0] is True:
@@ -801,7 +810,7 @@ class Game:
         if option == 1:
             # reset game variables
             self.player_hp = 1000
-            self.player_coins = 100
+            self.player_coins = 10000
 
     def render_tiles(self, tile: str, positions: list):
         """
@@ -1000,6 +1009,10 @@ class Weapon(pg.sprite.Sprite):
 
     og_image: pg.Surface
 
+    rect: pg.Rect
+
+    angle: float
+
     weapon: str
 
     damage: int
@@ -1064,8 +1077,9 @@ class Weapon(pg.sprite.Sprite):
         )
         self.rect = self.image.get_rect(center=center)
         self.weapon_pos = pg.Vector2(self.rect.center)
+        self.angle = angle
 
-    def update(self, entities: pg.sprite.Group):
+    def update(self, game: Game, entities: pg.sprite.Group):
         """
         Checks if Weapon is ready to shoot again.
         Then damages first entity that is within its range.
@@ -1079,14 +1093,14 @@ class Weapon(pg.sprite.Sprite):
                 target_pos = pg.Vector2(entity.rect.center)
                 distance_to_target = self.weapon_pos.distance_to(target_pos)
                 if distance_to_target <= WEAPONS_RANGE:
-                    if now - self.last_shot_time >= self.fire_rate:
-                        entity.entity_hp -= self.damage
-                        self.last_shot_time = now
                     direction = target_pos - self.weapon_pos
                     angle_deg = -math.degrees(math.atan2(direction.y, direction.x))
                     if self.weapon == "missile_launcher" or self.weapon == "turret":
                         angle_deg -= 90
                     self.rotate(angle_deg)
+                    if now - self.last_shot_time >= self.fire_rate:
+                        self.last_shot_time = now
+                        game.shots.add(Shot(self.weapon, self.weapon_pos, target_pos, entity, self.angle))
                     break
 
 
@@ -1138,5 +1152,83 @@ class Moneytree(pg.sprite.Sprite):
         game.player_coins += 5
         game.last_moneytrees_time = pg.time.get_ticks()
 
+
+class Shot(pg.sprite.Sprite):
+    
+    og_image: pg.Surface
+    
+    image: pg.Surface
+
+    target_pos: pg.Vector2
+
+    current_pos: pg.Vector2
+
+    speed: int
+    
+    damage: int
+
+    size: int
+
+    def __init__(self, weapon: str, position: pg.Vector2, target_pos: pg.Vector2, target_obj: Entity, angle: float):
+        super().__init__()
+        self.weapon = weapon
+        if weapon == "soldier1":
+            self.og_image = soldier_shot_og.copy()
+            self.speed = 20
+            self.damage = 18
+            self.size = 10
+        elif weapon == "soldier2":
+            self.og_image = soldier_shot_og.copy()
+            self.speed = 20
+            self.damage = 32
+            self.size = 10
+        elif weapon == "missile_launcher":
+            self.og_image = missile_launcher_shot_og.copy()
+            self.speed = 10
+            self.damage = 120
+            self.size = 80
+        elif weapon == "turret":
+            self.og_image = turret_shot_og.copy()
+            self.speed = 40
+            self.damage = 55
+            self.size = 80
+        
+        self.current_pos = position
+        self.target_pos = target_pos
+        
+        self.image = pg.transform.rotate(
+            pg.transform.scale(self.og_image, (self.size, self.size)), angle
+        )
+        self.rect = self.image.get_rect(center=self.current_pos)
+
+        direction = self.target_pos - self.current_pos
+        if direction.length() != 0:
+            self.velocity = direction.normalize() * self.speed
+        else:
+            self.velocity = pg.Vector2(0, 0)
+        
+        self.target_obj = target_obj
+        
+
+    def update(self):
+        self.current_pos += self.velocity
+        self.rect.center = self.current_pos
+
+        if self.rect.colliderect(self.target_obj.rect):
+            self.target_obj.entity_hp -= self.damage
+            self.kill()
+
+    def rotate(self, angle: float):
+        """
+        Rotates entity on screen by angle.
+
+        Args:
+            angle (float): angle in degrees (anti-clockwise)
+        """
+        center = self.rect.center
+        self.image = pg.transform.rotate(
+            pg.transform.scale(self.og_image, (self.size, self.size)), angle
+        )
+        self.rect = self.image.get_rect(center=center)
 
 game = Game()
