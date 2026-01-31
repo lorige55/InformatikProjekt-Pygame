@@ -311,7 +311,7 @@ class Game:
                                         self,
                                     )
                                 )
-                        else:
+                        elif self.player_coins >= self.moneytrees_cost:
                             self.moneytrees.add(Moneytree([x, y], self))
                         self.active_placing = [False, ""]
                     elif self.active_deleting is True:
