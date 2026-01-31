@@ -1,11 +1,13 @@
-# Franco looks like a maulwurf who just went to chong colong
-# Hayk is such a pookie - Gabriel (ily Hayk <3 ) (Philipp doesn't agree)
-# Mark 99.-
-# Lorenzo papierli schwiizer
+"""
+Franco looks like a maulwurf who just went to chong colong
+Hayk is such a pookie - Gabriel (ily Hayk <3 ) (Philipp doesn't agree)
+Mark 99.-
+Lorenzo papierli schwiizer
+"""
 
 from __future__ import annotations
-import pygame as pg
 import math
+import pygame as pg
 
 pg.init()
 pg.font.init()
@@ -166,9 +168,11 @@ turret_price_tag_rect = turret_price_tag.get_rect(
     center=(9.5 * TILE_SIZE, (SCREEN_HEIGHT - 10))
 )
 
-#shot ogs
+# shot ogs
 soldier_shot_og = pg.image.load("./assets/custom/soldier_shot.png").convert()
-missile_launcher_shot_og = pg.image.load("./assets/custom/missile_launcher_shot_left.png").convert()
+missile_launcher_shot_og = pg.image.load(
+    "./assets/custom/missile_launcher_shot_left.png"
+).convert()
 turret_shot_og = pg.image.load("./assets/custom/turret_shot.png").convert()
 
 
@@ -177,7 +181,7 @@ class Game:
 
     state: str = "start"
 
-    velocity: float = 2
+    velocity: int = 2
 
     player_hp: float = 1000
 
@@ -246,7 +250,8 @@ class Game:
 
     def __init__(self) -> None:
         """
-        Handles Game: Playing music, switching between screens, placing of new weapons, wave management, player hp, etc.
+        Handles Game: Playing music, switching between screens,
+        placing of new weapons, wave management, player hp, etc.
         """
         running: bool = True
 
@@ -258,24 +263,35 @@ class Game:
             for event in pg.event.get():
                 if event.type == pg.constants.QUIT:
                     running = False
-                elif event.type == pg.constants.KEYDOWN and event.key == pg.constants.K_SPACE and self.state == "start":
+                elif (
+                    event.type == pg.constants.KEYDOWN
+                    and event.key == pg.constants.K_SPACE
+                    and self.state == "start"
+                ):
                     self.state = "game"
                     self.reset(1)
                     pg.mixer.music.stop()
                     pg.mixer.music.load("./assets/sound/coconut_mall.mp3")
                     pg.mixer.music.play(loops=-1)
-                elif event.type == pg.constants.MOUSEBUTTONDOWN and self.state == "game":
+                elif (
+                    event.type == pg.constants.MOUSEBUTTONDOWN and self.state == "game"
+                ):
                     x, y = convert_coordinates(event.pos)
                     if soldier1_rect.collidepoint(event.pos):
                         self.active_placing = [True, "soldier1"]
+                        self.active_deleting = False
                     elif soldier2_rect.collidepoint(event.pos):
                         self.active_placing = [True, "soldier2"]
+                        self.active_deleting = False
                     elif missile_launcher_rect.collidepoint(event.pos):
                         self.active_placing = [True, "missile_launcher"]
+                        self.active_deleting = False
                     elif turret_rect.collidepoint(event.pos):
                         self.active_placing = [True, "turret"]
+                        self.active_deleting = False
                     elif moneytree_rect.collidepoint(event.pos):
                         self.active_placing = [True, "moneytree"]
+                        self.active_deleting = False
                     elif x == 0 and y == 4:
                         if self.active_deleting is False:
                             self.active_deleting = True
@@ -315,10 +331,18 @@ class Game:
                             self.moneytrees.add(Moneytree([x, y], self))
                         self.active_placing = [False, ""]
                     elif self.active_deleting is True:
-                        clicked_weapon = next((sprite for sprite in self.weapons if sprite.rect.collidepoint(event.pos)), None)
+                        clicked_weapon = next(
+                            (
+                                sprite
+                                for sprite in self.weapons
+                                if sprite.rect.collidepoint(event.pos)
+                            ),
+                            None,
+                        )
                         if clicked_weapon is not None:
                             self.player_coins += int(clicked_weapon.cost * 0.5)
                             clicked_weapon.kill()
+                            self.placement_free_zone.remove([x, y])
 
             # start SCREEN if:
             if self.state == "start":
@@ -658,14 +682,14 @@ class Game:
 
                 # wave management / entity spawning
                 now = pg.time.get_ticks()
-                for type, amount in self.waves[self.current_wave].items():
+                for entity, amount in self.waves[self.current_wave].items():
                     if amount > 0 and now - self.last_entity_spawn_time >= (
                         12000 / (self.velocity * 2)
                     ):
-                        self.entities.add(Entity(type, self))
+                        self.entities.add(Entity(entity, self))
                         self.last_entity_spawn_time = now
-                        self.waves[self.current_wave][type] -= 1
-                        if type == "vielgut":
+                        self.waves[self.current_wave][entity] -= 1
+                        if entity == "vielgut":
                             pg.mixer.music.load("./assets/sound/ima_boss.mp3")
                             pg.mixer.music.play(loops=0)
                             self.velocity = 2
@@ -681,13 +705,13 @@ class Game:
                     pg.mixer.music.load("./assets/sound/win_music.mp3")
                     pg.mixer.music.play(loops=-1)
 
-                for number, objects in self.waves.items():
+                for objects in self.waves.values():
                     total = 0
-                    for _, amount in objects.items():
+                    for amount in objects.values():
                         total += amount
                     if total == 0 and len(self.entities) == 0:
                         self.current_wave += 1
-                        self.velocity += 1.2
+                        self.velocity += 1
                         break
 
                 # entities
@@ -708,7 +732,10 @@ class Game:
                 if self.active_placing[0] is True or self.active_deleting is True:
                     x, y = pg.mouse.get_pos()
                     tile_x, tile_y = convert_coordinates([x, y])
-                    if self.active_placing[0] is True and [tile_x, tile_y] not in self.placement_free_zone:
+                    if (
+                        self.active_placing[0] is True
+                        and [tile_x, tile_y] not in self.placement_free_zone
+                    ):
                         self.render_tiles("free_position", [[tile_x, tile_y]])
                         self.render_tiles(self.active_placing[1], [[tile_x, tile_y]])
                         if self.active_placing[1] != "moneytree":
@@ -724,7 +751,9 @@ class Game:
                             )
                     elif self.active_placing[0] is True and tile_x == 0 and tile_y == 4:
                         self.active_placing = [False, ""]
-                    elif self.active_deleting is True and any(sprite.rect.collidepoint(x,y) for sprite in self.weapons):
+                    elif self.active_deleting is True and any(
+                        sprite.rect.collidepoint(x, y) for sprite in self.weapons
+                    ):
                         self.render_tiles("free_position", [[tile_x, tile_y]])
 
                 # display wave
@@ -790,23 +819,31 @@ class Game:
                 happy_win_rect = happy_win.get_rect(center=(600, 540))
                 SCREEN.blit(happy_win, happy_win_rect)
                 # add 3 mice on the left
-                mouse1 = pg.image.load("./assets/custom/mouse_right.png")
+                mouse_right = pg.image.load("./assets/custom/mouse_right.png")
+                # mouse 1
+                mouse1 = mouse_right.copy()
                 mouse1_rect = mouse1.get_rect(center=(340, 240))
                 SCREEN.blit(mouse1, mouse1_rect)
-                mouse2 = pg.image.load("./assets/custom/mouse_right.png")
+                # mouse 2
+                mouse2 = mouse_right.copy()
                 mouse2_rect = mouse2.get_rect(center=(290, 390))
                 SCREEN.blit(mouse2, mouse2_rect)
-                mouse3 = pg.image.load("./assets/custom/mouse_right.png")
+                # mouse 3
+                mouse3 = mouse_right.copy()
                 mouse3_rect = mouse3.get_rect(center=(240, 540))
                 SCREEN.blit(mouse3, mouse3_rect)
                 # add 3 mice on the right
-                mouse4 = pg.image.load("./assets/custom/mouse_left.png")
+                mouse_left = pg.image.load("./assets/custom/mouse_left.png")
+                # mouse 4
+                mouse4 = mouse_left.copy()
                 mouse4_rect = mouse4.get_rect(center=(940, 240))
                 SCREEN.blit(mouse4, mouse4_rect)
-                mouse5 = pg.image.load("./assets/custom/mouse_left.png")
+                # mouse 5
+                mouse5 = mouse_left.copy()
                 mouse5_rect = mouse5.get_rect(center=(990, 390))
                 SCREEN.blit(mouse5, mouse5_rect)
-                mouse6 = pg.image.load("./assets/custom/mouse_left.png")
+                # mouse 6
+                mouse6 = mouse_left.copy()
                 mouse6_rect = mouse6.get_rect(center=(1040, 540))
                 SCREEN.blit(mouse6, mouse6_rect)
 
@@ -824,7 +861,7 @@ class Game:
         Method to reset background and game variables
 
         Args:
-            option (int): Option 1 resets background and variables, while option 2 only resets background.
+            option (int): Option 1: Background and variables; Option 2: Background
         """
         # reset background
         for i in range(TILED_WIDTH):
@@ -892,6 +929,10 @@ class Game:
 
 
 class Entity(pg.sprite.Sprite):
+    """
+    Entities move along the path and get damaged by Weapons.
+    They subtract from the players hp, if they reach the end of the path before being killed.
+    """
 
     type: str
 
@@ -939,7 +980,7 @@ class Entity(pg.sprite.Sprite):
         self.rect.x = SCREEN_WIDTH
         self.rect.y = round(4.5 * TILE_SIZE)
 
-        self.path: list[list[float, float]] = [
+        self.path: list[list[float]] = [
             [10.5, 4.5],
             [10.5, 6.5],
             [1.5, 6.5],
@@ -972,8 +1013,8 @@ class Entity(pg.sprite.Sprite):
             game.player_hp -= self.entity_hp
             self.entity_hp = 0
         else:
-            target_x: int = self.path[0][0] * TILE_SIZE
-            target_y: int = self.path[0][1] * TILE_SIZE
+            target_x: int = int(self.path[0][0] * TILE_SIZE)
+            target_y: int = int(self.path[0][1] * TILE_SIZE)
 
             delta_x: int = target_x - self.rect.x
             delta_y: int = target_y - self.rect.y
@@ -999,6 +1040,8 @@ class Entity(pg.sprite.Sprite):
                     step_x = delta_x
                 if abs(step_y) > abs(delta_y):
                     step_y = delta_y
+
+                angle: int
 
                 if step_x < 0:
                     angle = 90
@@ -1032,6 +1075,9 @@ class Entity(pg.sprite.Sprite):
 
 
 class Weapon(pg.sprite.Sprite):
+    """
+    Weapons can be bought by the player to damage entities.
+    """
 
     image: pg.Surface
 
@@ -1128,7 +1174,15 @@ class Weapon(pg.sprite.Sprite):
                     self.rotate(angle_deg)
                     if now - self.last_shot_time >= self.fire_rate:
                         self.last_shot_time = now
-                        game.shots.add(Shot(self.weapon, self.weapon_pos, target_pos, entity, self.angle))
+                        game.shots.add(
+                            Shot(
+                                self.weapon,
+                                self.weapon_pos,
+                                target_pos,
+                                entity,
+                                self.angle,
+                            )
+                        )
                     break
 
 
@@ -1158,6 +1212,9 @@ def convert_coordinates(coordinates: list):
 
 
 class Moneytree(pg.sprite.Sprite):
+    """
+    Moneytrees can be bought by the player to continously add coins to their balance.
+    """
 
     og_image: pg.Surface
 
@@ -1195,9 +1252,12 @@ class Moneytree(pg.sprite.Sprite):
 
 
 class Shot(pg.sprite.Sprite):
-    
+    """
+    Shots are spawned by weapons. They damage the entity and visualize the damage.
+    """
+
     og_image: pg.Surface
-    
+
     image: pg.Surface
 
     target_pos: pg.Vector2
@@ -1205,12 +1265,19 @@ class Shot(pg.sprite.Sprite):
     current_pos: pg.Vector2
 
     speed: int
-    
+
     damage: int
 
     size: int
 
-    def __init__(self, weapon: str, position: pg.Vector2, target_pos: pg.Vector2, target_obj: Entity, angle: float):
+    def __init__(
+        self,
+        weapon: str,
+        position: pg.Vector2,
+        target_pos: pg.Vector2,
+        target_obj: Entity,
+        angle: float,
+    ):
         """
         Creates Shot object
 
@@ -1243,10 +1310,10 @@ class Shot(pg.sprite.Sprite):
             self.speed = 40
             self.damage = 55
             self.size = 80
-        
+
         self.current_pos = position
         self.target_pos = target_pos
-        
+
         self.image = pg.transform.rotate(
             pg.transform.scale(self.og_image, (self.size, self.size)), angle
         )
@@ -1257,9 +1324,8 @@ class Shot(pg.sprite.Sprite):
             self.velocity = direction.normalize() * self.speed
         else:
             self.velocity = pg.Vector2(0, 0)
-        
+
         self.target_obj = target_obj
-        
 
     def update(self):
         """
@@ -1284,5 +1350,6 @@ class Shot(pg.sprite.Sprite):
             pg.transform.scale(self.og_image, (self.size, self.size)), angle
         )
         self.rect = self.image.get_rect(center=center)
+
 
 game = Game()
