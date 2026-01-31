@@ -185,6 +185,8 @@ class Game:
 
     active_placing: list = [False, ""]
 
+    active_deleting: bool = False
+
     entities: pg.sprite.Group = pg.sprite.Group()
 
     weapons: pg.sprite.Group = pg.sprite.Group()
@@ -256,14 +258,13 @@ class Game:
             for event in pg.event.get():
                 if event.type == pg.constants.QUIT:
                     running = False
-                elif event.type == pg.constants.KEYDOWN:
-                    if event.key == pg.constants.K_SPACE and self.state == "start":
-                        self.state = "game"
-                        self.reset(1)
-                        pg.mixer.music.stop()
-                        pg.mixer.music.load("./assets/sound/coconut_mall.mp3")
-                        pg.mixer.music.play(loops=-1)
-                elif event.type == pg.constants.MOUSEBUTTONDOWN:
+                elif event.type == pg.constants.KEYDOWN and event.key == pg.constants.K_SPACE and self.state == "start":
+                    self.state = "game"
+                    self.reset(1)
+                    pg.mixer.music.stop()
+                    pg.mixer.music.load("./assets/sound/coconut_mall.mp3")
+                    pg.mixer.music.play(loops=-1)
+                elif event.type == pg.constants.MOUSEBUTTONDOWN and self.state == "game":
                     x, y = convert_coordinates(event.pos)
                     if soldier1_rect.collidepoint(event.pos):
                         self.active_placing = [True, "soldier1"]
@@ -275,6 +276,11 @@ class Game:
                         self.active_placing = [True, "turret"]
                     elif moneytree_rect.collidepoint(event.pos):
                         self.active_placing = [True, "moneytree"]
+                    elif x == 0 and y == 4:
+                        if self.active_deleting is False:
+                            self.active_deleting = True
+                        else:
+                            self.active_deleting = False
                     elif (
                         self.active_placing[0] is True
                         and [x, y] not in self.placement_free_zone
@@ -308,6 +314,11 @@ class Game:
                         else:
                             self.moneytrees.add(Moneytree([x, y], self))
                         self.active_placing = [False, ""]
+                    elif self.active_deleting is True:
+                        clicked_weapon = next((sprite for sprite in self.weapons if sprite.rect.collidepoint(event.pos)), None)
+                        if clicked_weapon is not None:
+                            self.player_coins += int(clicked_weapon.cost * 0.5)
+                            clicked_weapon.kill()
 
             # start SCREEN if:
             if self.state == "start":
@@ -619,14 +630,14 @@ class Game:
                     center=((5.5 * TILE_SIZE), (SCREEN_HEIGHT - 10))
                 )
 
-                if self.active_placing[0] == False:
+                if self.active_placing[0] is False and self.active_deleting is False:
                     self.cross_text = "Delete"
                 else:
                     self.cross_text = "Cancel"
 
                 # cross mode text
                 cross_text = SUBTITLE_FONT.render(
-                    f"{self.cross_text}", True, (255, 255, 255)
+                    self.cross_text, True, (255, 255, 255)
                 )
                 cross_text_rect = cross_text.get_rect(
                     center=((0.5 * TILE_SIZE), (5 * TILE_SIZE))
@@ -694,10 +705,10 @@ class Game:
                 self.shots.draw(SCREEN)
 
                 # Active Weapon Placement
-                if self.active_placing[0] is True:
+                if self.active_placing[0] is True or self.active_deleting is True:
                     x, y = pg.mouse.get_pos()
                     tile_x, tile_y = convert_coordinates([x, y])
-                    if [tile_x, tile_y] not in self.placement_free_zone:
+                    if self.active_placing[0] is True and [tile_x, tile_y] not in self.placement_free_zone:
                         self.render_tiles("free_position", [[tile_x, tile_y]])
                         self.render_tiles(self.active_placing[1], [[tile_x, tile_y]])
                         if self.active_placing[1] != "moneytree":
@@ -711,8 +722,10 @@ class Game:
                                 WEAPONS_RANGE,
                                 width=1,
                             )
-                    elif tile_x == 0 and tile_y == 4:
+                    elif self.active_placing[0] is True and tile_x == 0 and tile_y == 4:
                         self.active_placing = [False, ""]
+                    elif self.active_deleting is True and any(sprite.rect.collidepoint(x,y) for sprite in self.weapons):
+                        self.render_tiles("free_position", [[tile_x, tile_y]])
 
                 # display wave
                 current_wave_text = TITLE_FONT.render(
