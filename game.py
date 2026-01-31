@@ -169,11 +169,11 @@ turret_price_tag_rect = turret_price_tag.get_rect(
 )
 
 # shot ogs
-soldier_shot_og = pg.image.load("./assets/custom/soldier_shot.png").convert()
+soldier_shot_og = pg.image.load("./assets/custom/soldier_shot.png").convert_alpha()
 missile_launcher_shot_og = pg.image.load(
     "./assets/custom/missile_launcher_shot_left.png"
-).convert()
-turret_shot_og = pg.image.load("./assets/custom/turret_shot.png").convert()
+).convert_alpha()
+turret_shot_og = pg.image.load("./assets/custom/turret_shot.png").convert_alpha()
 
 
 class Game:
