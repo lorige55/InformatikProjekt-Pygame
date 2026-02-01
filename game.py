@@ -653,7 +653,7 @@ class Game:
                 now = pg.time.get_ticks()
                 remaining_in_wave = sum(self.waves[self.current_wave].values())
 
-                if remaining_in_wave > 0 and self.current_wave != 8:
+                if remaining_in_wave > 0:
                     for entity, amount in self.waves[self.current_wave].items():
                         if amount > 0 and now - self.last_entity_spawn_time >= (
                             12000 / (self.velocity * 2)
@@ -666,6 +666,7 @@ class Game:
                                 pg.mixer.music.set_volume(1)
                                 pg.mixer.music.play(loops=0)
                                 self.velocity = 2
+                            break
                 elif remaining_in_wave == 0 and len(self.entities) == 0:
                     self.current_wave += 1
                     self.velocity += 1
