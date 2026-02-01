@@ -881,69 +881,115 @@ class Game:
         Args:
             option (int): Option 1: Background and variables; Option 2: Background
         """
-        # reset background
-        for i in range(TILED_WIDTH):
-            for j in range(TILED_HEIGHT):
-                SCREEN.blit(
-                    TILES["grass"]["object"],
-                    (
-                        i * (SCREEN_WIDTH / TILED_WIDTH),
-                        j * (SCREEN_HEIGHT / TILED_HEIGHT),
-                    ),
-                )
+    for i in positions:
 
-        if option == 1:
-            # reset game variables
-            self.player_hp = 1000
-            self.player_coins = 100
+                if len(i) == 3:
+                    SCREEN.blit(
+                        pg.transform.rotate(TILES[tile]["object"], i[2]),
+                        (
+                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                        ),
+                    )
+                else:
+                    SCREEN.blit(
+                        TILES[tile]["object"],
+                        (
+                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                        ),
+                    )
+                if (
+                    tile
+                    not in [
+                        "grass",
+                        "mountain",
+                        "mountain_trc",
+                        "mountain_tlc",
+                        "mountain_brc",
+                        "mountain_blc",
+                        "mountain_top",
+                        "mountain_done",
+                        "mountain_right",
+                        "mountain_left",
+                        "mountain_tc",
+                        "free_position",
+                        "soldier1",
+                        "soldier2",
+                        "missile_launcher",
+                        "turret",
+                        "moneytree",
+                    ]
+                    and [i[0], i[1]] not in self.placement_free_zone
+                ):
+                    self.placement_free_zone.append([i[0], i[1]])
 
-    def render_tiles(self, tile: str, positions: list):
-        """
-        Rotates Tile if needed and puts it onto screen.
 
-        Args:
-            tile (str): Key of Tile accoring to TILES constant
-            positions (list): X and Y corrdinates of tiles (and angle a)
-        """
 
-        for i in positions:
-            try:
-                SCREEN.blit(
-                    pg.transform.rotate(TILES[tile]["object"], i[2]),
-                    (
-                        i[0] * (SCREEN_WIDTH / TILED_WIDTH),
-                        i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
-                    ),
-                )
-            except IndexError:
-                SCREEN.blit(
-                    TILES[tile]["object"],
-                    (
-                        i[0] * (SCREEN_WIDTH / TILED_WIDTH),
-                        i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
-                    ),
-                )
-            if (
-                tile != "grass"
-                and tile != "mountain"
-                and tile != "mountain_trc"
-                and tile != "mountain_tlc"
-                and tile != "mountain_blc"
-                and tile != "mountain_brc"
-                and tile != "mountain_top"
-                and tile != "mountain_done"
-                and tile != "mountain_right"
-                and tile != "mountain_left"
-                and tile != "mountain_tc"
-                and tile != "free_position"
-                and tile != "soldier1"
-                and tile != "soldier2"
-                and tile != "missile_launcher"
-                and tile != "turret"
-                and tile != "moneytree"
-                and [i[0], i[1]] not in self.placement_free_zone
-            ):
-                self.placement_free_zone.append([i[0], i[1]])
+
+            # reset background
+            for i in range(TILED_WIDTH):
+                for j in range(TILED_HEIGHT):
+                    SCREEN.blit(
+                        TILES["grass"]["object"],
+                        (
+                            i * (SCREEN_WIDTH / TILED_WIDTH),
+                            j * (SCREEN_HEIGHT / TILED_HEIGHT),
+                        ),
+                    )
+
+            if option == 1:
+                # reset game variables
+                self.player_hp = 1000
+                self.player_coins = 100
+
+        def render_tiles(self, tile: str, positions: list):
+            """
+            Rotates Tile if needed and puts it onto screen.
+
+            Args:
+                tile (str): Key of Tile accoring to TILES constant
+                positions (list): X and Y corrdinates of tiles (and angle a)
+            """
+
+            for i in positions:
+                try:
+                    SCREEN.blit(
+                        pg.transform.rotate(TILES[tile]["object"], i[2]),
+                        (
+                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                        ),
+                    )
+                except IndexError:
+                    SCREEN.blit(
+                        TILES[tile]["object"],
+                        (
+                            i[0] * (SCREEN_WIDTH / TILED_WIDTH),
+                            i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
+                        ),
+                    )
+                if (
+                    tile != "grass"
+                    and tile != "mountain"
+                    and tile != "mountain_trc"
+                    and tile != "mountain_tlc"
+                    and tile != "mountain_blc"
+                    and tile != "mountain_brc"
+                    and tile != "mountain_top"
+                    and tile != "mountain_done"
+                    and tile != "mountain_right"
+                    and tile != "mountain_left"
+                    and tile != "mountain_tc"
+                    and tile != "free_position"
+                    and tile != "soldier1"
+                    and tile != "soldier2"
+                    and tile != "missile_launcher"
+                    and tile != "turret"
+                    and tile != "moneytree"
+                    and [i[0], i[1]] not in self.placement_free_zone
+                ):
+                    self.placement_free_zone.append([i[0], i[1]])
 
 
 class Entity(pg.sprite.Sprite):
