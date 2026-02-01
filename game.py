@@ -659,28 +659,26 @@ class Game:
                         self.waves[self.current_wave][entity] -= 1
                         if entity == "vielgut":
                             pg.mixer.music.load("./assets/sound/ima_boss.mp3")
+                            pg.mixer.music.set_volume(1)
                             pg.mixer.music.play(loops=0)
                             self.velocity = 2
 
-                if (
+                remaining_in_wave = sum(self.waves[self.current_wave].values())
+
+                if remaining_in_wave == 0 and len(self.entities) == 0:
+                    self.current_wave += 1
+                    self.velocity += 1
+                elif (
                     self.current_wave == 8
                     and len(self.entities) == 0
                     and self.player_hp >= 0
+                    and remaining_in_wave == 0
                 ):
                     self.state = "win"
                     # add music
                     pg.mixer.music.stop()
                     pg.mixer.music.load("./assets/sound/win_music.mp3")
                     pg.mixer.music.play(loops=-1)
-
-                for objects in self.waves.values():
-                    total = 0
-                    for amount in objects.values():
-                        total += amount
-                    if total == 0 and len(self.entities) == 0:
-                        self.current_wave += 1
-                        self.velocity += 1
-                        break
 
                 # entities
                 if self.entities:
