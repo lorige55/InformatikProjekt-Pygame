@@ -612,7 +612,6 @@ class Game:
 
                 ############## Map Rendering ##############
                 for tile_type, data in tiles.items():
-                    print(tile_type, data)
                     self.render_tiles(tile_type, data["positions"])
 
                 # money tree price tag
@@ -650,22 +649,22 @@ class Game:
 
                 ############## Wave Management ##############
                 now = pg.time.get_ticks()
-                for entity, amount in self.waves[self.current_wave].items():
-                    if amount > 0 and now - self.last_entity_spawn_time >= (
-                        12000 / (self.velocity * 2)
-                    ):
-                        self.entities.add(Entity(entity, self))
-                        self.last_entity_spawn_time = now
-                        self.waves[self.current_wave][entity] -= 1
-                        if entity == "vielgut":
-                            pg.mixer.music.load("./assets/sound/ima_boss.mp3")
-                            pg.mixer.music.set_volume(1)
-                            pg.mixer.music.play(loops=0)
-                            self.velocity = 2
-
                 remaining_in_wave = sum(self.waves[self.current_wave].values())
 
-                if remaining_in_wave == 0 and len(self.entities) == 0:
+                if remaining_in_wave > 0 and self.current_wave != 8:
+                    for entity, amount in self.waves[self.current_wave].items():
+                        if amount > 0 and now - self.last_entity_spawn_time >= (
+                            12000 / (self.velocity * 2)
+                        ):
+                            self.entities.add(Entity(entity, self))
+                            self.last_entity_spawn_time = now
+                            self.waves[self.current_wave][entity] -= 1
+                            if entity == "vielgut":
+                                pg.mixer.music.load("./assets/sound/ima_boss.mp3")
+                                pg.mixer.music.set_volume(1)
+                                pg.mixer.music.play(loops=0)
+                                self.velocity = 2
+                elif remaining_in_wave == 0 and len(self.entities) == 0:
                     self.current_wave += 1
                     self.velocity += 1
                 elif (
@@ -1318,13 +1317,13 @@ class Shot(pg.sprite.Sprite):
         soldier_shot_sound = pg.mixer.Sound("./assets/sound/soldier_shot_sound.ogg")
         if weapon == "soldier1":
             self.og_image = soldier_shot_og.copy()
-            self.speed = 20
+            self.speed = 25
             self.damage = 18
             self.size = 10
             soldier_shot_sound.play()
         elif weapon == "soldier2":
             self.og_image = soldier_shot_og.copy()
-            self.speed = 20
+            self.speed = 25
             self.damage = 32
             self.size = 10
             soldier_shot_sound.play()
@@ -1333,7 +1332,7 @@ class Shot(pg.sprite.Sprite):
                 self.og_image = missile_launcher_shot_left_og.copy()
             else:
                 self.og_image = missile_launcher_shot_right_og.copy()
-            self.speed = 15
+            self.speed = 20
             self.damage = 120
             self.size = 80
             missile_launcher_shot_sound = pg.mixer.Sound(
