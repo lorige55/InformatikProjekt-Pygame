@@ -332,6 +332,7 @@ class Game:
                             self.moneytrees.add(Moneytree([x, y], self))
                         self.active_placing = [False, ""]
                     elif self.active_deleting is True:
+                        # delete, if weapon
                         clicked_weapon = next(
                             (
                                 sprite
@@ -343,6 +344,20 @@ class Game:
                         if clicked_weapon is not None:
                             self.player_coins += int(clicked_weapon.cost * 0.5)
                             clicked_weapon.kill()
+                            self.placement_free_zone.remove([x, y])
+
+                        # delete, if moneytree
+                        clicked_moneytree = next(
+                            (
+                                sprite
+                                for sprite in self.moneytrees
+                                if sprite.rect.collidepoint(event.pos)
+                            ),
+                            None,
+                        )
+                        if clicked_moneytree is not None:
+                            self.player_coins += int(clicked_moneytree.cost * 0.5)
+                            clicked_moneytree.kill()
                             self.placement_free_zone.remove([x, y])
 
             # start SCREEN if:
@@ -752,8 +767,11 @@ class Game:
                             )
                     elif self.active_placing[0] is True and tile_x == 0 and tile_y == 4:
                         self.active_placing = [False, ""]
-                    elif self.active_deleting is True and any(
-                        sprite.rect.collidepoint(x, y) for sprite in self.weapons
+                    elif self.active_deleting is True and (
+                        any(sprite.rect.collidepoint(x, y) for sprite in self.weapons)
+                        or any(
+                            sprite.rect.collidepoint(x, y) for sprite in self.moneytrees
+                        )
                     ):
                         self.render_tiles("free_position", [[tile_x, tile_y]])
 
@@ -1222,6 +1240,8 @@ class Moneytree(pg.sprite.Sprite):
 
     image: pg.Surface
 
+    cost: int
+
     def __init__(self, position: list, game: Game):
         """
         Creates Moneytree, subtracts coins from player and doubles moneytree cost.
@@ -1240,7 +1260,9 @@ class Moneytree(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = convert_coordinates(position)
         game.player_coins -= game.moneytrees_cost
+        self.cost = game.moneytrees_cost
         game.moneytrees_cost *= 2
+        game.placement_free_zone.append(position)
 
     def update(self, game: Game):
         """
