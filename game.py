@@ -847,7 +847,7 @@ class Game:
         if option == 1:
             # reset game variables
             self.player_hp = 1000
-            self.player_coins = 1000000
+            self.player_coins = 100
 
     def render_tiles(self, tile: str, positions: list):
         """
@@ -943,7 +943,7 @@ class Entity(pg.sprite.Sprite):
                 self.entity_hp = 540
         elif entity == "vielgut":
             self.image = vielgut_entity_og.copy()
-            self.entity_hp = 7500
+            self.entity_hp = 10000
         self.original_hp = self.entity_hp
         self.og_image = self.image.copy()
         self.image = pg.transform.rotate(
