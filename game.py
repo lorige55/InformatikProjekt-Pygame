@@ -5,22 +5,25 @@ Mark 99.-
 Lorenzo papierli schwiizer
 """
 
+# Imports
 from __future__ import annotations
 import math
 import pygame as pg
 
+# Initializations
 pg.init()
 pg.font.init()
 pg.mixer.init()
 pg.display.set_caption("Tower Defense - by Gabriel, Fillipe and Loris")
 pg.display.set_icon(pg.image.load("./assets/custom/icon.png"))
+
+# Constants
 TILED_WIDTH: int = 16
 TILED_HEIGHT: int = 9
 TILE_SIZE: int = 80
 SCREEN_WIDTH: int = TILED_WIDTH * TILE_SIZE
 SCREEN_HEIGHT: int = TILED_HEIGHT * TILE_SIZE
 SCREEN: pg.Surface = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-clock: pg.time.Clock = pg.time.Clock()
 TITLE_FONT: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Blocks.ttf", 36)
 SUBTITLE_FONT: pg.font.Font = pg.font.Font("./assets/fonts/Kenney Future.ttf", 16)
 WEAPONS_RANGE = 4 * TILE_SIZE
@@ -29,75 +32,284 @@ SOLDIER2_COST: int = 100
 MISSILE_LAUNCHER_COST: int = 250
 TURRET_COST: int = 500
 
-TILES: dict = {
-    "grass": {
-        "path": "./assets/tiles/towerDefense_tile231.png",
-    },
+tiles: dict = {
+    "grass": {"path": "./assets/tiles/towerDefense_tile231.png", "positions": []},
     "grass_road_up": {
         "path": "./assets/tiles/towerDefense_tile047.png",
+        "positions": [
+            [3, 1],
+            [2, 1],
+            [3, 6],
+            [4, 6],
+            [5, 6],
+            [6, 6],
+            [7, 6],
+            [8, 6],
+            [9, 6],
+            [11, 4],
+            [12, 4],
+            [13, 4],
+            [14, 4],
+            [15, 4],
+        ],
     },
-    "grass_road_down": {"path": "./assets/tiles/towerDefense_tile001.png"},
-    "grass_road_left": {"path": "./assets/tiles/towerDefense_tile025.png"},
-    "grass_road_right": {"path": "./assets/tiles/towerDefense_tile023.png"},
-    "grass_road_turning_upleft": {"path": "./assets/tiles/towerDefense_tile004.png"},
-    "grass_road_turning_upright": {"path": "./assets/tiles/towerDefense_tile003.png"},
-    "grass_road_turning_downleft": {"path": "./assets/tiles/towerDefense_tile027.png"},
-    "grass_road_turning_downright": {"path": "./assets/tiles/towerDefense_tile026.png"},
+    "grass_road_down": {
+        "path": "./assets/tiles/towerDefense_tile001.png",
+        "positions": [
+            [4, 2],
+            [3, 2],
+            [2, 7],
+            [3, 7],
+            [5, 7],
+            [6, 7],
+            [7, 7],
+            [8, 7],
+            [9, 7],
+            [10, 7],
+            [12, 5],
+            [13, 5],
+            [14, 5],
+            [15, 5],
+        ],
+    },
+    "grass_road_left": {
+        "path": "./assets/tiles/towerDefense_tile025.png",
+        "positions": [
+            [1, 2],
+            [1, 3],
+            [1, 4],
+            [1, 5],
+            [1, 6],
+            [4, 0],
+            [10, 5],
+        ],
+    },
+    "grass_road_right": {
+        "path": "./assets/tiles/towerDefense_tile023.png",
+        "positions": [
+            [5, 0],
+            [5, 1],
+            [2, 3],
+            [2, 4],
+            [2, 5],
+            [11, 6],
+        ],
+    },
+    "grass_road_turning_upright": {
+        "path": "./assets/tiles/towerDefense_tile003.png",
+        "positions": [
+            [1, 1],
+            [10, 4],
+        ],
+    },
+    "grass_road_turning_downleft": {
+        "path": "./assets/tiles/towerDefense_tile027.png",
+        "positions": [[5, 2], [11, 7]],
+    },
+    "grass_road_turning_downright": {
+        "path": "./assets/tiles/towerDefense_tile026.png",
+        "positions": [[1, 7]],
+    },
     "grass_road_bigturning_downleft": {
-        "path": "./assets/tiles/towerDefense_tile048.png"
+        "path": "./assets/tiles/towerDefense_tile048.png",
+        "positions": [
+            [4, 1, 0],
+            [2, 2, 180],
+            [2, 6, 270],
+            [10, 6, 0],
+            [11, 5, 180],
+        ],
     },
-    "free_position": {"path": "./assets/tiles/towerDefense_tile015.png"},
-    "mechanic": {"path": "./assets/tiles/towerDefense_tile016.png"},
-    "cross": {"path": "./assets/tiles/towerDefense_tile017.png"},
-    "circle": {"path": "./assets/tiles/towerDefense_tile018.png"},
-    "mountain": {"path": "./assets/tiles/towerDefense_tile034.png"},
-    "mountain_road_down": {"path": "./assets/tiles/towerDefense_tile011.png"},
-    "soldier1": {"path": "./assets/tiles/towerDefense_tile245.png"},
-    "soldier2": {"path": "./assets/tiles/towerDefense_tile246.png"},
-    "missile_launcher": {"path": "./assets/tiles/towerDefense_tile205.png"},
-    "turret": {"path": "./assets/tiles/towerDefense_tile250.png"},
-    "moneytree": {"path": "./assets/photoshopped/MoneyTrees.png"},
-    "mountain_done": {"path": "./assets/photoshopped/Mountain_on_bottom_done.png"},
-    "mountain_bns1": {
-        "path": "./assets/photoshopped/Mountain_on_bottom_and_side_done.png"
+    "free_position": {
+        "path": "./assets/tiles/towerDefense_tile015.png",
+        "positions": [],
     },
-    "mountain_bns2": {
-        "path": "./assets/photoshopped/Mountain_on_bottom_and_side_done_1.png"
+    "cross": {
+        "path": "./assets/tiles/towerDefense_tile017.png",
+        "positions": [
+            [0, 4],
+        ],
+    },
+    "mountain": {
+        "path": "./assets/tiles/towerDefense_tile034.png",
+        "positions": [
+            [6, 8],
+            [6, 8],
+            [7, 8],
+            [8, 8],
+            [9, 8],
+            [7, 3],
+            [7, 4],
+            [6, 4],
+            [5, 4],
+            [8, 3],
+            [7, 2],
+            [7, 1],
+            [8, 2],
+            [8, 1],
+            [9, 3],
+            [9, 2],
+            [9, 1],
+            [9, 0],
+            [8, 0],
+            [10, 0],
+            [15, 8],
+            [15, 7],
+            [14, 8],
+            [13, 8],
+            [14, 7],
+            [15, 0],
+            [14, 0],
+            [15, 1],
+            [15, 2],
+            [14, 1],
+            [5, 8],
+        ],
+    },
+    "mountain_road_down": {
+        "path": "./assets/tiles/towerDefense_tile011.png",
+        "positions": [
+            [4, 7],
+            [5, 7],
+            [6, 7],
+            [7, 7],
+            [8, 7],
+            [9, 7],
+            [10, 7],
+        ],
+    },
+    "soldier1": {"path": "./assets/tiles/towerDefense_tile245.png", "positions": []},
+    "soldier2": {"path": "./assets/tiles/towerDefense_tile246.png", "positions": []},
+    "missile_launcher": {
+        "path": "./assets/tiles/towerDefense_tile205.png",
+        "positions": [],
+    },
+    "turret": {"path": "./assets/tiles/towerDefense_tile250.png", "positions": []},
+    "moneytree": {"path": "./assets/photoshopped/MoneyTrees.png", "positions": []},
+    "mountain_b": {
+        "path": "./assets/photoshopped/Mountain_on_bottom_done.png",
+        "positions": [
+            [4, 3],
+            [5, 3],
+            [15, 6],
+            [14, 6],
+        ],
+    },
+    "mountain_bnsl": {
+        "path": "./assets/photoshopped/Mountain_on_bottom_and_side_done_left.png",
+        "positions": [[0, 8]],
+    },
+    "mountain_bnsr": {
+        "path": "./assets/photoshopped/Mountain_on_bottom_and_side_done_right.png",
+        "positions": [
+            [7, 0],
+            [6, 3],
+            [12, 8],
+            [13, 7],
+        ],
     },
     "mountain_blc": {
-        "path": "./assets/photoshopped/Mountain_on_bottom_left_corner.png"
+        "path": "./assets/photoshopped/Mountain_on_bottom_left_corner.png",
+        "positions": [
+            [1, 8],
+            [0, 7],
+        ],
     },
     "mountain_brc": {
-        "path": "./assets/photoshopped/Mountain_on_bottom_right_corner_1.png"
+        "path": "./assets/photoshopped/Mountain_on_bottom_right_corner_1.png",
+        "positions": [
+            [4, 3],
+            [6, 0],
+            [12, 7],
+            [13, 6],
+            [11, 8],
+        ],
     },
-    "mountain_trc": {"path": "./assets/photoshopped/Mountain_on_top_right_corner.png"},
-    "mountain_left": {"path": "./assets/photoshopped/Mountain_on_left.png"},
-    "mountain_right": {"path": "./assets/photoshopped/Mountain_on_right.png"},
-    "mountain_top": {"path": "./assets/photoshopped/Mountain_on_top.png"},
-    "mountain_tlc": {"path": "./assets/photoshopped/Mountain_on_top_left_corner.png"},
-    "mountain_tns2": {
-        "path": "./assets/photoshopped/Mountain_on_top_and_side_done1.png"
+    "mountain_tlc": {
+        "path": "./assets/photoshopped/Mountain_on_top_left_corner.png",
+        "positions": [
+            [8, 5],
+            [9, 4],
+            [10, 3],
+            [11, 1],
+        ],
     },
-    "mountain_tns1": {
-        "path": "./assets/photoshopped/Mountain_on_top_and_side_done.png"
+    "mountain_trc": {
+        "path": "./assets/photoshopped/Mountain_on_top_right_corner.png",
+        "positions": [
+            [4, 5],
+            [14, 3],
+            [13, 2],
+        ],
     },
-    "mountain_tc": {"path": "./assets/photoshopped/Mountain_on_top_corners.png"},
+    "mountain_left": {
+        "path": "./assets/photoshopped/Mountain_on_left.png",
+        "positions": [
+            [10, 2],
+            [10, 1],
+        ],
+    },
+    "mountain_right": {
+        "path": "./assets/photoshopped/Mountain_on_right.png",
+        "positions": [
+            [4, 4],
+            [6, 2],
+            [6, 1],
+            [13, 1],
+        ],
+    },
+    "mountain_top": {
+        "path": "./assets/photoshopped/Mountain_on_top.png",
+        "positions": [
+            [5, 5],
+            [6, 5],
+            [7, 5],
+            [15, 3],
+        ],
+    },
+    "mountain_tnsl": {
+        "path": "./assets/photoshopped/Mountain_on_top_and_side_done_left.png",
+        "positions": [
+            [8, 4],
+            [9, 3],
+            [10, 1],
+            [11, 0],
+            [10, 8],
+        ],
+    },
+    "mountain_tnsr": {
+        "path": "./assets/photoshopped/Mountain_on_top_and_side_done_right.png",
+        "positions": [
+            [4, 8],
+            [14, 2],
+            [13, 0],
+        ],
+    },
+    "mountain_tc": {
+        "path": "./assets/photoshopped/Mountain_on_top_corners.png",
+        "positions": [
+            [12, 0],
+        ],
+    },
 }
 
-for key, value in TILES.items():
+# Loads and scales tiles and stores them
+for key, value in tiles.items():
     tile_og = pg.image.load(value["path"])
     value["object"] = pg.transform.scale(
         tile_og,
         (SCREEN_WIDTH // TILED_WIDTH, SCREEN_HEIGHT // TILED_HEIGHT),
     )
 
-# swedish flag
+clock: pg.time.Clock = pg.time.Clock()
+
+############################## Swedish Flag ##############################
 swedish_flag_og = pg.image.load("./assets/custom/Swedish Flag.png").convert()
 swedish_flag = pg.transform.scale(swedish_flag_og, (50, 31))  # scale the image
 swedish_flag_rect = swedish_flag.get_rect()
 swedish_flag_rect.bottomright = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
-# load entities
+############################## Entity OGs ##############################
 loris_entity_og = pg.image.load("./assets/custom/loris_entity.png").convert_alpha()
 gabriel_entity_og = pg.image.load("./assets/custom/gabriel_entity.png").convert_alpha()
 phillippe_entity_og = pg.image.load(
@@ -105,7 +317,16 @@ phillippe_entity_og = pg.image.load(
 ).convert_alpha()
 vielgut_entity_og = pg.image.load("./assets/custom/vielgut_entity.png").convert_alpha()
 
-# soldier1
+############################## Weapons Bar (including Moneytree) ##############################
+#### money tree ####
+moneytree_og = pg.image.load("./assets/photoshopped/MoneyTrees.png")
+moneytree = pg.transform.scale(
+    moneytree_og,
+    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
+)
+moneytree_rect = moneytree.get_rect(topleft=(5 * TILE_SIZE, 8 * TILE_SIZE))
+
+#### soldier1 ####
 soldier1_og = pg.image.load("./assets/tiles/towerDefense_tile245.png")
 soldier1 = pg.transform.scale(
     soldier1_og,
@@ -118,7 +339,7 @@ soldier1_price_tag_rect = soldier1_price_tag.get_rect(
     center=(6.5 * TILE_SIZE, (SCREEN_HEIGHT - 10))
 )
 
-# soldier 2
+#### soldier 2 ####
 soldier2_og = pg.image.load("./assets/tiles/towerDefense_tile246.png")
 soldier2 = pg.transform.scale(
     soldier2_og,
@@ -131,7 +352,7 @@ soldier2_price_tag_rect = soldier2_price_tag.get_rect(
     center=(7.5 * TILE_SIZE, (SCREEN_HEIGHT - 10))
 )
 
-# missile launcher
+#### missile launcher ####
 missile_launcher_og = pg.image.load("./assets/tiles/towerDefense_tile205.png")
 missile_launcher = pg.transform.scale(
     missile_launcher_og,
@@ -147,15 +368,8 @@ missile_launcher_price_tag = SUBTITLE_FONT.render(
 missile_launcher_price_tag_rect = missile_launcher_price_tag.get_rect(
     center=(8.5 * TILE_SIZE, (SCREEN_HEIGHT - 10))
 )
-# money Tree
-moneytree_og = pg.image.load("./assets/photoshopped/MoneyTrees.png")
-moneytree = pg.transform.scale(
-    moneytree_og,
-    (SCREEN_WIDTH / TILED_WIDTH, SCREEN_HEIGHT / TILED_HEIGHT),
-)
-moneytree_rect = moneytree.get_rect(topleft=(5 * TILE_SIZE, 8 * TILE_SIZE))
 
-# turret
+#### turret ####
 turret_og = pg.image.load("./assets/tiles/towerDefense_tile250.png")
 turret = pg.transform.scale(
     turret_og,
@@ -168,7 +382,7 @@ turret_price_tag_rect = turret_price_tag.get_rect(
     center=(9.5 * TILE_SIZE, (SCREEN_HEIGHT - 10))
 )
 
-# shot ogs
+############################## Shot OGs ##############################
 soldier_shot_og = pg.image.load("./assets/custom/soldier_shot.png").convert_alpha()
 missile_launcher_shot_left_og = pg.image.load(
     "./assets/custom/missile_launcher_shot_left.png"
@@ -256,6 +470,7 @@ class Game:
         """
         running: bool = True
 
+        # Play intro Sound
         pg.mixer.music.load("./assets/sound/intro.mp3")
         pg.mixer.music.play(loops=0)
         pg.mixer.music.queue("./assets/sound/afterintro.mp3")
@@ -279,6 +494,7 @@ class Game:
                     event.type == pg.constants.MOUSEBUTTONDOWN and self.state == "game"
                 ):
                     x, y = convert_coordinates(event.pos)
+                    #### Weapons Bar Hanlding ####
                     if soldier1_rect.collidepoint(event.pos):
                         self.active_placing = [True, "soldier1"]
                         self.active_deleting = False
@@ -294,11 +510,13 @@ class Game:
                     elif moneytree_rect.collidepoint(event.pos):
                         self.active_placing = [True, "moneytree"]
                         self.active_deleting = False
+                    #### Delete / Cancel Button Handling ####
                     elif x == 0 and y == 4:
                         if self.active_deleting is False:
                             self.active_deleting = True
                         else:
                             self.active_deleting = False
+                    #### Placement of Weapons ####
                     elif (
                         self.active_placing[0] is True
                         and [x, y] not in self.placement_free_zone
@@ -329,9 +547,11 @@ class Game:
                                         self,
                                     )
                                 )
+                        #### Money Tree placement ####
                         elif self.player_coins >= self.moneytrees_cost:
                             self.moneytrees.add(Moneytree([x, y], self))
                         self.active_placing = [False, ""]
+                    #### Deletion handling ####
                     elif self.active_deleting is True:
                         # delete, if weapon
                         clicked_weapon = next(
@@ -361,7 +581,7 @@ class Game:
                             clicked_moneytree.kill()
                             self.placement_free_zone.remove([x, y])
 
-            # start SCREEN if:
+            ############################## Start Screen ##############################
             if self.state == "start":
                 self.reset(2)
                 # title:
@@ -377,8 +597,9 @@ class Game:
                 welcome_subtitle_rect = welcome_subtitle.get_rect(center=(640, 380))
                 SCREEN.blit(welcome_subtitle, welcome_subtitle_rect)
 
+            ############################## Game Screen ##############################
             elif self.state == "game":
-                # Check hp
+                # Check hp --> gameover
                 if self.player_hp <= 0:
                     self.state = "game_over"
                     # play sound
@@ -389,279 +610,10 @@ class Game:
                 # rerender background
                 self.reset(2)
 
-                # Render grass_road_up tiles
-                self.render_tiles(
-                    "grass_road_up",
-                    [
-                        [3, 1],
-                        [2, 1],
-                        [3, 6],
-                        [4, 6],
-                        [5, 6],
-                        [6, 6],
-                        [7, 6],
-                        [8, 6],
-                        [9, 6],
-                        [11, 4],
-                        [12, 4],
-                        [13, 4],
-                        [14, 4],
-                        [15, 4],
-                    ],
-                )
-
-                # Render grass_road_down tiles
-                self.render_tiles(
-                    "grass_road_down",
-                    [
-                        [4, 2],
-                        [3, 2],
-                        [2, 7],
-                        [3, 7],
-                        [5, 7],
-                        [6, 7],
-                        [7, 7],
-                        [8, 7],
-                        [9, 7],
-                        [10, 7],
-                        [12, 5],
-                        [13, 5],
-                        [14, 5],
-                        [15, 5],
-                    ],
-                )
-
-                # Render grass_road_left tiles
-                self.render_tiles(
-                    "grass_road_left",
-                    [
-                        [1, 2],
-                        [1, 3],
-                        [1, 4],
-                        [1, 5],
-                        [1, 6],
-                        [4, 0],
-                        [10, 5],
-                    ],
-                )
-
-                # Render grass_road_right tiles
-                self.render_tiles(
-                    "grass_road_right",
-                    [
-                        [5, 0],
-                        [5, 1],
-                        [2, 3],
-                        [2, 4],
-                        [2, 5],
-                        [11, 6],
-                    ],
-                )
-
-                # Render grass_road_turning_upleft tiles
-
-                # Render grass_road_turning_upright tiles
-                self.render_tiles(
-                    "grass_road_turning_upright",
-                    [
-                        [1, 1],
-                        [10, 4],
-                    ],
-                )
-
-                # Render grass_road_turning_downleft tiles
-                self.render_tiles(
-                    "grass_road_turning_downleft",
-                    [[5, 2], [11, 7]],
-                )
-
-                # Render grass_road_turning_downright tiles
-                self.render_tiles("grass_road_turning_downright", [[1, 7]])
-
-                # Render grass_road_bigturning_downleft tiles
-                self.render_tiles(
-                    "grass_road_bigturning_downleft",
-                    [
-                        [4, 1, 0],
-                        [2, 2, 180],
-                        [2, 6, 270],
-                        [10, 6, 0],
-                        [11, 5, 180],
-                    ],
-                )
-
-                # Render free_position tiles
-
-                # Render mechanic tiles
-
-                # Render cross tiles
-                self.render_tiles(
-                    "cross",
-                    [
-                        [0, 4],
-                    ],
-                )
-
-                # Render circle tiles
-
-                # Render mountain tiles
-                self.render_tiles(
-                    "mountain",
-                    [
-                        [6, 8],
-                        [6, 8],
-                        [7, 8],
-                        [8, 8],
-                        [9, 8],
-                        [7, 3],
-                        [7, 4],
-                        [6, 4],
-                        [5, 4],
-                        [8, 3],
-                        [7, 2],
-                        [7, 1],
-                        [8, 2],
-                        [8, 1],
-                        [9, 3],
-                        [9, 2],
-                        [9, 1],
-                        [9, 0],
-                        [8, 0],
-                        [10, 0],
-                        [15, 8],
-                        [15, 7],
-                        [14, 8],
-                        [13, 8],
-                        [14, 7],
-                        [15, 0],
-                        [14, 0],
-                        [15, 1],
-                        [15, 2],
-                        [14, 1],
-                        [5, 8],
-                    ],
-                )
-
-                # Render mountain_road_down tiles
-                self.render_tiles(
-                    "mountain_road_down",
-                    [
-                        [4, 7],
-                        [5, 7],
-                        [6, 7],
-                        [7, 7],
-                        [8, 7],
-                        [9, 7],
-                        [10, 7],
-                    ],
-                )
-                self.render_tiles(
-                    "mountain_done",
-                    [
-                        [4, 3],
-                        [5, 3],
-                        [15, 6],
-                        [14, 6],
-                    ],
-                )
-                self.render_tiles(
-                    "mountain_bns1",
-                    [
-                        [7, 0],
-                        [6, 3],
-                        [12, 8],
-                        [13, 7],
-                    ],
-                )
-                self.render_tiles(
-                    "mountain_bns2",
-                    [
-                        [0, 8],
-                    ],
-                )
-                self.render_tiles(
-                    "mountain_trc",
-                    [
-                        [4, 5],
-                        [14, 3],
-                        [13, 2],
-                    ],
-                )
-                self.render_tiles(
-                    "mountain_brc",
-                    [
-                        [4, 3],
-                        [6, 0],
-                        [12, 7],
-                        [13, 6],
-                        [11, 8],
-                    ],
-                )
-                self.render_tiles(
-                    "mountain_blc",
-                    [
-                        [1, 8],
-                        [0, 7],
-                    ],
-                )
-                self.render_tiles(
-                    "mountain_left",
-                    [
-                        [10, 2],
-                        [10, 1],
-                    ],
-                )
-                self.render_tiles(
-                    "mountain_right",
-                    [
-                        [4, 4],
-                        [6, 2],
-                        [6, 1],
-                        [13, 1],
-                    ],
-                )
-                self.render_tiles(
-                    "mountain_top",
-                    [
-                        [5, 5],
-                        [6, 5],
-                        [7, 5],
-                        [15, 3],
-                    ],
-                )
-                self.render_tiles(
-                    "mountain_tns1",
-                    [
-                        [8, 4],
-                        [9, 3],
-                        [10, 1],
-                        [11, 0],
-                        [10, 8],
-                    ],
-                )
-                self.render_tiles(
-                    "mountain_tns2",
-                    [
-                        [4, 8],
-                        [14, 2],
-                        [13, 0],
-                    ],
-                )
-                self.render_tiles(
-                    "mountain_tlc",
-                    [
-                        [8, 5],
-                        [9, 4],
-                        [10, 3],
-                        [11, 1],
-                    ],
-                )
-                self.render_tiles(
-                    "mountain_tc",
-                    [
-                        [12, 0],
-                    ],
-                )
+                ############## Map Rendering ##############
+                for tile_type, data in tiles.items():
+                    print(tile_type, data)
+                    self.render_tiles(tile_type, data["positions"])
 
                 # money tree price tag
                 moneytree_price_tag = SUBTITLE_FONT.render(
@@ -671,12 +623,11 @@ class Game:
                     center=((5.5 * TILE_SIZE), (SCREEN_HEIGHT - 10))
                 )
 
+                # Cancel / Delte Button Text
                 if self.active_placing[0] is False and self.active_deleting is False:
                     self.cross_text = "Delete"
                 else:
                     self.cross_text = "Cancel"
-
-                # cross mode text
                 cross_text = SUBTITLE_FONT.render(
                     self.cross_text, True, (255, 255, 255)
                 )
@@ -684,7 +635,7 @@ class Game:
                     center=((0.5 * TILE_SIZE), (5 * TILE_SIZE))
                 )
 
-                # weapons bar
+                ############## Weapons Bar blits ##############
                 SCREEN.blit(soldier1, soldier1_rect)
                 SCREEN.blit(soldier1_price_tag, soldier1_price_tag_rect)
                 SCREEN.blit(soldier2, soldier2_rect)
@@ -697,7 +648,7 @@ class Game:
                 SCREEN.blit(moneytree_price_tag, moneytree_price_tag_rect)
                 SCREEN.blit(cross_text, cross_text_rect)
 
-                # wave management / entity spawning
+                ############## Wave Management ##############
                 now = pg.time.get_ticks()
                 for entity, amount in self.waves[self.current_wave].items():
                     if amount > 0 and now - self.last_entity_spawn_time >= (
@@ -745,7 +696,7 @@ class Game:
                 self.moneytrees.draw(SCREEN)
                 self.shots.draw(SCREEN)
 
-                # Active Weapon Placement
+                ############## Active Weapon Placement ##############
                 if self.active_placing[0] is True or self.active_deleting is True:
                     x, y = pg.mouse.get_pos()
                     tile_x, tile_y = convert_coordinates([x, y])
@@ -776,7 +727,7 @@ class Game:
                     ):
                         self.render_tiles("free_position", [[tile_x, tile_y]])
 
-                # display wave
+                # display wave text
                 current_wave_text = TITLE_FONT.render(
                     f"Wave {self.current_wave}", True, (255, 255, 255)
                 )
@@ -797,6 +748,7 @@ class Game:
                 coins_text_rect = coins_text.get_rect(topright=(SCREEN_WIDTH - 10, 50))
                 SCREEN.blit(coins_text, coins_text_rect)
 
+            ############################## Game Over Screen ##############################
             elif self.state == "game_over":
                 self.reset(2)
                 # title:
@@ -887,7 +839,7 @@ class Game:
         for i in range(TILED_WIDTH):
             for j in range(TILED_HEIGHT):
                 SCREEN.blit(
-                    TILES["grass"]["object"],
+                    tiles["grass"]["object"],
                     (
                         i * (SCREEN_WIDTH / TILED_WIDTH),
                         j * (SCREEN_HEIGHT / TILED_HEIGHT),
@@ -904,14 +856,14 @@ class Game:
         Rotates Tile if needed and puts it onto screen.
 
         Args:
-            tile (str): Key of Tile accoring to TILES constant
+            tile (str): Key of Tile accoring to tiles constant
             positions (list): X and Y corrdinates of tiles (and angle a)
         """
 
         for i in positions:
             if len(i) == 3:
                 SCREEN.blit(
-                    pg.transform.rotate(TILES[tile]["object"], i[2]),
+                    pg.transform.rotate(tiles[tile]["object"], i[2]),
                     (
                         i[0] * (SCREEN_WIDTH / TILED_WIDTH),
                         i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
@@ -919,7 +871,7 @@ class Game:
                 )
             else:
                 SCREEN.blit(
-                    TILES[tile]["object"],
+                    tiles[tile]["object"],
                     (
                         i[0] * (SCREEN_WIDTH / TILED_WIDTH),
                         i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
@@ -935,7 +887,7 @@ class Game:
                     "mountain_brc",
                     "mountain_blc",
                     "mountain_top",
-                    "mountain_done",
+                    "mountain_b",
                     "mountain_right",
                     "mountain_left",
                     "mountain_tc",
