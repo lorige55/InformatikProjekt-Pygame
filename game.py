@@ -512,7 +512,9 @@ class Game:
                         self.active_deleting = False
                     #### Delete / Cancel Button Handling ####
                     elif x == 0 and y == 4:
-                        if self.active_deleting is False:
+                        if self.active_placing[0]:
+                            self.active_placing = [False, ""]
+                        elif self.active_deleting is False:
                             self.active_deleting = True
                         else:
                             self.active_deleting = False
@@ -714,8 +716,6 @@ class Game:
                                 WEAPONS_RANGE,
                                 width=1,
                             )
-                    elif self.active_placing[0] is True and tile_x == 0 and tile_y == 4:
-                        self.active_placing = [False, ""]
                     elif self.active_deleting is True and (
                         any(sprite.rect.collidepoint(x, y) for sprite in self.weapons)
                         or any(
