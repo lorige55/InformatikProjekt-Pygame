@@ -317,6 +317,13 @@ phillippe_entity_og = pg.image.load(
 ).convert_alpha()
 vielgut_entity_og = pg.image.load("./assets/custom/vielgut_entity.png").convert_alpha()
 
+############################## Load Shot Sounds ##############################
+soldier_shot_sound = pg.mixer.Sound("./assets/sound/soldier_shot_sound.ogg")
+missile_launcher_shot_sound = pg.mixer.Sound(
+    "./assets/sound/missile_launcher_shot_sound.wav"
+)
+turret_shot_sound = pg.mixer.Sound("./assets/sound/turret_shot_sound.wav")
+
 ############################## Weapons Bar (including Moneytree) ##############################
 #### money tree ####
 moneytree_og = pg.image.load("./assets/photoshopped/MoneyTrees.png")
@@ -1315,7 +1322,6 @@ class Shot(pg.sprite.Sprite):
         """
         super().__init__()
         self.weapon = weapon
-        soldier_shot_sound = pg.mixer.Sound("./assets/sound/soldier_shot_sound.ogg")
         if weapon == "soldier1":
             self.og_image = soldier_shot_og.copy()
             self.speed = 25
@@ -1336,16 +1342,12 @@ class Shot(pg.sprite.Sprite):
             self.speed = 20
             self.damage = 120
             self.size = 80
-            missile_launcher_shot_sound = pg.mixer.Sound(
-                "./assets/sound/missile_launcher_shot_sound.wav"
-            )
             missile_launcher_shot_sound.play()
         elif weapon == "turret":
             self.og_image = turret_shot_og.copy()
             self.speed = 40
             self.damage = 55
             self.size = 80
-            turret_shot_sound = pg.mixer.Sound("./assets/sound/turret_shot_sound.wav")
             turret_shot_sound.play()
 
         self.current_pos = position
@@ -1368,12 +1370,12 @@ class Shot(pg.sprite.Sprite):
         """
         Moves Shot toward target
         """
-        self.current_pos += self.velocity
-        self.rect.center = self.current_pos
-
         if self.rect.colliderect(self.target_obj.rect):
             self.target_obj.entity_hp -= self.damage
             self.kill()
+
+        self.current_pos += self.velocity
+        self.rect.center = self.current_pos
 
     def rotate(self, angle: float):
         """
