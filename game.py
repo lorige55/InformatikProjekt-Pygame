@@ -272,6 +272,7 @@ class Game:
                     self.state = "game"
                     self.reset(1)
                     pg.mixer.music.stop()
+                    pg.mixer.music.set_volume(0.3)
                     pg.mixer.music.load("./assets/sound/coconut_mall.mp3")
                     pg.mixer.music.play(loops=-1)
                 elif (
@@ -1364,16 +1365,19 @@ class Shot(pg.sprite.Sprite):
         """
         super().__init__()
         self.weapon = weapon
+        soldier_shot_sound = pg.mixer.Sound("./assets/sound/soldier_shot_sound.ogg")
         if weapon == "soldier1":
             self.og_image = soldier_shot_og.copy()
             self.speed = 20
             self.damage = 18
             self.size = 10
+            soldier_shot_sound.play()
         elif weapon == "soldier2":
             self.og_image = soldier_shot_og.copy()
             self.speed = 20
             self.damage = 32
             self.size = 10
+            soldier_shot_sound.play()
         elif weapon == "missile_launcher":
             if total_shots % 2 == 0:
                 self.og_image = missile_launcher_shot_left_og.copy()
@@ -1382,11 +1386,17 @@ class Shot(pg.sprite.Sprite):
             self.speed = 15
             self.damage = 120
             self.size = 80
+            missile_launcher_shot_sound = pg.mixer.Sound(
+                "./assets/sound/missile_launcher_shot_sound.wav"
+            )
+            missile_launcher_shot_sound.play()
         elif weapon == "turret":
             self.og_image = turret_shot_og.copy()
             self.speed = 40
             self.damage = 55
             self.size = 80
+            turret_shot_sound = pg.mixer.Sound("./assets/sound/turret_shot_sound.wav")
+            turret_shot_sound.play()
 
         self.current_pos = position
         self.target_pos = target_pos
