@@ -170,8 +170,11 @@ turret_price_tag_rect = turret_price_tag.get_rect(
 
 # shot ogs
 soldier_shot_og = pg.image.load("./assets/custom/soldier_shot.png").convert_alpha()
-missile_launcher_shot_og = pg.image.load(
+missile_launcher_shot_left_og = pg.image.load(
     "./assets/custom/missile_launcher_shot_left.png"
+).convert_alpha()
+missile_launcher_shot_right_og = pg.image.load(
+    "./assets/custom/missile_launcher_shot_right.png"
 ).convert_alpha()
 turret_shot_og = pg.image.load("./assets/custom/turret_shot.png").convert_alpha()
 
@@ -1120,6 +1123,8 @@ class Weapon(pg.sprite.Sprite):
 
     cost: int
 
+    total_shots: int = 0
+
     def __init__(self, weapon: str, position: list, game: Game):
         """
         Checks wheather the player has enough coins to buy a weapon.
@@ -1203,8 +1208,10 @@ class Weapon(pg.sprite.Sprite):
                                 target_pos,
                                 entity,
                                 self.angle,
+                                self.total_shots,
                             )
                         )
+                        self.total_shots += 1
                     break
 
 
@@ -1303,6 +1310,7 @@ class Shot(pg.sprite.Sprite):
         target_pos: pg.Vector2,
         target_obj: Entity,
         angle: float,
+        total_shots: int,
     ):
         """
         Creates Shot object
@@ -1327,7 +1335,10 @@ class Shot(pg.sprite.Sprite):
             self.damage = 32
             self.size = 10
         elif weapon == "missile_launcher":
-            self.og_image = missile_launcher_shot_og.copy()
+            if total_shots % 2 == 0:
+                self.og_image = missile_launcher_shot_left_og.copy()
+            else:
+                self.og_image = missile_launcher_shot_right_og.copy()
             self.speed = 15
             self.damage = 120
             self.size = 80
