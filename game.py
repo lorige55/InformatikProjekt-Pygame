@@ -667,9 +667,6 @@ class Game:
                                 pg.mixer.music.play(loops=0)
                                 self.velocity = 2
                             break
-                elif remaining_in_wave == 0 and len(self.entities) == 0:
-                    self.current_wave += 1
-                    self.velocity += 1
                 elif (
                     self.current_wave == 8
                     and len(self.entities) == 0
@@ -681,6 +678,9 @@ class Game:
                     pg.mixer.music.stop()
                     pg.mixer.music.load("./assets/sound/win_music.mp3")
                     pg.mixer.music.play(loops=-1)
+                elif len(self.entities) == 0:
+                    self.current_wave += 1
+                    self.velocity += 1
 
                 # entities
                 if self.entities:
@@ -847,7 +847,7 @@ class Game:
         if option == 1:
             # reset game variables
             self.player_hp = 1000
-            self.player_coins = 100
+            self.player_coins = 1000000
 
     def render_tiles(self, tile: str, positions: list):
         """
