@@ -474,10 +474,6 @@ class Game:
                     ],
                 )
 
-                # Render free_position tiles
-
-                # Render mechanic tiles
-
                 # Render cross tiles
                 self.render_tiles(
                     "cross",
@@ -485,8 +481,6 @@ class Game:
                         [0, 4],
                     ],
                 )
-
-                # Render circle tiles
 
                 # Render mountain tiles
                 self.render_tiles(
@@ -886,12 +880,13 @@ class Game:
         Rotates Tile if needed and puts it onto screen.
 
         Args:
-            tile (str): Key of Tile accoring to TILES constant
+            tile (str): Key of Tile according to TILES dictionary
             positions (list): X and Y corrdinates of tiles (and angle a)
         """
 
         for i in positions:
-            try:
+
+            if len(i) == 3:
                 SCREEN.blit(
                     pg.transform.rotate(TILES[tile]["object"], i[2]),
                     (
@@ -899,7 +894,7 @@ class Game:
                         i[1] * (SCREEN_HEIGHT / TILED_HEIGHT),
                     ),
                 )
-            except IndexError:
+            else:
                 SCREEN.blit(
                     TILES[tile]["object"],
                     (
@@ -908,23 +903,26 @@ class Game:
                     ),
                 )
             if (
-                tile != "grass"
-                and tile != "mountain"
-                and tile != "mountain_trc"
-                and tile != "mountain_tlc"
-                and tile != "mountain_blc"
-                and tile != "mountain_brc"
-                and tile != "mountain_top"
-                and tile != "mountain_done"
-                and tile != "mountain_right"
-                and tile != "mountain_left"
-                and tile != "mountain_tc"
-                and tile != "free_position"
-                and tile != "soldier1"
-                and tile != "soldier2"
-                and tile != "missile_launcher"
-                and tile != "turret"
-                and tile != "moneytree"
+                tile
+                not in [
+                    "grass",
+                    "mountain",
+                    "mountain_trc",
+                    "mountain_tlc",
+                    "mountain_brc",
+                    "mountain_blc",
+                    "mountain_top",
+                    "mountain_done",
+                    "mountain_right",
+                    "mountain_left",
+                    "mountain_tc",
+                    "free_position",
+                    "soldier1",
+                    "soldier2",
+                    "missile_launcher",
+                    "turret",
+                    "moneytree",
+                ]
                 and [i[0], i[1]] not in self.placement_free_zone
             ):
                 self.placement_free_zone.append([i[0], i[1]])
