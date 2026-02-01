@@ -206,8 +206,6 @@ class Game:
 
     shots: pg.sprite.Group = pg.sprite.Group()
 
-    last_moneytrees_time: int = 0  # for gabi
-
     placement_free_zone: list = [[5, 8], [6, 8], [7, 8], [8, 8], [9, 8]]
 
     current_wave: int = 1
@@ -738,8 +736,8 @@ class Game:
                     self.weapons.update(self, self.entities)
                     self.shots.update()
 
-                if pg.time.get_ticks() - self.last_moneytrees_time >= 5000:
-                    self.moneytrees.update(self)  # for gabi
+                if self.moneytrees:
+                    self.moneytrees.update(self)
 
                 self.entities.draw(SCREEN)
                 self.weapons.draw(SCREEN)
@@ -1251,6 +1249,16 @@ class Moneytree(pg.sprite.Sprite):
 
     cost: int
 
+    last_payout_time: int = 0
+
+    base_image: pg.Surface
+
+    pulse_start_time: int | None = None
+
+    pulse_duration: int = 400
+
+    pulse_scale: float = 1.15
+
     def __init__(self, position: list, game: Game):
         """
         Creates Moneytree, subtracts coins from player and doubles moneytree cost.
@@ -1268,6 +1276,10 @@ class Moneytree(pg.sprite.Sprite):
         )
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = convert_coordinates(position)
+
+        # animation prep
+        self.base_image = self.image.copy()
+
         game.player_coins -= game.moneytrees_cost
         self.cost = game.moneytrees_cost
         game.moneytrees_cost *= 2
@@ -1275,13 +1287,41 @@ class Moneytree(pg.sprite.Sprite):
 
     def update(self, game: Game):
         """
-        Gives player Coins
+        Gives player Coins every five seconds and animates itself
 
         Args:
             game (Game): Game object
         """
-        game.player_coins += 5
-        game.last_moneytrees_time = pg.time.get_ticks()
+        now = pg.time.get_ticks()
+
+        # give player coins
+        if now - self.last_payout_time >= 5000:
+            game.player_coins += 5
+            self.last_payout_time = now
+            # start pulse
+            self.pulse_start_time = now
+
+        # animation
+        if self.pulse_start_time is not None:
+            t = (now - self.pulse_start_time) / self.pulse_duration
+            if t >= 1:
+                # end pulse
+                self.pulse_start_time = None
+                center = self.rect.center
+                self.image = self.base_image
+                self.rect = self.image.get_rect(center=center)
+            else:
+                # start pulse
+                pulse = math.sin(math.pi * t)
+                scale = 1 + (self.pulse_scale - 1) * pulse
+
+                base_w, base_h = self.base_image.get_size()
+                new_w = max(1, int(base_w * scale))
+                new_h = max(1, int(base_h * scale))
+
+                center = self.rect.center
+                self.image = pg.transform.scale(self.base_image, (new_w, new_h))
+                self.rect = self.image.get_rect(center=center)
 
 
 class Shot(pg.sprite.Sprite):
