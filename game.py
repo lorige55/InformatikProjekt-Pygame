@@ -248,7 +248,6 @@ class Game:
 
     last_entity_spawn_time: int = 0
 
-    ################################################################################################################
     def __init__(self) -> None:
         """
         Handles Game: Playing music, switching between screens,
@@ -875,7 +874,6 @@ class Game:
 
         pg.quit()
 
-    ##########################################################################################################################
     def reset(self, option: int):
         """
         Method to reset background and game variables
