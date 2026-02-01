@@ -446,24 +446,24 @@ class Game:
             "phillip": 20,
         },
         5: {
-            "loris": 20,
+            "loris": 15,
             "gabriel": 20,
             "phillip": 30,
         },
         6: {
-            "loris": 20,
-            "gabriel": 20,
-            "phillip": 20,
-        },
-        7: {
             "loris": 10,
             "gabriel": 15,
             "phillip": 30,
         },
-        8: {
-            "loris": 10,
-            "gabriel": 25,
+        7: {
+            "loris": 5,
+            "gabriel": 15,
             "phillip": 35,
+        },
+        8: {
+            "loris": 5,
+            "gabriel": 20,
+            "phillip": 40,
             "vielgut": 1,
         },
     }
@@ -937,20 +937,24 @@ class Entity(pg.sprite.Sprite):
             self.image = loris_entity_og.copy()
             self.entity_hp = 120
             if game.current_wave == 6:
-                self.entity_hp = 200
+                self.entity_hp = 220
         elif entity == "gabriel":
             self.image = gabriel_entity_og.copy()
             self.entity_hp = 220
             if game.current_wave == 6:
-                self.entity_hp = 300
+                self.entity_hp = 320
+            elif game.current_wave == 7:
+                self.entity_hp = 330
         elif entity == "phillip":
             self.image = phillippe_entity_og.copy()
             self.entity_hp = 380
             if game.current_wave == 6:
-                self.entity_hp = 540
+                self.entity_hp = 550
+            elif game.current_wave == 7:
+                self.entity_hp = 560
         elif entity == "vielgut":
             self.image = vielgut_entity_og.copy()
-            self.entity_hp = 10000
+            self.entity_hp = 10000  # (Gotta make Herr Vielgut overpowered for the 6)
         self.original_hp = self.entity_hp
         self.og_image = self.image.copy()
         self.image = pg.transform.rotate(
@@ -1050,6 +1054,8 @@ class Entity(pg.sprite.Sprite):
                     game.player_coins += 10
                 elif self.type == "phillip":
                     game.player_coins += 16
+                    if game.current_wave == 5:
+                        game.player_coins += 4  # After wave 5, the total money you win from killing one Philipp is 20 (16 +4)
                 elif self.type == "vielgut":
                     game.player_coins += 120
 
